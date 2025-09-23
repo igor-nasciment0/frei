@@ -1,0 +1,52 @@
+.cabecalho {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+
+    padding: 1rem 3rem;
+
+    border-bottom: 1px solid #E0E0E0;
+
+    >.usuario {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        position: relative;
+
+        >div::before {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+
+            width: 1px;
+            height: 1px;
+            border: 1px solid #22C55E;
+        }
+
+        >div {
+            display: flex;
+            flex-direction: column;
+            color: #64748B;
+
+            h3 {
+                font-size: 0.625em;
+                line-height: 100%;
+                font-weight: 600;
+            }
+
+            h4 {
+                font-size: 0.625em;
+                line-height: 150%;
+                font-weight: 500;
+            }
+        }
+
+        >img {
+            max-width: 28px;
+            max-height: 28px;
+            border-radius: 100%;
+        }
+    }
+}

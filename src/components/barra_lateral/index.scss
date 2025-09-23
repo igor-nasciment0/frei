@@ -1,0 +1,68 @@
+.barra-lateral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+
+    height: 100vh;
+    width: 100%;
+    max-width: 240px;
+
+    background-color: #2B3031;
+    color: #FFF;
+
+    .logo {
+        max-width: 2.8rem;
+        margin-bottom: 3rem;
+    }
+
+    .links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        width: 100%;
+
+        >a {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            position: relative;
+
+            padding: 1rem;
+            gap: 10px;
+            width: 100%;
+
+            transition: 0.1s;
+
+            &.selecionado {
+                background-color: #3F4647;
+            }
+
+            &:not(.selecionado):hover {
+                .border {
+                    width: 2px;
+                    height: 100%;
+                }
+            }
+
+            .border {
+                position: absolute;
+                left: 0;
+                height: 0;
+                width: 0;
+                background-color: #FFF;
+                transition: 0.15s ease-out;
+            }
+
+            >img {
+                width: 1.5rem;
+            }
+
+            >p {
+                font-size: 0.875rem;
+                font-weight: 600;
+            }
+        }
+    }
+}
