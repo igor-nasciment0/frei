@@ -33,9 +33,11 @@
             gap: 10px;
             width: 100%;
 
-            transition: 0.1s;
+            background-color: #00000000;
+            transition: 0.2s;
 
             &.selecionado {
+                cursor: default;
                 background-color: #3F4647;
             }
 
