@@ -91,6 +91,12 @@
 
                 border-radius: 4px;
 
+                cursor: pointer;
+                transition: 0.2s;
+                &:hover {
+                    filter: brightness(1.05);
+                }
+
                 >img {
                     width: 16px;
                 }
