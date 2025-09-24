@@ -9,11 +9,11 @@ export default function BarraLateral() {
       </div>
 
       <div className='links'>
-        <LinkLateral para={"/app/"} titulo={"Início"} icone={"casa"}/>
-        <LinkLateral para={"/app/inscricao"} titulo={"Inscrição"} icone={"usuarios"}/>
-        <LinkLateral para={"/app/acompanhamento"} titulo={"Acompanhamento"} icone={"calendario"}/>
-        <LinkLateral para={"/app/cursos"} titulo={"Cursos"} icone={"carteira"}/>
-        <LinkLateral para={"/app/faq"} titulo={"FAQ"} icone={"arquivos"}/>
+        <LinkLateral para={"/"} titulo={"Início"} icone={"casa"}/>
+        <LinkLateral para={"/inscricao"} titulo={"Inscrição"} icone={"usuarios"}/>
+        <LinkLateral para={"/acompanhamento"} titulo={"Acompanhamento"} icone={"calendario"}/>
+        <LinkLateral para={"/cursos"} titulo={"Cursos"} icone={"carteira"}/>
+        <LinkLateral para={"/faq"} titulo={"FAQ"} icone={"arquivos"}/>
       </div>
     </div>
   )
