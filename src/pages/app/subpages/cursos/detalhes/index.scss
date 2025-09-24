@@ -1,0 +1,124 @@
+.curso-detalhes {
+    max-width: 780px;
+
+    .banner {
+        position: relative;
+        height: 180px;
+        border-radius: 8px;
+        background: url("/caminho/da/imagem.jpg") center/cover no-repeat;
+        margin-bottom: 3rem;
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1rem;
+            color: #fff;
+
+            .play-button {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .curso-nome {
+                font-weight: 600;
+                font-size: 1.5rem;
+            }
+        }
+    }
+
+    .secao {
+        margin-bottom: 3rem;
+
+        .secao-titulo {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .card {
+            background: #fff;
+            color: #364356;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            border: 1px solid #ECECEC;
+
+            p {
+                font-family: 'Geist';
+                color: #555;
+                line-height: 1.5;
+                font-size: 1rem;
+            }
+        }
+    }
+
+    .tabela-infos {
+        display: flex;
+        flex-direction: column;
+        background-color: #FFF;
+        color: #364356;
+
+        border-collapse: collapse;
+
+        border: 1px solid #ECECEC;
+        border-radius: 16px;
+        padding: 0.75rem 1rem;
+
+        tr {
+            width: 100%;
+        }
+
+        td {
+            &:nth-child(even) {
+                width: 100%;
+            }
+
+            text-wrap: nowrap;
+            padding: 0.75rem 1rem;
+        }
+
+        tr:not(:last-child) {
+            td {
+                border-bottom: 1px solid #E9E9E9;
+            }
+        }
+
+        .label {
+            font-weight: 500;
+            min-width: 180px;
+            font-size: 1rem;
+        }
+
+        .valor {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 1rem;
+            color: #727272;
+            font-weight: 500;
+
+
+            img {
+                max-width: 24px;
+                margin-right: 9px;
+            }
+
+            span {
+                display: flex;
+                flex-direction: column;
+                margin-right: 30px;
+
+                small {
+                    color: #888;
+                    font-size: 0.875em;
+                }
+            }
+        }
+
+    }
+}
