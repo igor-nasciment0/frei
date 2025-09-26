@@ -1,31 +1,29 @@
 import { Outlet, useParams } from "react-router";
 import "./index.scss";
-const cursos = [
-  {
-    titulo: "Técnico em Administração",
-    tipo: "Técnico",
-    carga: "800 horas",
-    imagem: "/assets/images/adm.jpg",
-  },
-  {
-    titulo: "Técnico em Comunicação Visual",
-    tipo: "Qualificação",
-    carga: "1000 horas",
-    imagem: "/assets/images/cv.jpg",
-  },
-  {
-    titulo: "Técnico em Informática",
-    tipo: "Técnico",
-    carga: "1000 horas",
-    imagem: "/assets/images/info.jpg",
-  },
-];
+import { useEffect, useState } from "react";
+import callApi from "../../../../api/callAPI";
+import { getCursos } from "../../../../api/services/cursos";
+import Carregamento from "../../../../components/carregamento";
 
 export default function Cursos() {
-  const { curso } = useParams();
 
-  if (curso)
-    return (<Outlet context={curso} />)
+  const [cursos, setCursos] = useState();
+
+  useEffect(() => {
+    async function getData() {
+      setCursos(await callApi(getCursos));
+    }
+
+    getData();
+  })
+
+  const { idCurso } = useParams();
+
+  if (idCurso)
+    return (<Outlet context={idCurso} />)
+
+  if(!cursos)
+    return <Carregamento />
 
   return (
     <section className="cursos">

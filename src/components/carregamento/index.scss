@@ -1,0 +1,24 @@
+.carregamento {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-grow: 1;
+
+    > img {
+        width: 50px;
+        height: 50px;
+
+        animation: spin 0.7s linear infinite;
+
+        @keyframes spin {
+            0% {
+                rotate: 0deg;
+            }
+
+            100% {
+                rotate: 360deg;
+            }
+        }
+    }
+}

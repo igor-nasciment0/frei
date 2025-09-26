@@ -1,0 +1,117 @@
+.login-page {
+    display: flex;
+    height: 100vh;
+
+    .login-left {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #F9F9F9;
+        padding: 2rem;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 660px;
+
+        background-color: #FFFFFF;
+        border-radius: 16px;
+        padding: 1rem;
+        padding-top: 0.75rem;
+        border: 1px #ECECEC solid;
+    }
+
+    .form-group {
+        margin-bottom: 0.4rem;
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            color: #394354;
+            line-height: 200%;
+        }
+
+        input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #E9E9E9;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            outline: none;
+
+            transition: 0.2s;
+
+            &:focus {
+                border-color: #4EA2FF;
+            }
+        }
+    }
+
+    .forgot-password {
+        text-align: right;
+        margin-bottom: 1.5rem;
+        margin-top: 0.5rem;
+
+        a {
+            font-size: 1rem;
+            color: #4EA2FF;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .btn-enter {
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 0.875rem;
+        background-color: #4EA2FF;
+        color: #FFF;
+        cursor: pointer;
+
+        transition: 0.2s;
+
+        &:hover {
+            filter: brightness(1.05);
+        }
+    }
+
+    /* Lado direito */
+    .login-right {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #2B3031;
+        text-align: center;
+
+        letter-spacing: 1.11px;
+    }
+
+    .logo-placeholder {
+        &, img {
+            width: 100%;
+            max-width: 85px;
+        }
+        margin-bottom: 1rem;
+    }
+
+    .main-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #FFFFFF;
+        line-height: 200%;
+    }
+
+    .sub-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #B9ECFF;
+    }
+}

@@ -1,6 +1,19 @@
+import { useEffect } from 'react';
 import './index.scss';
+import { get } from 'local-storage';
+import { useNavigate } from 'react-router';
 
 export default function Cabecalho() {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = get("token");
+
+    // if (!token)
+    //   navigate("/login");
+  }, [])
+
   return (
     <>
       <header className="cabecalho">
