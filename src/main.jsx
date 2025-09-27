@@ -10,7 +10,9 @@ import Cursos from './pages/app/subpages/cursos';
 import DetalhesCurso from './pages/app/subpages/cursos/detalhes';
 import FAQ from './pages/app/subpages/faq';
 import Inscricao from './pages/app/subpages/inscricao';
-import LoginPage from './pages/login';
+import Login from './pages/login';
+import RecuperarSenha from './pages/recuperar-senha';
+import Acompanhamento from './pages/app/subpages/acompanhamento';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,13 +21,14 @@ createRoot(document.getElementById('root')).render(
         <Route path='' element={<App />}>
           <Route index element={<Inicio />} />
           <Route path='inscricao' element={<Inscricao />} />
-          <Route path='acompanhamento' element={<Inicio />} />
+          <Route path='acompanhamento' element={<Acompanhamento />} />
           <Route path='cursos' element={<Cursos />}>
             <Route path=':curso' element={<DetalhesCurso />} />
           </Route>
           <Route path='faq' element={<FAQ />} />
         </Route>
-        <Route path='/login' element={<LoginPage />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/recuperar-senha' element={<RecuperarSenha />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

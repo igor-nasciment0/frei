@@ -93,6 +93,7 @@
 
                 cursor: pointer;
                 transition: 0.2s;
+
                 &:hover {
                     filter: brightness(1.05);
                 }
@@ -157,6 +158,14 @@
                     filter: brightness(0) saturate(100%) invert(14%) sepia(0%) saturate(0%) hue-rotate(358deg) brightness(99%) contrast(97%);
                 }
             }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .anuncio,
+        .acoes .container,
+        .perguntas {
+            max-width: unset;
         }
     }
 }

@@ -1,3 +1,58 @@
+.barra-mobile-botao {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0;
+
+    img {
+        max-height: 26px;
+    }
+}
+
+.container-barra-mobile {
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    overflow-x: auto;
+
+    width: 0;
+
+    >button {
+        padding: 10px;
+        background-color: #FFF;
+        border-radius: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        top: 20px;
+        right: 50px;
+    }
+
+    >.barra-lateral {
+        max-width: 0;
+        transition: 0.2s max-width ease-in-out;
+        overflow-x: auto;
+    }
+
+    &.aberta {
+        transition: 0.2s background-color;
+        background-color: #000000A6;
+        width: 100vw;
+
+        >.barra-lateral {
+            max-width: 360px;
+        }
+    }
+
+    &:not(.aberta) {
+        transition: width 0.01;
+        transition-delay: 0.2s;
+    }
+}
+
 .barra-lateral {
     display: flex;
     flex-direction: column;
