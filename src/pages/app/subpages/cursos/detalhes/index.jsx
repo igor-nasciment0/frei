@@ -1,13 +1,25 @@
 import { useOutletContext } from "react-router";
 import "./index.scss";
+import { useEffect, useState } from "react";
+import callApi from "../../../../../api/callAPI";
+import { getCursoId } from "../../../../../api/services/cursos";
 
-export default function DetalhesCurso({ infoCurso }) {
+export default function DetalhesCurso() {
 
-  const nomeCurso = useOutletContext();  
+  const idCurso = useOutletContext();
+
+  const [infoCurso, setInfoCurso] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const r = await callApi(getCursoId, idCurso);
+      setInfoCurso(r);
+    })();
+  }, [])
 
   return (
     <section className="curso-detalhes">
-      <h3 className='nav'>Frei Online {'>'} Início {'>'} {nomeCurso}</h3>
+      <h3 className='nav'>Frei Online {'>'} Início {'>'} {'nomeCurso'}</h3>
 
       <div className="banner">
         <div className="overlay">

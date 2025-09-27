@@ -7,7 +7,7 @@ function api() {
   return axios.create({
     baseURL: '/api',
     headers: {
-      'x-access-token': token
+      Authorization: "Bearer " + token
     }
   })
 }

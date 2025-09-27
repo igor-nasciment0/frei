@@ -13,23 +13,26 @@ import Inscricao from './pages/app/subpages/inscricao';
 import Login from './pages/login';
 import RecuperarSenha from './pages/recuperar-senha';
 import Acompanhamento from './pages/app/subpages/acompanhamento';
+import { LoadingBarContainer } from 'react-top-loading-bar';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path='' element={<App />}>
-          <Route index element={<Inicio />} />
-          <Route path='inscricao' element={<Inscricao />} />
-          <Route path='acompanhamento' element={<Acompanhamento />} />
-          <Route path='cursos' element={<Cursos />}>
-            <Route path=':curso' element={<DetalhesCurso />} />
+  <LoadingBarContainer>
+    <StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path='' element={<App />}>
+            <Route index element={<Inicio />} />
+            <Route path='inscricao' element={<Inscricao />} />
+            <Route path='acompanhamento' element={<Acompanhamento />} />
+            <Route path='cursos' element={<Cursos />}>
+              <Route path=':id' element={<DetalhesCurso />} />
+            </Route>
+            <Route path='faq' element={<FAQ />} />
           </Route>
-          <Route path='faq' element={<FAQ />} />
-        </Route>
-        <Route path='/login' element={<Login />} />
-        <Route path='/recuperar-senha' element={<RecuperarSenha />} />
-      </Routes>
-    </BrowserRouter>
-  </StrictMode>,
+          <Route path='/login' element={<Login />} />
+          <Route path='/recuperar-senha' element={<RecuperarSenha />} />
+        </Routes>
+      </BrowserRouter>
+    </StrictMode>
+  </LoadingBarContainer>
 )

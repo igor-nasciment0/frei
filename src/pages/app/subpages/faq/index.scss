@@ -6,4 +6,8 @@
         margin-bottom: 3rem;
         line-height: 1.625rem;
     }
+
+    @media screen and (max-width: 768px) {
+        max-width: unset;
+    }
 }

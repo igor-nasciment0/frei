@@ -1,6 +1,44 @@
+import { useEffect, useState } from "react";
 import "./index.scss";
+import callApi from "../../../../api/callAPI";
+import { getInscricao } from "../../../../api/services/inscricao";
+import Carregamento from "../../../../components/carregamento";
+import { useNavigate } from "react-router";
 
 export default function Acompanhamento() {
+
+  const navigate = useNavigate();
+
+  const [dadosUsuario, setDadosUsuario] = useState();
+  const [naoPossui, setNaoPossui] = useState(false);
+  const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const r = await callApi(getInscricao);
+
+      if (r.status == 404)
+        setNaoPossui(true);
+
+      else setDadosUsuario(r.data);
+
+      setTimeout(() => setCarregando(false), 1000)
+    })();
+  }, [])
+
+  if (carregando)
+    return <Carregamento />
+
+  if (naoPossui)
+    return (
+      <section className="sem-inscricao">
+        <h2>Acompanhamento</h2>
+        <p>Você ainda não possui inscrição.</p>
+
+        <button onClick={() => navigate("/inscricao")}>Realizar pré-inscrição</button>
+      </section>
+    )
+
   return (
     <section className="acompanhamento-page">
       <h3 className='nav'>Frei Online {'>'} Acompanhamento</h3>

@@ -1,4 +1,4 @@
-import { Outlet, useParams } from "react-router";
+import { Outlet, useNavigate, useParams } from "react-router";
 import "./index.scss";
 import { useEffect, useState } from "react";
 import callApi from "../../../../api/callAPI";
@@ -15,9 +15,11 @@ export default function Cursos() {
     }
 
     getData();
-  })
+  }, [])
 
-  const { idCurso } = useParams();
+  const { id: idCurso } = useParams();
+
+  const navigate = useNavigate();
 
   if (idCurso)
     return (<Outlet context={idCurso} />)
@@ -40,14 +42,14 @@ export default function Cursos() {
             ></div>
 
             <div className="card-conteudo">
-              <h3 className="card-titulo">{curso.titulo}</h3>
+              <h3 className="card-titulo">{curso.name}</h3>
 
               <div className="tags">
                 <span className="tag">{curso.tipo}</span>
                 <span className="tag">{curso.carga}</span>
               </div>
 
-              <button className="btn-detalhes">
+              <button className="btn-detalhes" onClick={() => navigate('/cursos/' + curso.id)}>
                 Detalhes
                 <img src="/assets/images/icons/seta.svg" alt="" />
               </button>

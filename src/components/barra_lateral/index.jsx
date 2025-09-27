@@ -7,9 +7,6 @@ import useClickOutside from '../../util/useClickOutside';
 export default function BarraLateral() {
   const isMobile = useMediaQuery("screen and (max-width: 768px)");
 
-  console.log(isMobile);
-
-
   if (isMobile)
     return <BarraMobile />
   else
@@ -27,26 +24,25 @@ function BarraMobile() {
 
   return (
     <>
-      <button onClick={() => setAberta(true)} className='barra-mobile-botao'>
-        <img src="/assets/images/icons/menu.svg" alt="" />
-      </button>
+      <button id='Button___openSideBar' style={{ display: 'none' }} onClick={() => setAberta(true)} />
 
       <div className={"container-barra-mobile " + (aberta ? "aberta" : "")} >
-        <BarraPadrao ref={barraRef} />
-        <button onClick={() => setAberta(false)}>
-          <img src="/assets/images/icons/fechar.svg" alt="" />
-        </button>
+        <BarraPadrao ref={barraRef} isMobile={true} close={() => setAberta(false)} />
       </div>
     </>
   )
 }
 
-function BarraPadrao({ ref }) {
+function BarraPadrao({ ref, isMobile, close }) {
   return (
     <div className='barra-lateral' ref={ref}>
       <div className='logo'>
         <img src="/assets/images/logo.svg" alt="" />
       </div>
+
+      {isMobile && <button onClick={close}>
+        <img src="/assets/images/icons/fechar.svg" alt="" />
+      </button>}
 
       <div className='links'>
         <LinkLateral para={"/"} titulo={"Início"} icone={"casa"} />

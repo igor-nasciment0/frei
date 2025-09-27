@@ -4,22 +4,31 @@ import { login } from "../../api/services/user";
 import "./index.scss";
 
 import { useForm } from 'react-hook-form';
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
-import { generateFormData } from "../../util";
+import { generateFormData } from "../../util/form";
+import { useLoadingBar } from "react-top-loading-bar";
 
-export default function LoginPage() {
+export default function Login() {
 
   const { register, handleSubmit } = useForm();
 
   const navigate = useNavigate();
 
-  async function submit(loginData) {    
+  const { start, complete } = useLoadingBar({
+    color: "#4EA2FF",
+    height: 2,
+  });
+
+  async function submit(loginData) {
     const r = await callApi(login, generateFormData(loginData));
 
     if (r?.token) {
+      start("continuous", 0, 100);
       set("token", r.token);
-      navigate("/");
+      set("user", r.user);
+      setTimeout(complete, 750);
+      setTimeout(() => navigate("/"), 1000);
     }
   }
 
@@ -49,7 +58,7 @@ export default function LoginPage() {
             </div>
 
             <div className="forgot-password">
-              <a href="#">Esqueci a senha</a>
+              <Link to='/recuperar-senha'>Esqueci a senha</Link>
             </div>
 
             <input className="btn-enter" type="submit" value="Entrar" />

@@ -1,13 +1,16 @@
 import api from "../base";
 
 export async function getCursos() {
-    return await api().get("/courses");
+    const r = await api().get("/courses");
+    return r.data;
 }
 
 export async function getCursoId(idCurso) {
-    return await api().get("/courses/" + idCurso);
+    const r = await api().get("/courses/" + idCurso);
+    return r.data;
 }
 
 export async function getCursoImagem(idCurso) {
-    return await api().get("/courses/" + idCurso + "/image");
+    const r = await api().get("/courses/" + idCurso + "/image");
+    return r.data;
 }

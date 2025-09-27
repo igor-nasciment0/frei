@@ -1,5 +1,6 @@
 import api from "../base";
 
 export async function getFAQ() {
-    return await api().get("/faqs");
+    const r = await api().get("/faqs");
+    return r.data;
 }

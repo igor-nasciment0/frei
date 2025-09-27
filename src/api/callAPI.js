@@ -10,7 +10,7 @@ export default async function callApi(callback, ...params) {
       return { success: true }
 
   } catch (error) {
-    if (error.response)
+    if (error.response && error.response.data.Message?.[0])
       toast.error(error.response.data.Message[0], { duration: 4000 });
     else
       toast.error(error.message, { duration: 4000 });

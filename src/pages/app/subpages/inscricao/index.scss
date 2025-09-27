@@ -44,34 +44,64 @@
 
         .label {
             font-weight: 500;
-            min-width: 180px;
+            min-width: 240px;
             font-size: 1rem;
+            line-height: 1.75rem;
+
+            &.obrigatorio::after {
+                content: " *";
+                color: #FF5252;
+            }
         }
 
-        .valor {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            font-size: 1rem;
-            color: #727272;
-            font-weight: 500;
+        .input {
+            input {
+                width: 100%;
+                font-size: 1rem;
+                line-height: 1.75rem;
 
-
-            img {
-                max-width: 24px;
-                margin-right: 9px;
-            }
-
-            span {
-                display: flex;
-                flex-direction: column;
-                margin-right: 30px;
-
-                small {
-                    color: #888;
-                    font-size: 0.875em;
+                &::placeholder {
+                    color: #A0A0A0;
                 }
             }
+        }
+
+        tfoot {
+            display: flex;
+        }
+
+        .submit { 
+            width: 100%;
+
+            td {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            input {
+                padding: 0.625rem 2.25rem;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+
+                font-weight: 600;
+                color: #FFF;
+                border-radius: 8px;
+
+                background-color: #4EA2FF;
+
+                transition: 0.2s;
+                cursor: pointer;
+
+                &:hover {
+                    filter: brightness(1.1);
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .tabela-form {
+            max-width: unset;
         }
     }
 }
