@@ -5,7 +5,7 @@ function api() {
   let token = get('token');
 
   return axios.create({
-    baseURL: '/api',
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
       Authorization: "Bearer " + token
     }

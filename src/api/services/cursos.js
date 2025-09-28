@@ -10,7 +10,7 @@ export async function getCursoId(idCurso) {
     return r.data;
 }
 
-export async function getCursoImagem(idCurso) {
-    const r = await api().get("/courses/" + idCurso + "/image");
+export async function getCursoImagem(idImagem) {
+    const r = await api().get("/courses/" + idImagem + "/image", { responseType: "blob" });
     return r.data;
 }

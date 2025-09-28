@@ -1,35 +1,25 @@
 .curso-detalhes {
     max-width: 780px;
 
+    .voltar {
+        display: inline-block;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        color: #4EA2FF;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
     .banner {
         position: relative;
-        height: 180px;
+        height: 100vh;
+        max-height: 250px;
         border-radius: 8px;
         background: url("/caminho/da/imagem.jpg") center/cover no-repeat;
         margin-bottom: 3rem;
-
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 1rem;
-            color: #fff;
-
-            .play-button {
-                font-size: 2rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .curso-nome {
-                font-weight: 600;
-                font-size: 1.5rem;
-            }
-        }
     }
 
     .secao {
@@ -112,6 +102,7 @@
             span {
                 display: flex;
                 flex-direction: column;
+                gap: 2px;
                 margin-right: 30px;
 
                 small {

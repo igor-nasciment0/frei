@@ -2,7 +2,7 @@ import { Outlet, useNavigate, useParams } from "react-router";
 import "./index.scss";
 import { useEffect, useState } from "react";
 import callApi from "../../../../api/callAPI";
-import { getCursos } from "../../../../api/services/cursos";
+import { getCursoImagem, getCursos } from "../../../../api/services/cursos";
 import Carregamento from "../../../../components/carregamento";
 
 export default function Cursos() {
@@ -19,12 +19,10 @@ export default function Cursos() {
 
   const { id: idCurso } = useParams();
 
-  const navigate = useNavigate();
-
   if (idCurso)
     return (<Outlet context={idCurso} />)
 
-  if(!cursos)
+  if (!cursos)
     return <Carregamento />
 
   return (
@@ -35,28 +33,48 @@ export default function Cursos() {
 
       <div className="grid">
         {cursos.map((curso, index) => (
-          <div key={index} className="card">
-            <div
-              className="card-imagem"
-              style={{ backgroundImage: `url(${curso.imagem})` }}
-            ></div>
-
-            <div className="card-conteudo">
-              <h3 className="card-titulo">{curso.name}</h3>
-
-              <div className="tags">
-                <span className="tag">{curso.tipo}</span>
-                <span className="tag">{curso.carga}</span>
-              </div>
-
-              <button className="btn-detalhes" onClick={() => navigate('/cursos/' + curso.id)}>
-                Detalhes
-                <img src="/assets/images/icons/seta.svg" alt="" />
-              </button>
-            </div>
-          </div>
+          <CardCurso infoCurso={curso} key={index} />
         ))}
       </div>
     </section>
   );
+}
+
+function CardCurso({ infoCurso }) {
+
+  const [imagemURL, setImagemURL] = useState();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      setImagemURL(
+        URL.createObjectURL(await callApi(getCursoImagem, infoCurso?.imageId))
+      )
+    })();
+
+    return () => URL.revokeObjectURL(imagemURL);
+  }, [])
+
+  return (
+    <div className="card">
+      <div
+        className="card-imagem"
+        style={{ backgroundImage: `url(${imagemURL})` }}
+      ></div>
+
+      <div className="card-conteudo">
+        <h3 className="card-titulo">{infoCurso.name}</h3>
+
+        <div className="tags">
+          <span className="tag">{infoCurso.type}</span>
+          <span className="tag">{infoCurso.workload}</span>
+        </div>
+
+        <button className="btn-detalhes" onClick={() => navigate('/cursos/' + infoCurso.id)}>
+          Detalhes
+          <img src="/assets/images/icons/seta.svg" alt="" />
+        </button>
+      </div>
+    </div>
+  )
 }
