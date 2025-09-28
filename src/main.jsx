@@ -14,6 +14,7 @@ import Login from './pages/login';
 import RecuperarSenha from './pages/recuperar-senha';
 import Acompanhamento from './pages/app/subpages/acompanhamento';
 import { LoadingBarContainer } from 'react-top-loading-bar';
+import TrocarSenha from './pages/trocar-senha';
 
 createRoot(document.getElementById('root')).render(
   <LoadingBarContainer>
@@ -31,6 +32,7 @@ createRoot(document.getElementById('root')).render(
           </Route>
           <Route path='/login' element={<Login />} />
           <Route path='/recuperar-senha' element={<RecuperarSenha />} />
+          <Route path='/trocar-senha' element={<TrocarSenha />} />
         </Routes>
       </BrowserRouter>
     </StrictMode>

@@ -1,7 +1,7 @@
 .cabecalho {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     width: 100%;
 
     * {
@@ -30,6 +30,7 @@
         border-radius: 8px;
 
         position: relative;
+        margin-left: auto;
 
         cursor: pointer;
         transition: 0.2s;

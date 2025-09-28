@@ -1,25 +1,32 @@
-import { set } from "local-storage";
 import callApi from "../../api/callAPI";
-import { login } from "../../api/services/user";
+import { recuperacaoSenha } from "../../api/services/user";
 import "./index.scss";
 
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
-import { generateFormData } from "../../util/form";
+import toast from "react-hot-toast";
+import { useLoadingBar } from "react-top-loading-bar";
 
 export default function RecuperarSenha() {
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
   const navigate = useNavigate();
 
-  async function submit(loginData) {
-    const r = await callApi(login, generateFormData(loginData));
+  const { start, complete } = useLoadingBar({
+    color: "#4EA2FF",
+    height: 2,
+  });
 
-    if (r?.token) {
-      set("token", r.token);
-      navigate("/");
+  async function submit(dados) {
+    const r = await callApi(recuperacaoSenha, dados);
+
+    if (r.success) {
+      start("continuous", 100);
+      setTimeout(() => toast.success("Email enviado!"), 500);
+      setTimeout(complete, 750);
+      setTimeout(() => navigate("/trocar-senha", { state: { email: dados.Email } }), 1000);
     }
   }
 
@@ -42,7 +49,7 @@ export default function RecuperarSenha() {
                 placeholder="usuario@email.com"
               />
             </div>
-            <input className="btn-enter" type="submit" value="Enviar código de recuperação" />
+            <input disabled={isSubmitting} className="btn-enter" type="submit" value="Enviar código de recuperação" />
           </form>
         </div>
       </div>
