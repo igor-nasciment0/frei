@@ -23,10 +23,8 @@ export default function RecuperarSenha() {
     const r = await callApi(recuperacaoSenha, dados);
 
     if (r.success) {
-      start("continuous", 100);
       setTimeout(() => toast.success("Email enviado!"), 500);
-      setTimeout(complete, 750);
-      setTimeout(() => navigate("/trocar-senha", { state: { email: dados.Email } }), 1000);
+      setTimeout(() => navigate("/trocar-senha", { state: { email: dados.Email } }), 1500);
     }
   }
 

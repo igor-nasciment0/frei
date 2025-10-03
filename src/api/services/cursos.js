@@ -14,3 +14,8 @@ export async function getCursoImagem(idImagem) {
     const r = await api().get("/courses/" + idImagem + "/image", { responseType: "blob" });
     return r.data;
 }
+
+export async function getCursoHorarios(idCurso) {
+    const r = await api().get("/courses/" + idCurso + "/periods");
+    return r.data;
+}

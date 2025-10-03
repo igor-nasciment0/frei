@@ -5,6 +5,11 @@ export async function login(dadosLogin) {
     return r.data;
 }
 
+export async function atualizaUsuario(novosDados) {
+    const r = await api().put('/users/profile', novosDados);
+    return r;
+}
+
 export async function recuperacaoSenha(dados) {
     const r = await api().post('/users/forgot-password', dados);
     return r.data;

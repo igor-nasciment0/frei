@@ -4,6 +4,7 @@ import callApi from "../../../../api/callAPI";
 import { getInscricao } from "../../../../api/services/inscricao";
 import Carregamento from "../../../../components/carregamento";
 import { useNavigate } from "react-router";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 export default function Acompanhamento() {
 
@@ -26,10 +27,7 @@ export default function Acompanhamento() {
     })();
   }, [])
 
-  if (carregando)
-    return <Carregamento />
-
-  if (naoPossui)
+  if (naoPossui && !carregando)
     return (
       <section className="sem-inscricao">
         <h2>Acompanhamento</h2>
@@ -41,27 +39,32 @@ export default function Acompanhamento() {
 
   return (
     <section className="acompanhamento-page">
-      <h3 className='nav'>Frei Online {'>'} Acompanhamento</h3>
+      {
+        !carregando &&
+        <h3 className='nav'>Frei Online {'>'} Acompanhamento</h3>
+      }
 
       <section className="acompanhamento">
-        <h2>Acompanhamento</h2>
+        <h2>{carregando ? <Skeleton /> : "Acompanhamento"}</h2>
         <div className="opcoes">
-          <div>
-            <span className="icon-container">
-              <img src="/assets/images/icons/sacola.svg" alt="" />
-            </span>
-            <span className="option-label">PRIMEIRA OPÇÃO</span>
-            <h3>Técnico em Informática</h3>
-            <p>Manhã</p>
-          </div>
-          <div>
-            <span className="icon-container">
-              <img src="/assets/images/icons/sacola.svg" alt="" />
-            </span>
-            <span className="option-label">SEGUNDA OPÇÃO</span>
-            <h3>Técnico em Administração</h3>
-            <p>Tarde</p>
-          </div>
+          <SkeletonTheme baseColor="#e0e0e0" highlightColor="#ffffffff">
+            <div className="card-opcao">
+              <span className="icon-container">
+                <img src="/assets/images/icons/sacola.svg" alt="" />
+              </span>
+              <span className="option-label">{carregando ? <Skeleton /> : "Primeira Opção"}</span>
+              <h3>{carregando ? <Skeleton /> : dadosUsuario?.firstChoice.courseName}</h3>
+              <p>{carregando ? <Skeleton /> : dadosUsuario?.firstChoice.periodName}</p>
+            </div>
+            <div className="card-opcao">
+              <span className="icon-container">
+                <img src="/assets/images/icons/sacola.svg" alt="" />
+              </span>
+              <span className="option-label">{carregando ? <Skeleton /> : "Segunda Opção"}</span>
+              <h3>{carregando ? <Skeleton /> : dadosUsuario?.secondChoice.courseName}</h3>
+              <p>{carregando ? <Skeleton /> : dadosUsuario?.secondChoice.periodName}</p>
+            </div>
+          </SkeletonTheme>
         </div>
       </section>
 

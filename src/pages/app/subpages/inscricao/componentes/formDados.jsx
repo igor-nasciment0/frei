@@ -1,0 +1,591 @@
+import { Controller, useFormContext } from "react-hook-form";
+import { IMaskInput } from 'react-imask'; // 1. Importe de 'react-imask'
+import Input from "./input";
+import { Select, SelectItem } from "../../../../../components/select";
+import { comoConheceu, escolaridades, genero, parentesco } from "../selects";
+
+export function FormularioDadosPessoais({ avancar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Informações Pessoais</td></tr>
+        <tr>
+          <td className="label obrigatorio">Nome</td>
+          <Input name="name" type="text" placeholder="Informe o nome" {...register("name", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Telefone</td>
+          <Controller
+            name="phone"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={IMaskInput}
+                {...field}
+                name="phone"
+                placeholder="Informe o telefone"
+                mask="+55 (00) 00000-0000"
+                id="phone"
+              />
+            )}
+          />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Gênero</td>
+          <Controller
+            name="gender"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={Select}
+                {...field}
+                name="gender"
+                placeholder="Informe o gênero"
+              >
+                {genero.map(g =>
+                  <SelectItem key={g} value={g}>{g}</SelectItem>
+                )}
+              </Input>
+            )}
+          />
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr className="submit"><td>
+          <button type="button" onClick={() => avancar(["name", "phone", "gender"])}>Avançar</button></td></tr>
+      </tfoot>
+    </table>
+  );
+}
+
+export function FormularioEndereco({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Endereço</td></tr>
+        <tr>
+          <td className="label obrigatorio">CEP</td>
+          <Controller
+            name="address.cep"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={IMaskInput}
+                {...field}
+                name="address.cep"
+                placeholder="Informe o CEP"
+                mask="00000-000"
+                id="address.cep"
+              />
+            )}
+          />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Rua</td>
+          <Input name="address.street" type="text" placeholder="Informe a rua" {...register("address.street", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Bairro</td>
+          <Input name="address.neighborhood" type="text" placeholder="Informe o bairro" {...register("address.neighborhood", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Cidade</td>
+          <Input name="address.city" type="text" placeholder="Informe a cidade" {...register("address.city", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Estado</td>
+          <Controller
+            name="address.state"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="address.state"
+                placeholder="Informe o estado (UF)"
+                mask="aa"
+                id="address.state"
+                onChange={(event) => {
+                  field.onChange(event.target.value.toUpperCase());
+                }}
+              />
+            )}
+          />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Número</td>
+          <Input name="address.number" type="number" placeholder="Informe o número" {...register("address.number", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label">Complemento</td>
+          <Input name="address.complement" type="text" placeholder="Informe o complemento" {...register("address.complement")} />
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr className="submit"><td>
+          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button type="button" onClick={() => avancar([
+            "address.cep",
+            "address.street",
+            "address.neighborhood",
+            "address.city",
+            "address.state",
+            "address.number",
+            "address.complement"
+          ])}>
+            Avançar
+          </button>
+        </td></tr>
+      </tfoot>
+    </table>
+  );
+}
+
+export function FormularioNascimento({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Informações de Nascimento</td></tr>
+        <tr>
+          <td className="label obrigatorio">Data</td>
+          <Input name="birthInfo.date" type="date" placeholder="Informe a data de nascimento" {...register("birthInfo.date", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Cidade</td>
+          <Input name="birthInfo.city" type="text" placeholder="Informe a cidade" {...register("birthInfo.city", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Estado</td>
+          <Controller
+            name="birthInfo.state"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="birthInfo.state"
+                placeholder="Informe o estado (UF)"
+                mask="aa"
+                id="birthInfo.state"
+                onChange={(event) => {
+                  field.onChange(event.target.value.toUpperCase());
+                }}
+              />
+            )}
+          />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">País</td>
+          <Input name="birthInfo.country" type="text" placeholder="Informe o país" {...register("birthInfo.country", { required: "Campo obrigatório" })} />
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr className="submit"><td>
+          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button type="button" onClick={() => avancar([
+            "birthInfo.date",
+            "birthInfo.city",
+            "birthInfo.state",
+            "birthInfo.country"
+          ])}>
+            Avançar
+          </button>
+        </td></tr>
+      </tfoot>
+    </table>
+  );
+}
+
+export function FormularioRG({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Documento de Identidade (RG)</td></tr>
+        <tr>
+          <td className="label obrigatorio">Número</td>
+
+          <Controller
+            name="rgInfo.number"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="rgInfo.number"
+                placeholder="Informe o número do RG"
+                mask="00.000.000-0"
+                id="rgInfo.number"
+              />
+            )}
+          />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Data de emissão</td>
+          <Input name="rgInfo.issueDate" type="date" placeholder="Informe a data de emissão" {...register("rgInfo.issueDate", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Órgão emissor</td>
+          <Input name="rgInfo.issuingAuthority" type="text" placeholder="Informe o órgão emissor" {...register("rgInfo.issuingAuthority", { required: "Campo obrigatório" })} />
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr className="submit"><td>
+          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button type="button" onClick={() => avancar([
+            "rgInfo.number",
+            "rgInfo.issueDate",
+            "rgInfo.issuingAuthority"
+          ])}>
+            Avançar
+          </button>
+        </td></tr>
+      </tfoot>
+    </table>
+  );
+}
+
+export function FormularioResponsavelPrimario({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Responsável Primário</td></tr>
+        <tr><td className="label obrigatorio">Nome</td><Input name="primaryResponsible.name" type="text" placeholder="Informe o nome" {...register("primaryResponsible.name", { required: "Campo obrigatório" })} /></tr>
+        <tr><td className="label obrigatorio">E-mail</td><Input name="primaryResponsible.email" type="email" placeholder="Informe o e-mail" {...register("primaryResponsible.email", { required: "Campo obrigatório" })} /></tr>
+        <tr><td className="label obrigatorio">Telefone</td>
+
+          <Controller
+            name="primaryResponsible.phone"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="primaryResponsible.phone"
+                placeholder="Informe o telefone"
+                mask="+55 (00) 00000-0000"
+                id="primaryResponsible.phone"
+              />
+            )}
+          />
+
+        </tr>
+        <tr><td className="label obrigatorio">Telefone Secundário</td>
+
+          <Controller
+            name="primaryResponsible.phoneSecondary"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="primaryResponsible.phoneSecondary"
+                placeholder="Informe o telefone secundário"
+                mask="+55 (00) 00000-0000"
+                id="primaryResponsible.phoneSecondary"
+              />
+            )}
+          />
+
+        </tr>
+        <tr><td className="label obrigatorio">Parentesco</td>
+          <Controller
+            name="primaryResponsible.relationship"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={Select}
+                {...field}
+                name="primaryResponsible.relationship"
+                placeholder="Informe o parentesco"
+              >
+                {parentesco.map(p =>
+                  <SelectItem key={p} value={p}>{p}</SelectItem>
+                )}
+              </Input>
+            )}
+          />
+        </tr>
+      </tbody>
+      <tfoot><tr className="submit"><td>
+        <button onClick={retornar} type="button" className="retornar">Retornar</button>
+        <button type="button" onClick={() => avancar([
+          "primaryResponsible.name",
+          "primaryResponsible.email",
+          "primaryResponsible.phone",
+          "primaryResponsible.phoneSecondary",
+          "primaryResponsible.relationship"
+        ])}>
+          Avançar
+        </button>
+      </td></tr></tfoot>
+    </table>
+  );
+}
+
+export function FormularioResponsavelSecundario({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Responsável Secundário</td></tr>
+        <tr><td className="label obrigatorio">Nome</td><Input name="secondaryResponsible.name" type="text" placeholder="Informe o nome" {...register("secondaryResponsible.name", { required: "Campo obrigatório" })} /></tr>
+        <tr><td className="label obrigatorio">E-mail</td><Input name="secondaryResponsible.email" type="email" placeholder="Informe o e-mail" {...register("secondaryResponsible.email", { required: "Campo obrigatório" })} /></tr>
+        <tr><td className="label obrigatorio">Telefone</td>
+
+          <Controller
+            name="secondaryResponsible.phone"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="secondaryResponsible.phone"
+                placeholder="Informe o telefone"
+                mask="+55 (00) 00000-0000"
+                id="secondaryResponsible.phone"
+              />
+            )}
+          />
+
+        </tr>
+        <tr><td className="label obrigatorio">Telefone Secundário</td>
+          <Controller
+            name="secondaryResponsible.phoneSecondary"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="secondaryResponsible.phoneSecondary"
+                placeholder="Informe o telefone"
+                mask="+55 (00) 00000-0000"
+                id="secondaryResponsible.phoneSecondary"
+              />
+            )}
+          />
+        </tr>
+        <tr><td className="label obrigatorio">Parentesco</td>
+          <Controller
+            name="secondaryResponsible.relationship"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={Select}
+                {...field}
+                name="secondaryResponsible.relationship"
+                placeholder="Informe o parentesco"
+              >
+                {parentesco.map(p =>
+                  <SelectItem key={p} value={p}>{p}</SelectItem>
+                )}
+              </Input>
+            )}
+          />
+        </tr>
+      </tbody>
+      <tfoot><tr className="submit"><td>
+        <button onClick={retornar} type="button" className="retornar">Retornar</button>
+        <button type="button" onClick={() => avancar([
+          "secondaryResponsible.name",
+          "secondaryResponsible.email",
+          "secondaryResponsible.phone",
+          "secondaryResponsible.phoneSecondary",
+          "secondaryResponsible.relationship"
+        ])}>
+          Avançar
+        </button>
+      </td></tr></tfoot>
+    </table>
+  );
+}
+
+export function FormularioEscolar({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Informações Escolares</td></tr>
+        <tr>
+          <td className="label obrigatorio">Escola atual</td>
+          <Input name="schoolInfo.currentSchool" type="text" placeholder="Informe a escola atual" {...register("schoolInfo.currentSchool", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Série atual</td>
+          <Controller
+            name="schoolInfo.currentGrade"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={Select}
+                {...field}
+                name="schoolInfo.currentGrade"
+                placeholder="Informe a série atual"
+              >
+                {escolaridades.map(e =>
+                  <SelectItem key={e} value={e}>{e}</SelectItem>
+                )}
+              </Input>
+            )}
+          />
+
+          <Input name="schoolInfo.currentGrade" type="text" placeholder="Informe o ano/série atual" {...register("schoolInfo.currentGrade", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Tipo de escola</td>
+          <Input name="schoolInfo.schoolType" type="text" placeholder="Informe o tipo de escola" {...register("schoolInfo.schoolType", { required: "Campo obrigatório" })} />
+        </tr>
+      </tbody>
+      <tfoot><tr className="submit"><td>
+        <button onClick={retornar} type="button" className="retornar">Retornar</button>
+        <button type="button" onClick={() => avancar([
+          "schoolInfo.currentSchool",
+          "schoolInfo.currentGrade",
+          "schoolInfo.schoolType"
+        ])}>
+          Avançar
+        </button>
+      </td></tr></tfoot>
+    </table>
+  );
+}
+
+export function FormularioInformacoesGerais({ avancar, retornar }) {
+  const { register, control } = useFormContext();
+
+  return (
+    <table className="tabela-form">
+      <tbody>
+        <tr className="group-label"><td colSpan={2}>Informações Gerais</td></tr>
+        <tr>
+          <td className="label obrigatorio">Como conheceu o Instituto?</td>
+
+          <Controller
+            name="generalInfo.howDidYouKnow"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={Select}
+                {...field}
+                name="generalInfo.howDidYouKnow"
+                placeholder="Informe como conheceu"
+              >
+                {comoConheceu.map(c =>
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                )}
+              </Input>
+            )}
+          />
+
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Renda da família</td>
+
+          <td> {/* Envolvendo o Controller em uma <td> */}
+            <Controller
+              name="generalInfo.income"
+              control={control}
+              rules={{ required: "Campo obrigatório" }}
+              render={({ field }) => (
+                // ✅ USANDO O IMaskInput DIRETAMENTE AQUI
+                <IMaskInput
+                  // Passe o value explicitamente para garantir que seja uma string
+                  value={String(field.value ?? '')}
+                  // O onAccept é a forma mais segura de atualizar o RHF com o valor sem máscara
+                  onAccept={(value) => field.onChange(value)}
+                  unmask={true}
+                  mask={{
+                    mask: Number,
+                    scale: 2,
+                    thousandsSeparator: '.',
+                    padFractionalZeros: true,
+                    radix: ',',
+                    prefix: 'R$ '
+                  }}
+                  placeholder="R$ 1.234,56"
+                  // O ref do field é importante para o RHF focar no campo se houver erro
+                  ref={field.ref}
+                />
+              )}
+            />
+          </td>
+
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Pessoas em casa</td>
+          <Input name="generalInfo.peopleAtHome" type="number" placeholder="Informe o número de pessoas em casa" {...register("generalInfo.peopleAtHome", { required: "Campo obrigatório" })} />
+        </tr>
+        <tr>
+          <td className="label obrigatorio">Pessoas trabalhando</td>
+          <Input name="generalInfo.peopleWorking" type="number" placeholder="Informe o número de pessoas trabalhando" {...register("generalInfo.peopleWorking", { required: "Campo obrigatório" })} />
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr className="submit"><td>
+          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button type="button" onClick={() => avancar([
+            "generalInfo.howDidYouKnow",
+            "generalInfo.income",
+            "generalInfo.peopleAtHome",
+            "generalInfo.peopleWorking"
+          ])}>
+            Avançar
+          </button>
+        </td></tr>
+      </tfoot>
+    </table>
+  );
+}

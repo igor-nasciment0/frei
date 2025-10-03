@@ -2,7 +2,7 @@ import * as ReactSelect from '@radix-ui/react-select';
 
 import './index.scss';
 
-export function Select({ defaultValue, value, disabled, onChange, onSelect, children, dropIcon, className, placeholder }) {
+export function Select({ defaultValue, value, disabled, onChange, onSelect, children, dropIcon="/assets/images/icons/angulo.svg", className, placeholder }) {
 
   function handleChange(value) {
     if (!onSelect) {

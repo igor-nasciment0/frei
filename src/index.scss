@@ -23,6 +23,18 @@ input {
     min-width: 0;
 }
 
+input:-webkit-autofill {
+    animation-name: onAutoFillStart;
+    animation-fill-mode: both;
+}
+
+@keyframes onAutoFillStart {
+    from {
+    }
+    to {
+    }
+}
+
 @media screen and (max-width: 768px) {
     html {
         font-size: 14px;
