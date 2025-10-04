@@ -11,7 +11,7 @@ import { useLoadingBar } from "react-top-loading-bar";
 
 export default function Login() {
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ export default function Login() {
   });
 
   async function submit(loginData) {
-    const r = await callApi(login, generateFormData(loginData));
+    const r = await callApi(login, true, generateFormData(loginData));
 
     if (r?.token) {
       start("continuous", 0, 100);
@@ -57,11 +57,15 @@ export default function Login() {
               />
             </div>
 
-            <div className="forgot-password">
+            <div className="esqueci-senha">
               <Link to='/recuperar-senha'>Esqueci a senha</Link>
             </div>
 
-            <input className="btn-enter" type="submit" value="Entrar" />
+            <input disabled={isSubmitting} className="btn-enter" type="submit" value="Entrar" />
+
+            <span className="link-cadastro">
+              Não possui conta? <Link to='/cadastro'> Cadastre-se</Link>
+            </span>
           </form>
         </div>
       </div>

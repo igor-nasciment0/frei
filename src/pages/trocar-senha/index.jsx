@@ -1,5 +1,5 @@
 import callApi from "../../api/callAPI";
-import { recuperacaoSenha } from "../../api/services/user";
+import { recuperacaoSenha, trocaSenha } from "../../api/services/user";
 import "./index.scss";
 
 import { useForm } from 'react-hook-form';
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 export default function TrocarSenha() {
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
   const navigate = useNavigate();
 
@@ -22,12 +22,22 @@ export default function TrocarSenha() {
   }, [])
 
   async function submit(dados) {
-    if(dados.password !== dados.confirmPassword) {
+    if (dados.password !== dados.confirmPassword) {
       toast.error("As senhas não conferem")
       return;
     }
 
-    const r = await callApi(recuperacaoSenha, { ...dados, email: location.state.email });
+    const r = await callApi(trocaSenha, true, { ...dados, email: location.state.email });
+
+    if (!r.success) {
+      toast.error(r.message || "Não foi possível alterar a senha. Tente novamente mais tarde.");
+    }
+    else {
+      toast.success("Senha alterada com sucesso!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    }
   }
 
   return (
@@ -53,7 +63,7 @@ export default function TrocarSenha() {
             <div className="form-group">
               <label htmlFor="password">Senha</label>
               <input
-                {...register("password", { required: "Campo obrigatório" })}
+                {...register("newPassword", { required: "Campo obrigatório" })}
                 type="password"
               />
             </div>
@@ -64,7 +74,7 @@ export default function TrocarSenha() {
                 type="password"
               />
             </div>
-            <input className="btn-enter" type="submit" value="Alterar Senha" />
+            <input disabled={isSubmitting} className="btn-enter" type="submit" value="Alterar Senha" />
           </form>
         </div>
       </div>

@@ -3,9 +3,13 @@ import './index.scss';
 import useMediaQuery from '../../util/useMediaQuery';
 import { useEffect, useRef, useState } from 'react';
 import useClickOutside from '../../util/useClickOutside';
+import { is } from 'date-fns/locale/is';
 
 export default function BarraLateral() {
   const isMobile = useMediaQuery("screen and (max-width: 768px)");
+
+  if(isMobile === null)
+    return null;
 
   if (isMobile)
     return <BarraMobile />

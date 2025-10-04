@@ -64,3 +64,10 @@ export const escolaridades = [
   "Ensino Médio Completo",
   "Superior"
 ]
+
+export const tipoEscola = [
+  "Pública",
+  "Particular",
+  "Bolsista",
+  "Outro"
+]

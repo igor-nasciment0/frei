@@ -104,92 +104,7 @@
     }
 
     .proximos-passos {
-        .tabela-form {
-            max-width: 660px;
-
-            display: flex;
-            flex-direction: column;
-            background-color: #FFF;
-            color: #364356;
-
-            border-collapse: collapse;
-
-            border: 1px solid #ECECEC;
-            border-radius: 16px;
-            padding: 0.75rem 1rem;
-
-            tr {
-                display: flex;
-                width: 100%;
-            }
-
-            td {
-                &:nth-child(even) {
-                    width: 100%;
-                }
-
-                &.required span {
-                    color: #FF5252;
-                }
-
-                text-wrap: nowrap;
-                padding: 0.75rem 1rem;
-            }
-
-            tr:not(:last-child) {
-                border-bottom: 1px solid #E9E9E9;
-            }
-
-            .label {
-                font-weight: 500;
-                min-width: 240px;
-                font-size: 1rem;
-                line-height: 1.75rem;
-
-                &.obrigatorio::after {
-                    content: " *";
-                    color: #FF5252;
-                }
-            }
-
-            .input {
-                input {
-                    width: 100%;
-                    font-size: 1rem;
-                    line-height: 1.75rem;
-
-                    &::placeholder {
-                        color: #A0A0A0;
-                    }
-                }
-            }
-
-            .submit {
-                td {
-                    display: flex;
-                    justify-content: flex-end;
-                }
-
-                input {
-                    padding: 0.625rem 2.25rem;
-                    font-size: 0.875rem;
-                    line-height: 1.25rem;
-
-                    font-weight: 600;
-                    color: #FFF;
-                    border-radius: 8px;
-
-                    background-color: #4EA2FF;
-
-                    transition: 0.2s;
-                    cursor: pointer;
-
-                    &:hover {
-                        filter: brightness(1.1);
-                    }
-                }
-            }
-        }
+        max-width: 700px;
     }
 
     @media screen and (max-width: 768px) {
@@ -197,6 +112,10 @@
         .acompanhamento,
         .proximos-passos .tabela-form {
             max-width: unset;
+        }
+
+        .proximos-passos li {
+            flex-direction: column !important;
         }
     }
 

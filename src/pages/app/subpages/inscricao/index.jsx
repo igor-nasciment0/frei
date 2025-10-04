@@ -8,24 +8,45 @@ import { atualizaUsuario } from '../../../../api/services/user';
 import { FormProvider, useForm } from 'react-hook-form';
 import padroes from './padroes';
 import toast from 'react-hot-toast';
+import { get, set } from 'local-storage';
+import { mergeObjects, testState } from '../../../../util/general';
 
 const formularios = [FormularioDadosPessoais, FormularioEndereco, FormularioNascimento, FormularioRG, FormularioResponsavelPrimario, FormularioResponsavelSecundario, FormularioEscolar, FormularioInformacoesGerais]
+const titulos = ["Informações Pessoais", "Endereço", "Informações de Nascimento", "Documento", "Responsável Primário", "Responsável Secundário", "Escolaridade", "Informações Gerais"]
 
 export default function Inscricao() {
 
   const [passoAtual, setPassoAtual] = useState(0);
-
   const [mostraFormCursos, setMostraFormCursos] = useState(false);
 
-  const methods = useForm({ defaultValues: padroes, mode: 'onChange' });
+
+  // SETUP DO FORMULÁRIO
+  const infoAtual = get("user");
+  delete infoAtual.id, infoAtual.age;
+
+  if (infoAtual.generalInfo.income !== undefined) infoAtual.generalInfo.income = String(infoAtual.generalInfo.income);
+  if (infoAtual.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = Number(infoAtual.generalInfo.peopleAtHome);
+  if (infoAtual.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = Number(infoAtual.generalInfo.peopleWorking);
+
+  const methods = useForm({ defaultValues: mergeObjects({ ...padroes }, infoAtual) });
 
   async function submitInfoUsuario(novosDados) {
-    const r = await callApi(atualizaUsuario, novosDados);
+    if (!testState(novosDados, padroes, ["complement"])) {
+      toast.error("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    novosDados.generalInfo.income = Number(novosDados.generalInfo.income.toString().replaceAll("R$ ", "").replaceAll(".", "").replaceAll(",", "."));
+
+    const r = await callApi(atualizaUsuario, true, novosDados);
 
     if (r.statusCode == 400 && r.Message) {
       toast.error(r.Message[0], { duration: 8000 })
     }
-    else setMostraFormCursos(true);
+    else {
+      set("user", r.data);
+      setMostraFormCursos(true);
+    }
   }
 
   const FormAtual = formularios[passoAtual];
@@ -63,22 +84,23 @@ export default function Inscricao() {
         }
 
         <ul className='passos'>{
-          [
-            "Informações Pessoais",
-            "Endereço",
-            "Informações de Nascimento",
-            "Documento",
-            "Responsável Primário",
-            "Responsável Secundário",
-            "Escolaridade",
-            "Informações Gerais"
-          ].map((nomePasso, i) => (
-            <li onClick={() => setPassoAtual(i)} key={i} className={i === passoAtual ? 'ativo' : i < passoAtual ? 'completo' : ''}>
-              <p>{nomePasso}</p>
+          titulos.map((nomePasso, i) => (
+            <li onClick={() => setPassoAtual(i)} key={i} className={(i === passoAtual && !mostraFormCursos) ? 'ativo' : ((i < passoAtual && !mostraFormCursos) ? 'completo' : '')}>
+              <p className={!mostraFormCursos ? 'selecionavel' : ''}>{nomePasso}</p>
             </li>
           ))
         }
           <li className={mostraFormCursos ? "ativo" : ""}>Escolha do Curso</li>
+        </ul>
+
+        <ul className='passos-mobile'>{
+          titulos.map((_, i) => (
+            <li onClick={() => setPassoAtual(i)} key={i} className={(i <= passoAtual && !mostraFormCursos) ? 'passado' : ""}>
+              <span>{i + 1}</span>
+            </li>
+          ))
+        }
+          <li className={mostraFormCursos ? "passado" : ""}>*</li>
         </ul>
       </section>
 

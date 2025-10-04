@@ -34,7 +34,7 @@ export function Select({ defaultValue, value, disabled, onChange, onSelect, chil
           </ReactSelect.Icon>
         </ReactSelect.Trigger>
 
-        <ReactSelect.Content position='popper' className="select-content">
+        <ReactSelect.Content className="select-content">
           <ReactSelect.Viewport className="select-viewport">
             {children}
           </ReactSelect.Viewport>

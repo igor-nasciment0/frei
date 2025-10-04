@@ -43,17 +43,31 @@ export default function Cursos() {
 function CardCurso({ infoCurso }) {
 
   const [imagemURL, setImagemURL] = useState();
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
 
   useEffect(() => {
-    (async () => {
-      setImagemURL(
-        URL.createObjectURL(await callApi(getCursoImagem, infoCurso?.imageId))
-      )
-    })();
+    let currentUrl = '';
 
-    return () => URL.revokeObjectURL(imagemURL);
-  }, [])
+    const fetchImage = async () => {
+      if (infoCurso.imageId) {
+        try {
+          const blob = await callApi(getCursoImagem, false, infoCurso.imageId);
+          currentUrl = URL.createObjectURL(blob);
+          setImagemURL(currentUrl);
+        } catch (error) {
+          console.error("Erro ao buscar a imagem do curso:", error);
+        }
+      }
+    };
+
+    fetchImage();
+
+    return () => {
+      if (currentUrl) {
+        URL.revokeObjectURL(currentUrl);
+      }
+    };
+  }, [infoCurso.imageId]);
 
   return (
     <div className="card">

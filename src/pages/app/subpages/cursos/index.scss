@@ -1,5 +1,6 @@
 .cursos {
     max-width: 1000px;
+    container-type: inline-size;
 
     .titulo-pagina {
         font-size: 1.5rem;
@@ -11,6 +12,10 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 3rem;
+
+        @container (max-width: 620px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     .card {

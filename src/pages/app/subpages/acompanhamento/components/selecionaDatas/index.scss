@@ -1,0 +1,79 @@
+.seletor-de-agendamento {
+
+    .rdp-root {
+        --rdp-selected-border: 2px solid #0000003d;
+    }
+
+    background-color: #FFF;
+    border: 1px solid #ECECEC;
+    border-radius: 6px;
+    padding: 1.5rem;
+
+    >h3 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+
+    button {
+        cursor: pointer;
+        transition: 0.2s;
+
+        &:hover {
+            background-color: rgba($color: #000, $alpha: 0.15);
+        }
+    }
+
+    .horarios {
+        margin-top: 1rem;
+
+        p {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        button {
+            margin: 0.4rem;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            cursor: pointer;
+
+            &.selecionado {
+                background-color: rgba($color: #000, $alpha: 0.15);
+            }
+        }
+    }
+
+    .confirmar {
+        display: flex;
+        justify-content: center;
+
+        button {
+            margin-top: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.70rem 3rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #FFF;
+            background-color: #4EA2FF;
+            border-radius: 8px;
+            line-height: 150%;
+
+            transition: 0.2s;
+            cursor: pointer;
+
+            &:hover {
+                filter: brightness(1.05);
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .rdp-root {
+            --rdp-day_button-height: 35px !important;
+            --rdp-day_button-width: 35px !important;
+        }
+    }
+}

@@ -1,5 +1,10 @@
 import api from "../base";
 
+export async function cadastro(dadosCadastro) {
+    const r = await api().post('/users', dadosCadastro);
+    return r.data;
+}
+
 export async function login(dadosLogin) {
     const r = await api().post('/users/login', dadosLogin);
     return r.data;

@@ -1,0 +1,135 @@
+#Modal__Overlay {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(3px);
+
+    opacity: 0;
+    animation: modal-fade-in 0.5s forwards;
+
+    @keyframes modal-fade-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+}
+
+.Modal___Closing {
+    opacity: 1;
+    animation: modal-fade-out 0.5s backwards !important;
+
+    @keyframes modal-fade-out {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+}
+
+.Overflow__Hidden {
+    overflow: hidden;
+}
+
+.standard-popup {
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    border-radius: 5px;
+    max-width: 400px;
+
+    background-color: var(--background-secondary);
+    color: #fff;
+    border: 1px solid #5f5f5f;
+
+    > h2 {
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 150%;
+        font-family: "Kufam";
+    }
+
+    > p {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 150%;
+        letter-spacing: -2%;
+        margin-bottom: 37px;
+
+        b {
+            color: #debd2f;
+        }
+    }
+
+    > .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 13px;
+        align-self: flex-end;
+
+        > button {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        > .btn-yes {
+            background-color: #b89b19;
+            padding: 10px 22px;
+            
+            &:hover:not(&:disabled) {
+                background-color: #c9ac2d;
+            }
+
+            &:disabled {
+                opacity: 0.7;
+                cursor: wait;
+            }
+        }
+
+        > .btn-no {
+            background-color: #6a6a6a;
+            padding: 10px 11px;
+
+            &:hover {
+                background-color: #7c7c7c !important;
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        > h2 {
+            font-size: 20px;
+        }
+
+        > p {
+            font-size: 14px;
+        }
+
+        > .buttons > button {
+            font-size: 12px;
+        }
+    }
+}

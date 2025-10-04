@@ -53,6 +53,8 @@
         background-color: #FFF;
         color: #364356;
 
+        container-type: inline-size;
+
         border-collapse: collapse;
 
         border: 1px solid #ECECEC;
@@ -108,6 +110,23 @@
                 small {
                     color: #888;
                     font-size: 0.875em;
+                }
+            }
+        }
+
+        @container (max-width: 570px) {
+            tr {
+                display: flex;
+                flex-direction: column;
+
+                &:not(:last-child) {
+                    margin-bottom: 0.8rem;
+                }
+
+                .label {
+                    font-size: 0.875rem;
+                    border-bottom: none !important;
+                    padding: 0;
                 }
             }
         }

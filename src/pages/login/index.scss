@@ -1,14 +1,14 @@
 .login-page {
     display: flex;
     height: 100vh;
+    background-color: #F9F9F9;
 
     .login-left {
         width: 100%;
         display: flex;
-        
+
         align-items: center;
         justify-content: center;
-        background-color: #F9F9F9;
         padding: 2rem;
     }
 
@@ -49,7 +49,7 @@
         }
     }
 
-    .forgot-password {
+    .esqueci-senha {
         text-align: right;
         margin-bottom: 1.5rem;
         margin-top: 0.5rem;
@@ -82,6 +82,30 @@
         }
     }
 
+    .link-cadastro {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+
+        color: #8A8A8A;
+        font-size: 1rem;
+        font-weight: 500;
+
+        a {
+            font-weight: 700;
+            color: #575757;
+            margin-left: 5px;
+
+            transition: 0.2s;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
     /* Lado direito */
     .login-right {
         width: 100%;
@@ -96,10 +120,13 @@
     }
 
     .logo-placeholder {
-        &, img {
+
+        &,
+        img {
             width: 100%;
             max-width: 85px;
         }
+
         margin-bottom: 1rem;
     }
 
@@ -114,5 +141,31 @@
         font-size: 2rem;
         font-weight: 600;
         color: #B9ECFF;
+    }
+
+    @media screen and (max-width: 1024px) {
+        flex-direction: column-reverse;
+        justify-content: center;
+
+        >.login-right {
+            background-color: unset;
+
+            .logo-placeholder {
+
+                &,
+                img {
+                    max-width: 60px;
+                }
+            }
+
+            .main-title,
+            .sub-title {
+                color: #2B3031;
+            }
+
+            img {
+                filter: brightness(0) saturate(100%) invert(15%) sepia(16%) saturate(286%) hue-rotate(142deg) brightness(93%) contrast(89%);
+            }
+        }
     }
 }

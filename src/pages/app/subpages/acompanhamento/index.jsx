@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import "./index.scss";
 import callApi from "../../../../api/callAPI";
 import { getInscricao } from "../../../../api/services/inscricao";
-import Carregamento from "../../../../components/carregamento";
 import { useNavigate } from "react-router";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import LinhaTempo from "./components/linhaTempo/linhaTempo";
+import ToasterContainer from "../../../../components/toaster_container";
 
 export default function Acompanhamento() {
 
@@ -39,6 +40,9 @@ export default function Acompanhamento() {
 
   return (
     <section className="acompanhamento-page">
+
+      <ToasterContainer />
+
       {
         !carregando &&
         <h3 className='nav'>Frei Online {'>'} Acompanhamento</h3>
@@ -69,49 +73,11 @@ export default function Acompanhamento() {
       </section>
 
       <section className="proximos-passos">
-        <h2>Próximos Passos</h2>
+        <h2>{carregando ? <Skeleton /> : "Próximos Passos"}</h2>
 
-        <form action="">
-          <table className="tabela-form">
-            <tbody>
-              <tr>
-                <td className="label obrigatorio">Carga Horária</td>
-                <td className="input">
-                  <input type="text" placeholder='Informe o nome' />
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Idade Mínima/Máxima</td>
-                <td className="input">
-                  <input type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Escolaridade mínima</td>
-                <td className="input">
-                  <input type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Contribuição mensal</td>
-                <td className="input">
-                  <input type="text" />
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Períodos</td>
-                <td className="input">
-                  <input type="text" />
-                </td>
-              </tr>
-            </tbody>
-            <tr className='submit'>
-              <td>
-                <input type="submit" value="Registrar" />
-              </td>
-            </tr>
-          </table>
-        </form>
+        {!carregando &&
+          <LinhaTempo />
+        }
       </section>
     </section>
   );

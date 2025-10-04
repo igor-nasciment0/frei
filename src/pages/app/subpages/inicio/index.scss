@@ -16,6 +16,12 @@
         text-transform: capitalize;
     }
 
+    .react-loading-skeleton {
+        max-width: 480px;
+        border-radius: 4px;
+        margin-bottom: 3.5rem;
+    }
+
     .anuncio {
         display: flex;
         flex-direction: column;
@@ -163,6 +169,7 @@
     }
 
     @media screen and (max-width: 768px) {
+
         .anuncio,
         .acoes .container,
         .perguntas {

@@ -19,7 +19,7 @@ export default function DetalhesCurso() {
 
   useEffect(() => {
     (async () => {
-      const r = await callApi(getCursoId, idCurso);
+      const r = await callApi(getCursoId, false, idCurso);
 
       if (r) {
         await sleep(1000);
@@ -52,7 +52,9 @@ export default function DetalhesCurso() {
       {loading ?
         <Skeleton height={250} style={{ marginBottom: '3rem' }} /> :
         <>
-          <iframe className="banner" src={corrigeURLVideo(infoCurso?.apresentationVideoUrl)} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+          {infoCurso?.apresentationVideoUrl &&
+            <iframe className="banner" src={corrigeURLVideo(infoCurso?.apresentationVideoUrl)} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+          }
         </>
       }
 
@@ -75,7 +77,7 @@ export default function DetalhesCurso() {
                 <td className="label">Carga Horária</td>
                 <td>
                   <div className="valor">
-                    <img src="/assets/images/icons/relogio.svg" alt="" /> {infoCurso?.workLoad}
+                    <img src="/assets/images/icons/relogio.svg" alt="" /> {infoCurso?.workload}
                   </div>
                 </td>
               </tr>

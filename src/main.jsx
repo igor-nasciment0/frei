@@ -15,26 +15,31 @@ import RecuperarSenha from './pages/recuperar-senha';
 import Acompanhamento from './pages/app/subpages/acompanhamento';
 import { LoadingBarContainer } from 'react-top-loading-bar';
 import TrocarSenha from './pages/trocar-senha';
+import Cadastro from './pages/cadastro';
+import ModalProvider from './components/modal';
 
 createRoot(document.getElementById('root')).render(
   <LoadingBarContainer>
-    <StrictMode>
+    <ModalProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path='' element={<App />}>
-            <Route index element={<Inicio />} />
-            <Route path='inscricao' element={<Inscricao />} />
-            <Route path='acompanhamento' element={<Acompanhamento />} />
-            <Route path='cursos' element={<Cursos />}>
-              <Route path=':id' element={<DetalhesCurso />} />
+        <StrictMode>
+          <Routes>
+            <Route path='' element={<App />}>
+              <Route index element={<Inicio />} />
+              <Route path='inscricao' element={<Inscricao />} />
+              <Route path='acompanhamento' element={<Acompanhamento />} />
+              <Route path='cursos' element={<Cursos />}>
+                <Route path=':id' element={<DetalhesCurso />} />
+              </Route>
+              <Route path='faq' element={<FAQ />} />
             </Route>
-            <Route path='faq' element={<FAQ />} />
-          </Route>
-          <Route path='/login' element={<Login />} />
-          <Route path='/recuperar-senha' element={<RecuperarSenha />} />
-          <Route path='/trocar-senha' element={<TrocarSenha />} />
-        </Routes>
+            <Route path='/cadastro' element={<Cadastro />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/recuperar-senha' element={<RecuperarSenha />} />
+            <Route path='/trocar-senha' element={<TrocarSenha />} />
+          </Routes>
+        </StrictMode>
       </BrowserRouter>
-    </StrictMode>
-  </LoadingBarContainer>
+    </ModalProvider>
+  </LoadingBarContainer >
 )

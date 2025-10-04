@@ -20,7 +20,7 @@ export default function RecuperarSenha() {
   });
 
   async function submit(dados) {
-    const r = await callApi(recuperacaoSenha, dados);
+    const r = await callApi(recuperacaoSenha, true, dados);
 
     if (r.success) {
       setTimeout(() => toast.success("Email enviado!"), 500);

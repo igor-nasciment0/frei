@@ -1,18 +1,18 @@
-.recuperar-senha {
+.cadastro-page {
     display: flex;
     height: 100vh;
     background-color: #F9F9F9;
 
-    .recuperar-left {
+    .cadastro-left {
         width: 100%;
         display: flex;
-        flex-direction: column;
+
         align-items: center;
         justify-content: center;
         padding: 2rem;
     }
 
-    .recuperar-card {
+    .cadastro-card {
         width: 100%;
         max-width: 660px;
 
@@ -21,18 +21,15 @@
         padding: 1rem;
         padding-top: 0.75rem;
         border: 1px #ECECEC solid;
+    }
 
-        >a {
-            display: inline-block;
-            margin-bottom: 0.75rem;
+    .row {
+        display: flex;
+        gap: 0.5rem;
+        width: 100%;
 
-            font-size: 1rem;
-            color: #4EA2FF;
-            text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
+        >.form-group {
+            width: 100%;
         }
     }
 
@@ -53,6 +50,7 @@
             padding: 0.5rem 1rem;
             font-size: 1rem;
             outline: none;
+            background-color: #FFF;
 
             transition: 0.2s;
 
@@ -63,7 +61,6 @@
     }
 
     .btn-enter {
-        margin-top: 1rem;
         width: 100%;
         border: none;
         border-radius: 8px;
@@ -80,8 +77,32 @@
         }
     }
 
+    .link-login {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+
+        color: #8A8A8A;
+        font-size: 1rem;
+        font-weight: 500;
+
+        a {
+            font-weight: 700;
+            color: #575757;
+            margin-left: 5px;
+
+            transition: 0.2s;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
     /* Lado direito */
-    .recuperar-right {
+    .cadastro-right {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -121,13 +142,11 @@
         flex-direction: column-reverse;
         justify-content: center;
 
-        >.recuperar-right {
+        >.cadastro-right {
             background-color: unset;
 
             .logo-placeholder {
-
-                &,
-                img {
+                &,img {
                     max-width: 60px;
                 }
             }
@@ -140,6 +159,12 @@
             img {
                 filter: brightness(0) saturate(100%) invert(15%) sepia(16%) saturate(286%) hue-rotate(142deg) brightness(93%) contrast(89%);
             }
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .row {
+            flex-direction: column;
         }
     }
 }

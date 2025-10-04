@@ -31,12 +31,12 @@ export default function FormularioCursos() {
 
       const minhaInscricao = (await callApi(getInscricao))?.data;
 
-      if (minhaInscricao) {
+      if (minhaInscricao.firstChoice) {
         const idOpcao1 = cursos.find(curso => curso.code == minhaInscricao.firstChoice.courseCode).id;
         const idOpcao2 = cursos.find(curso => curso.code == minhaInscricao.secondChoice.courseCode).id;
 
-        setOpcoesHorario1(await callApi(getCursoHorarios, idOpcao1));
-        setOpcoesHorario2(await callApi(getCursoHorarios, idOpcao2));
+        setOpcoesHorario1(await callApi(getCursoHorarios, false, idOpcao1));
+        setOpcoesHorario2(await callApi(getCursoHorarios, false, idOpcao2));
 
         setTimeout(() => {
           setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
@@ -56,7 +56,7 @@ export default function FormularioCursos() {
 
     (async () => {
       if (primeiraOpcaoCurso) {
-        setOpcoesHorario1(await callApi(getCursoHorarios, primeiraOpcaoCurso?.id));
+        setOpcoesHorario1(await callApi(getCursoHorarios, false, primeiraOpcaoCurso?.id));
       }
     })();
   }, [primeiraOpcaoCurso])
@@ -67,7 +67,7 @@ export default function FormularioCursos() {
 
     (async () => {
       if (segundaOpcaoCurso) {
-        setOpcoesHorario2(await callApi(getCursoHorarios, segundaOpcaoCurso?.id));
+        setOpcoesHorario2(await callApi(getCursoHorarios, false, segundaOpcaoCurso?.id));
       }
     })();
   }, [segundaOpcaoCurso])
@@ -83,7 +83,7 @@ export default function FormularioCursos() {
   async function submit() {
     setCarregando(true);
 
-    const r = await callApi(criaInscricao, {
+    const r = await callApi(criaInscricao, true, {
       firstChoiceCourseCode: codigoPrimeiroCurso,
       firstChoicePeriodCode: codigoPrimeiroHorario,
       secondChoiceCourseCode: codigoSegundoCurso,

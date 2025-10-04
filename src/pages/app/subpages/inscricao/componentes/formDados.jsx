@@ -2,7 +2,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from 'react-imask'; // 1. Importe de 'react-imask'
 import Input from "./input";
 import { Select, SelectItem } from "../../../../../components/select";
-import { comoConheceu, escolaridades, genero, parentesco } from "../selects";
+import { comoConheceu, escolaridades, genero, parentesco, tipoEscola } from "../selects";
 
 export function FormularioDadosPessoais({ avancar }) {
   const { register, control } = useFormContext();
@@ -27,6 +27,7 @@ export function FormularioDadosPessoais({ avancar }) {
               <Input
                 as={IMaskInput}
                 {...field}
+                onAccept={(value) => field.onChange(value)}
                 name="phone"
                 placeholder="Informe o telefone"
                 mask="+55 (00) 00000-0000"
@@ -85,6 +86,7 @@ export function FormularioEndereco({ avancar, retornar }) {
               <Input
                 as={IMaskInput}
                 {...field}
+                onAccept={(value) => field.onChange(value)}
                 name="address.cep"
                 placeholder="Informe o CEP"
                 mask="00000-000"
@@ -124,6 +126,7 @@ export function FormularioEndereco({ avancar, retornar }) {
                 onChange={(event) => {
                   field.onChange(event.target.value.toUpperCase());
                 }}
+                onAccept={(value) => field.onChange(value.toUpperCase())}
               />
             )}
           />
@@ -191,6 +194,7 @@ export function FormularioNascimento({ avancar, retornar }) {
                 onChange={(event) => {
                   field.onChange(event.target.value.toUpperCase());
                 }}
+                onAccept={(value) => field.onChange(value.toUpperCase())}
               />
             )}
           />
@@ -241,6 +245,7 @@ export function FormularioRG({ avancar, retornar }) {
                 placeholder="Informe o número do RG"
                 mask="00.000.000-0"
                 id="rgInfo.number"
+                onAccept={(value) => field.onChange(value)}
               />
             )}
           />
@@ -295,6 +300,7 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
                 placeholder="Informe o telefone"
                 mask="+55 (00) 00000-0000"
                 id="primaryResponsible.phone"
+                onAccept={(value) => field.onChange(value)}
               />
             )}
           />
@@ -316,6 +322,7 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
                 placeholder="Informe o telefone secundário"
                 mask="+55 (00) 00000-0000"
                 id="primaryResponsible.phoneSecondary"
+                onAccept={(value) => field.onChange(value)}
               />
             )}
           />
@@ -384,6 +391,7 @@ export function FormularioResponsavelSecundario({ avancar, retornar }) {
                 placeholder="Informe o telefone"
                 mask="+55 (00) 00000-0000"
                 id="secondaryResponsible.phone"
+                onAccept={(value) => field.onChange(value)}
               />
             )}
           />
@@ -404,6 +412,7 @@ export function FormularioResponsavelSecundario({ avancar, retornar }) {
                 placeholder="Informe o telefone"
                 mask="+55 (00) 00000-0000"
                 id="secondaryResponsible.phoneSecondary"
+                onAccept={(value) => field.onChange(value)}
               />
             )}
           />
@@ -454,7 +463,7 @@ export function FormularioEscolar({ avancar, retornar }) {
       <tbody>
         <tr className="group-label"><td colSpan={2}>Informações Escolares</td></tr>
         <tr>
-          <td className="label obrigatorio">Escola atual</td>
+          <td className="label obrigatorio">Escola atual / última</td>
           <Input name="schoolInfo.currentSchool" type="text" placeholder="Informe a escola atual" {...register("schoolInfo.currentSchool", { required: "Campo obrigatório" })} />
         </tr>
         <tr>
@@ -479,11 +488,28 @@ export function FormularioEscolar({ avancar, retornar }) {
             )}
           />
 
-          <Input name="schoolInfo.currentGrade" type="text" placeholder="Informe o ano/série atual" {...register("schoolInfo.currentGrade", { required: "Campo obrigatório" })} />
         </tr>
         <tr>
           <td className="label obrigatorio">Tipo de escola</td>
-          <Input name="schoolInfo.schoolType" type="text" placeholder="Informe o tipo de escola" {...register("schoolInfo.schoolType", { required: "Campo obrigatório" })} />
+          <Controller
+            name="schoolInfo.schoolType"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                as={Select}
+                {...field}
+                name="schoolInfo.schoolType"
+                placeholder="Informe o tipo de escola"
+              >
+                {tipoEscola.map(e =>
+                  <SelectItem key={e} value={e}>{e}</SelectItem>
+                )}
+              </Input>
+            )}
+          />
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
@@ -532,37 +558,33 @@ export function FormularioInformacoesGerais({ avancar, retornar }) {
 
         </tr>
         <tr>
-          <td className="label obrigatorio">Renda da família</td>
+          <td className="label obrigatorio">Renda mensal da família (R$)</td>
 
-          <td> {/* Envolvendo o Controller em uma <td> */}
-            <Controller
-              name="generalInfo.income"
-              control={control}
-              rules={{ required: "Campo obrigatório" }}
-              render={({ field }) => (
-                // ✅ USANDO O IMaskInput DIRETAMENTE AQUI
-                <IMaskInput
-                  // Passe o value explicitamente para garantir que seja uma string
-                  value={String(field.value ?? '')}
-                  // O onAccept é a forma mais segura de atualizar o RHF com o valor sem máscara
-                  onAccept={(value) => field.onChange(value)}
-                  unmask={true}
-                  mask={{
-                    mask: Number,
-                    scale: 2,
-                    thousandsSeparator: '.',
-                    padFractionalZeros: true,
-                    radix: ',',
-                    prefix: 'R$ '
-                  }}
-                  placeholder="R$ 1.234,56"
-                  // O ref do field é importante para o RHF focar no campo se houver erro
-                  ref={field.ref}
-                />
-              )}
-            />
-          </td>
+          <Controller
+            name="generalInfo.income"
+            control={control}
+            rules={{ required: "Campo obrigatório" }}
+            render={({ field }) => (
 
+              <Input
+                as={IMaskInput}
+                {...field}
+                value={String(field.value) || ''}
+                inputRef={field.ref}
+                mask={Number}
+                radix=","
+                scale={2} // número de casas decimais
+                thousandsSeparator="."
+                padFractionalZeros={true} // força duas casas decimais
+                normalizeZeros={true}
+                mapToRadix={["."]} // aceita ponto também como separador
+                prefix="R$ " // prefixo
+                placeholder="Informe a renda mensal"
+                onAccept={(value) => field.onChange(value)}
+              />
+
+            )}
+          />
         </tr>
         <tr>
           <td className="label obrigatorio">Pessoas em casa</td>

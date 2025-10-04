@@ -9,6 +9,7 @@
     .select-content {
         z-index: 2;
         max-height: var(--radix-select-content-available-height);
+        width: var(--radix-popper-anchor-width);
         background-color: #FFF;
     }
 
@@ -44,7 +45,7 @@
 
     .select-trigger {
         min-height: unset;
-        padding: 10px;
+        padding: 0.625rem;
         transition: 0.2s;
         border-radius: 6px;
 
@@ -53,7 +54,7 @@
         align-items: center;
 
         font-size: var(--text2-size);
-        gap: 10px;
+        gap: 0.625rem;
 
         text-align: left;
     }
@@ -96,6 +97,12 @@
         &.disabled {
             opacity: 0.7;
             cursor: default;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .select-viewport {
+            width: 100%;
         }
     }
 }

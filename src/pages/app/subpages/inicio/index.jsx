@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { getStatusVestibular } from '../../../../api/services/vestibular';
 import callApi from '../../../../api/callAPI';
 import { formatarData } from '../../../../util/string';
+import { getInscricao } from '../../../../api/services/inscricao';
+import Skeleton from 'react-loading-skeleton';
 
 export default function Inicio() {
 
@@ -13,10 +15,14 @@ export default function Inicio() {
   const navigate = useNavigate();
 
   const [statusVestibular, setStatusVestibular] = useState();
+  const [usuarioInscrito, setUsuarioInscrito] = useState();
 
   useEffect(() => {
     (async () => {
       setStatusVestibular(await callApi(getStatusVestibular))
+      const r = await callApi(getInscricao);
+      
+      if (r?.data?.firstChoice) setUsuarioInscrito(true);
     })()
   }, [])
 
@@ -27,7 +33,7 @@ export default function Inicio() {
       <h1>Olá! Seja bem-vindo,</h1>
       <h2>{user?.name}!</h2>
 
-      <Anuncio statusVestibular={statusVestibular}/>
+      <Anuncio statusVestibular={statusVestibular} usuarioInscrito={usuarioInscrito} />
 
       <div className='acoes'>
         <h3>Ações rápidas</h3>
@@ -41,7 +47,7 @@ export default function Inicio() {
             <img src="/assets/images/icons/doc.svg" alt="" />
             <p>Conhecer cursos</p>
           </div>
-          <div onClick={() => navigate("/")}>
+          <div onClick={() => window.open("mailto:secretaria@acaonsfatima.org.br")}>
             <img src="/assets/images/icons/doc.svg" alt="" />
             <p>Contato</p>
           </div>
@@ -64,26 +70,40 @@ export default function Inicio() {
   )
 }
 
-function Anuncio({ statusVestibular }) {
-  const navigate = useNavigate();
+function Anuncio({ statusVestibular, usuarioInscrito }) {
+
+  if(!statusVestibular)
+    return <Skeleton height={100} />  
 
   if (!statusVestibular?.isRegistrationOpen)
     return (
       <div className='anuncio'>
         <h3>As inscrições para o vestibular <br /> irão começar em {formatarData(statusVestibular?.startDate)}</h3>
-        <button onClick={() => navigate("/inscricao")}>
-          Realizar a pré-inscrição
-          <img src="/assets/images/icons/seta.svg" alt="" />
-        </button>
+        <BotaoAnuncio usuarioInscrito={usuarioInscrito} />
       </div>
     )
   else return (
     <div className='anuncio'>
       <h3>As inscrições para o vestibular <br /> estarão abertas até {formatarData(statusVestibular?.endDate)}</h3>
+      <BotaoAnuncio usuarioInscrito={usuarioInscrito} />
+    </div>
+  )
+}
+
+function BotaoAnuncio({ usuarioInscrito }) {
+  const navigate = useNavigate();
+  
+  if (!usuarioInscrito)
+    return (
       <button onClick={() => navigate("/inscricao")}>
         Realizar a pré-inscrição
         <img src="/assets/images/icons/seta.svg" alt="" />
       </button>
-    </div>
-  )
+    )
+    else return (
+      <button onClick={() => navigate("/acompanhamento")}>
+        Acompanhar minha inscrição
+        <img src="/assets/images/icons/seta.svg" alt="" />
+      </button>
+    )
 }
