@@ -1,0 +1,15 @@
+
+services:
+  
+  nsf-vest-site:
+   container_name: nsf-vest-site
+   build: 
+     context: ./
+   networks:
+      - vestibular-net
+
+
+
+networks:
+  vestibular-net:
+    external: true
