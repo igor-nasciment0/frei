@@ -1,9 +1,8 @@
 import { get } from 'local-storage';
 import AcordeaoPerguntas from '../../../../components/acordeao_perguntas';
 import './index.scss';
-import { useNavigate } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
 import { useEffect, useState } from 'react';
-import { getStatusVestibular } from '../../../../api/services/vestibular';
 import callApi from '../../../../api/callAPI';
 import { formatarData } from '../../../../util/string';
 import { getInscricao } from '../../../../api/services/inscricao';
@@ -11,17 +10,16 @@ import Skeleton from 'react-loading-skeleton';
 
 export default function Inicio() {
 
+  const statusVestibular = useOutletContext();
+
   const user = get("user");
   const navigate = useNavigate();
 
-  const [statusVestibular, setStatusVestibular] = useState();
   const [usuarioInscrito, setUsuarioInscrito] = useState();
 
   useEffect(() => {
     (async () => {
-      setStatusVestibular(await callApi(getStatusVestibular))
       const r = await callApi(getInscricao);
-      
       if (r?.data?.firstChoice) setUsuarioInscrito(true);
     })()
   }, [])
@@ -72,8 +70,8 @@ export default function Inicio() {
 
 function Anuncio({ statusVestibular, usuarioInscrito }) {
 
-  if(!statusVestibular)
-    return <Skeleton height={100} />  
+  if (!statusVestibular)
+    return <Skeleton height={100} />
 
   if (!statusVestibular?.isRegistrationOpen)
     return (
@@ -92,7 +90,7 @@ function Anuncio({ statusVestibular, usuarioInscrito }) {
 
 function BotaoAnuncio({ usuarioInscrito }) {
   const navigate = useNavigate();
-  
+
   if (!usuarioInscrito)
     return (
       <button onClick={() => navigate("/inscricao")}>
@@ -100,10 +98,10 @@ function BotaoAnuncio({ usuarioInscrito }) {
         <img src="/assets/images/icons/seta.svg" alt="" />
       </button>
     )
-    else return (
-      <button onClick={() => navigate("/acompanhamento")}>
-        Acompanhar minha inscrição
-        <img src="/assets/images/icons/seta.svg" alt="" />
-      </button>
-    )
+  else return (
+    <button onClick={() => navigate("/acompanhamento")}>
+      Acompanhar minha inscrição
+      <img src="/assets/images/icons/seta.svg" alt="" />
+    </button>
+  )
 }

@@ -4,6 +4,7 @@ import { criaAgendamento, getDatasAgendamento } from "../../../../../../api/serv
 import { SeletorDeAgendamento } from "../selecionaDatas";
 import useModal from "../../../../../../util/useModal";
 import toast from "react-hot-toast";
+import { converterDataUTCParaLocalSemMudarDia } from "../../../../../../util/date";
 
 export function PreInscricao() {
   return (
@@ -13,7 +14,7 @@ export function PreInscricao() {
   );
 }
 
-export function Agendamento({ dataAgendada }) {
+export function Agendamento({ dataAgendada, alteravel }) {
 
   const [datasDisponiveis, setDatasDisponiveis] = useState([]);
 
@@ -40,7 +41,25 @@ export function Agendamento({ dataAgendada }) {
   if (dataAgendada !== null) {
     return (
       <div className="conteudo realizado">
-        <p>Agendamento realizado com sucesso para dia {new Date(dataAgendada?.appointmentDate).toLocaleDateString()}, às {dataAgendada?.endTime}</p>
+        <p>Agendamento realizado com sucesso para dia {converterDataUTCParaLocalSemMudarDia(dataAgendada?.appointmentDate)}, às {dataAgendada?.startTime}.</p>
+        {alteravel &&
+          <button onClick={() => openModal({
+            customUI: (onClose) =>
+              <SeletorDeAgendamento
+                datasDisponiveis={datasDisponiveis}
+                confirmar={agendar}
+              />
+          })}
+          >Alterar agendamento</button>
+        }
+      </div >
+    );
+  }
+
+  return (
+    <div className="conteudo">
+      <p>Realize o agendamento para concluir sua pré-inscrição.</p>
+      {alteravel &&
         <button onClick={() => openModal({
           customUI: (onClose) =>
             <SeletorDeAgendamento
@@ -48,23 +67,9 @@ export function Agendamento({ dataAgendada }) {
               confirmar={agendar}
             />
         })}
-        >Alterar agendamento</button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="conteudo">
-      <p>Realize o agendamento para concluir sua pré-inscrição.</p>
-      <button onClick={() => openModal({
-        customUI: (onClose) =>
-          <SeletorDeAgendamento
-            datasDisponiveis={datasDisponiveis}
-            confirmar={agendar}
-          />
-      })}
-      >Realizar agendamento
-      </button>
+        >Realizar agendamento
+        </button>
+      }
     </div>
   );
 }
@@ -72,13 +77,15 @@ export function Agendamento({ dataAgendada }) {
 export function ConcluirInscricao({ dataAgendada, realizado }) {
   if (realizado) {
     return (
-      <p>Inscrição concluída com sucesso.</p>
+      <div className="conteudo realizado">
+        <p>Inscrição concluída com sucesso.</p>
+      </div>
     );
   }
 
   return (
     <div className={"conteudo " + (realizado ? "realizado" : "")}>
-      <p>Para concluir sua inscrição, dirija-se presencialmente ao instituto na data agendada {new Date(dataAgendada?.appointmentDate).toLocaleDateString()}, levando os documentos abaixo:</p>
+      <p>Para concluir sua inscrição, dirija-se presencialmente ao instituto na data agendada{dataAgendada ? (" " + converterDataUTCParaLocalSemMudarDia(dataAgendada?.appointmentDate)) : ""}, levando os documentos abaixo:</p>
       <ul>
         <li>Valor da inscrição: R$ 50,00</li>
         <li>Cópia do RG, CPF</li>
@@ -91,14 +98,8 @@ export function ConcluirInscricao({ dataAgendada, realizado }) {
 }
 
 export function ProvaVestibular({ realizado }) {
-  if (realizado) {
-    return (
-      <p>A prova foi aplicada com sucesso aos presentes no dia marcado.</p>
-    );
-  }
-
   return (
-    <div className="conteudo">
+    <div className={"conteudo " + (realizado ? "realizado" : "")}>
       <p>A prova será realizada presencialmente no Instituto.</p>
       <p>Não se esqueça de levar:</p>
       <ul>
@@ -111,14 +112,14 @@ export function ProvaVestibular({ realizado }) {
   );
 }
 
-export function Resultado({ realizado, dataPublicacao }) {
+export function Resultado({ realizado, dataPublicacao, urlResultado, mostrarUrl }) {
   if (realizado) {
     return (
       <div className="conteudo realizado">
         <p>
           Resultado disponível! Acesse:
         </p>
-        <a href="https://www.acaonsfatima.org.br" target="_blank" rel="noopener noreferrer">www.acaonsfatima.org.br</a>
+        <a href={urlResultado} target="_blank" rel="noopener noreferrer">{urlResultado}</a>
       </div>
     );
   }
@@ -126,9 +127,12 @@ export function Resultado({ realizado, dataPublicacao }) {
   return (
     <div className="conteudo">
       <p>
-        O resultado ficará disponível em nosso site no dia {new Date(dataPublicacao).toLocaleDateString()}.
+        O resultado ficará disponível em nosso site no dia {converterDataUTCParaLocalSemMudarDia(dataPublicacao)}.
       </p>
-      <a href="https://www.acaonsfatima.org.br" target="_blank" rel="noopener noreferrer">www.acaonsfatima.org.br</a>
+      {
+        mostrarUrl &&
+        <a href={urlResultado} target="_blank" rel="noopener noreferrer">{urlResultado}</a>
+      }
     </div>
   );
 }

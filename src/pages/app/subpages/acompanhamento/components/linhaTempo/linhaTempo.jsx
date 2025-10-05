@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react';
 import { Agendamento, ConcluirInscricao, PreInscricao, ProvaVestibular, Resultado } from './dadosLinha';
 import callApi from '../../../../../../api/callAPI';
 import { getAgendamento } from '../../../../../../api/services/agendamento';
-import { getStatusVestibular } from '../../../../../../api/services/vestibular';
+import { useOutletContext } from 'react-router';
 
 export default function Timeline({ statusInscricao }) {
+  
+  const statusVestibular = useOutletContext();
+  
   const [agendamento, setAgendamento] = useState(null);
 
   useEffect(() => {
@@ -17,14 +20,6 @@ export default function Timeline({ statusInscricao }) {
     })();
   }, []);
 
-  const [statusVestibular, setStatusVestibular] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      setStatusVestibular(await callApi(getStatusVestibular))
-    })()
-  }, [])
-
   return (
     <div className="timeline-container">
       <TimelineItem titulo="Pré-inscrição">
@@ -32,7 +27,7 @@ export default function Timeline({ statusInscricao }) {
       </TimelineItem>
 
       <TimelineItem titulo="Agendamento">
-        <Agendamento dataAgendada={agendamento} />
+        <Agendamento dataAgendada={agendamento} alteravel={statusInscricao != 2} />
       </TimelineItem>
 
       <TimelineItem titulo="Concluir Inscrição">
@@ -40,11 +35,16 @@ export default function Timeline({ statusInscricao }) {
       </TimelineItem>
 
       <TimelineItem titulo="Vestibular">
-        <ProvaVestibular realizado={statusInscricao == 2} />
+        <ProvaVestibular realizado={new Date(statusVestibular?.resultPublicationDate) <= new Date()} />
       </TimelineItem>
 
       <TimelineItem titulo="Resultado">
-        <Resultado realizado={new Date(statusVestibular?.resultPublicationDate) >= new Date()} dataPublicacao={statusVestibular?.resultPublicationDate} />
+        <Resultado
+          realizado={new Date(statusVestibular?.resultPublicationDate) <= new Date()}
+          dataPublicacao={statusVestibular?.resultPublicationDate}
+          mostrarUrl={statusVestibular?.canShowResultUrl}
+          urlResultado={statusVestibular?.resultUrl}
+        />
       </TimelineItem>
     </div>
   );

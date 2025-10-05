@@ -12,7 +12,7 @@ export default {
     complement: ""
   },
   birthInfo: {
-    date: "2025-10-01T23:37:13.143Z",
+    date: "",
     city: "",
     state: "",
     country: ""
@@ -20,12 +20,12 @@ export default {
   generalInfo: {
     howDidYouKnow: "",
     income: "",
-    peopleAtHome: 0,
-    peopleWorking: 0
+    peopleAtHome: "",
+    peopleWorking: ""
   },
   rgInfo: {
     number: "",
-    issueDate: "2025-10-01T23:37:13.143Z",
+    issueDate: "",
     issuingAuthority: ""
   },
   primaryResponsible: {

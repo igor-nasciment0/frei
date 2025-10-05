@@ -464,7 +464,7 @@ export function FormularioEscolar({ avancar, retornar }) {
         <tr className="group-label"><td colSpan={2}>Informações Escolares</td></tr>
         <tr>
           <td className="label obrigatorio">Escola atual / última</td>
-          <Input name="schoolInfo.currentSchool" type="text" placeholder="Informe a escola atual" {...register("schoolInfo.currentSchool", { required: "Campo obrigatório" })} />
+          <Input name="schoolInfo.currentSchool" type="text" placeholder="Informe a escola atual / última" {...register("schoolInfo.currentSchool", { required: "Campo obrigatório" })} />
         </tr>
         <tr>
           <td className="label obrigatorio">Série atual</td>
@@ -569,7 +569,7 @@ export function FormularioInformacoesGerais({ avancar, retornar }) {
               <Input
                 as={IMaskInput}
                 {...field}
-                value={String(field.value) || ''}
+                defaultValue={field.value || ''}
                 inputRef={field.ref}
                 mask={Number}
                 radix=","
@@ -578,7 +578,7 @@ export function FormularioInformacoesGerais({ avancar, retornar }) {
                 padFractionalZeros={true} // força duas casas decimais
                 normalizeZeros={true}
                 mapToRadix={["."]} // aceita ponto também como separador
-                prefix="R$ " // prefixo
+                prefix="R$" // prefixo
                 placeholder="Informe a renda mensal"
                 onAccept={(value) => field.onChange(value)}
               />

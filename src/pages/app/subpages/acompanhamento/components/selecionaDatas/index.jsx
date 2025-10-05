@@ -3,15 +3,16 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { format, parse } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { agruparHorariosPorDia, formatarAgendamentoParaISO } from '../../../../../../util/date';
+import { gerarHorariosParaDiasDisponiveis, formatarAgendamentoParaISO } from '../../../../../../util/date';
 
 import './index.scss';
+import { Select, SelectItem } from '../../../../../../components/select';
 
 export function SeletorDeAgendamento({ datasDisponiveis, confirmar }) {
   const [diaSelecionado, setDiaSelecionado] = useState(null);
   const [horarioSelecionado, setHorarioSelecionado] = useState('');
 
-  const horariosAgrupados = useMemo(() => agruparHorariosPorDia(datasDisponiveis), [datasDisponiveis]);
+  const horariosAgrupados = useMemo(() => gerarHorariosParaDiasDisponiveis(datasDisponiveis), [datasDisponiveis]);
 
   const diasDisponiveis = Object.keys(horariosAgrupados).map(diaStr => parse(diaStr, 'yyyy-MM-dd', new Date()));
 
@@ -29,7 +30,7 @@ export function SeletorDeAgendamento({ datasDisponiveis, confirmar }) {
   const modifiers = {
     disponivel: diasDisponiveis,
   };
-  
+
   const modifiersStyles = {
     disponivel: {
       color: '#007bff',
@@ -47,29 +48,51 @@ export function SeletorDeAgendamento({ datasDisponiveis, confirmar }) {
         locale={ptBR}
         modifiers={modifiers}
         modifiersStyles={modifiersStyles}
-        disabled={(date) => !diasDisponiveis.some(availableDate => 
+        disabled={(date) => !diasDisponiveis.some(availableDate =>
           format(availableDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
         )}
         fromDate={new Date()} // Substitui hidden before
         className="responsive-daypicker" // Classe para estilos mobile
       />
 
-      {diaSelecionado && (
-        <div className='horarios'>
-          <p>Horários disponíveis: </p>
-          <div>
-            {horariosDoDiaSelecionado.map(horario => (
-              <button
-                key={horario}
-                onClick={() => handleSelecaoHorario(horario)}
-                className={'botao-horario' + (horarioSelecionado === horario ? ' selecionado' : '')}
+      {diaSelecionado &&
+
+        (
+          <div className='horarios'>
+            <p>Selecione um horário para {format(diaSelecionado, 'dd/MM/yyyy')}: </p>
+            <div>
+              <Select
+                placeholder="Selecione um horário..."
+                dropIcon="/assets/images/icons/angulo.svg"
+                value={horarioSelecionado}
+                onChange={handleSelecaoHorario}
               >
-                {horario}
-              </button>
-            ))}
+                {horariosDoDiaSelecionado.map((horario, index) => (
+                  <SelectItem key={index} value={horario}>{horario}</SelectItem>
+                ))}
+              </Select>
+            </div>
           </div>
-        </div>
-      )}
+        )
+
+        // (
+        //   <div className='horarios'>
+        //     <p>Horários disponíveis: </p>
+        //     <div>
+        //       {horariosDoDiaSelecionado.map(horario => (
+        //         <button
+        //           key={horario}
+        //           onClick={() => handleSelecaoHorario(horario)}
+        //           className={'botao-horario' + (horarioSelecionado === horario ? ' selecionado' : '')}
+        //         >
+        //           {horario}
+        //         </button>
+        //       ))}
+        //     </div>
+        //   </div>
+        // )
+
+      }
 
       {horarioSelecionado && (
         <div className='confirmar'>

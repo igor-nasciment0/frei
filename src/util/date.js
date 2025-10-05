@@ -1,15 +1,51 @@
-import { format, parseISO } from 'date-fns';
+import { addMinutes, format, parseISO } from "date-fns";
 
-export function agruparHorariosPorDia(datas) {
-  return datas.reduce((acc, dataString) => {
-    const dataObj = parseISO(dataString);
-    const diaKey = format(dataObj, 'yyyy-MM-dd'); // Chave: '2025-10-27'
-    const hora = format(dataObj, 'HH:mm');      // Valor: '10:00'
+/**
+ * Função auxiliar que gera um array de horários das 08:00 às 18:00,
+ * com incrementos de 30 minutos.
+ * @returns {string[]} Ex: ['08:00', '08:30', ..., '18:00']
+ */
+function gerarHorariosFixos() {
+  const horarios = [];
+  const horaInicial = 8;
+  const horaFinal = 18;
 
-    if (!acc[diaKey]) {
-      acc[diaKey] = [];
+  for (let hora = horaInicial; hora <= horaFinal; hora++) {
+    for (let minuto = 0; minuto < 60; minuto += 30) {
+      // Condição para não adicionar horários após as 18:00
+      if (hora === horaFinal && minuto > 0) {
+        continue;
+      }
+
+      // Formata a hora e o minuto para terem sempre dois dígitos (ex: 08, 09, 00, 30)
+      const horaFormatada = String(hora).padStart(2, '0');
+      const minutoFormatado = String(minuto).padStart(2, '0');
+      
+      horarios.push(`${horaFormatada}:${minutoFormatado}`);
     }
-    acc[diaKey].push(hora);
+  }
+  return horarios;
+}
+
+/**
+ * Função principal que recebe os dias disponíveis e gera os horários para cada um.
+ * @param {string[]} datas - Array de datestrings em UTC (ex: ['2025-10-27T00:00:00.000Z'])
+ * @returns {Object} - Objeto com os dias como chave e um array de horários como valor.
+ */
+export function gerarHorariosParaDiasDisponiveis(datas) {
+  // Gera a lista de horários apenas uma vez para otimização
+  const horariosDoDia = gerarHorariosFixos();
+
+  return datas.reduce((acc, dataString) => {
+    // PONTO CRÍTICO: Lidando com o UTC ('Z')
+    // A forma mais segura de garantir que você pegue o dia correto, ignorando o fuso horário,
+    // é extrair a data diretamente da string, antes que qualquer biblioteca a interprete.
+    // '2025-10-27T00:00:00.000Z' se torna '2025-10-27'.
+    const diaKey = dataString.substring(0, 10);
+
+    // Atribui a lista de horários gerada para o dia correspondente
+    acc[diaKey] = horariosDoDia;
+    
     return acc;
   }, {});
 }
@@ -49,4 +85,40 @@ export function formatarAgendamentoParaISO(dia, horario) {
     console.error("Erro ao formatar a data:", error);
     return null;
   }
+}
+
+export function converterDataUTCParaLocalSemMudarDia(dataStringUTC) {
+  if(!dataStringUTC)
+    return "";
+
+  // 1. Converte a string UTC para um objeto Date.
+  // O objeto Date ainda armazena o valor em UTC, mas métodos como `toString()` o mostrarão no fuso local.
+  const dataObj = parseISO(dataStringUTC);
+
+  // 2. Pega o "desvio" de fuso horário do navegador em minutos.
+  // Para São Paulo (UTC-3), o valor será 180.
+  const offset = dataObj.getTimezoneOffset();
+
+  // 3. Adiciona esses minutos de volta à data. Isso "engana" a conversão,
+  // efetivamente tratando a data como se fosse local desde o início.
+  const dataAjustada = addMinutes(dataObj, offset);
+
+  // 4. Agora, formata a data ajustada. Ela sairá com o dia correto.
+  return format(dataAjustada, 'dd/MM/yyyy');
+}
+
+/**
+ * Converte uma datestring UTC para o formato AAAA-MM-DD,
+ * garantindo que o dia não seja alterado pela conversão de fuso horário.
+ * @param {string} dataStringUTC - A data em formato ISO com 'Z'.
+ * @returns {string} - A data formatada como 'AAAA-MM-DD'.
+ */
+export function formatarParaInputDate(dataStringUTC) {
+  if (!dataStringUTC) return ''; // Retorna vazio se a data for nula
+
+  const dataObj = parseISO(dataStringUTC);
+  const offset = dataObj.getTimezoneOffset();
+  const dataAjustada = addMinutes(dataObj, offset);
+  
+  return format(dataAjustada, 'yyyy-MM-dd');
 }

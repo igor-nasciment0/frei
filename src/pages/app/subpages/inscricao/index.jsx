@@ -1,5 +1,5 @@
 import './index.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ToasterContainer from '../../../../components/toaster_container';
 import FormularioCursos from './componentes/formCursos';
 import { FormularioDadosPessoais, FormularioEndereco, FormularioEscolar, FormularioInformacoesGerais, FormularioNascimento, FormularioResponsavelPrimario, FormularioResponsavelSecundario, FormularioRG } from './componentes/formDados';
@@ -10,14 +10,25 @@ import padroes from './padroes';
 import toast from 'react-hot-toast';
 import { get, set } from 'local-storage';
 import { mergeObjects, testState } from '../../../../util/general';
+import { useOutletContext } from 'react-router';
+import { formatarParaInputDate } from '../../../../util/date';
 
 const formularios = [FormularioDadosPessoais, FormularioEndereco, FormularioNascimento, FormularioRG, FormularioResponsavelPrimario, FormularioResponsavelSecundario, FormularioEscolar, FormularioInformacoesGerais]
 const titulos = ["Informações Pessoais", "Endereço", "Informações de Nascimento", "Documento", "Responsável Primário", "Responsável Secundário", "Escolaridade", "Informações Gerais"]
 
 export default function Inscricao() {
 
+  const statusVestibular = useOutletContext();
+
   const [passoAtual, setPassoAtual] = useState(0);
   const [mostraFormCursos, setMostraFormCursos] = useState(false);
+
+  useEffect(() => {
+    if (statusVestibular.currentPhase >= 3) {
+      let form = document.getElementById('form-inscricao');
+      Array.from(form.elements).forEach(formElement => formElement.disabled = true);
+    }
+  }, [passoAtual])
 
 
   // SETUP DO FORMULÁRIO
@@ -25,8 +36,12 @@ export default function Inscricao() {
   delete infoAtual.id, infoAtual.age;
 
   if (infoAtual.generalInfo.income !== undefined) infoAtual.generalInfo.income = String(infoAtual.generalInfo.income);
-  if (infoAtual.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = Number(infoAtual.generalInfo.peopleAtHome);
-  if (infoAtual.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = Number(infoAtual.generalInfo.peopleWorking);
+  if (infoAtual.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = String(infoAtual.generalInfo.peopleAtHome);
+  if (infoAtual.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = String(infoAtual.generalInfo.peopleWorking);
+
+  if(infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual.birthInfo.date);
+  if(infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual.rgInfo.issueDate);
+
 
   const methods = useForm({ defaultValues: mergeObjects({ ...padroes }, infoAtual) });
 
@@ -59,7 +74,7 @@ export default function Inscricao() {
       <section className="conteudo">
         {!mostraFormCursos ?
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(submitInfoUsuario)}>
+            <form id='form-inscricao' onSubmit={methods.handleSubmit(submitInfoUsuario)}>
               <FormAtual
                 avancar={async (campos) => {
                   const valido = await methods.trigger(campos);

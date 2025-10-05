@@ -54,6 +54,11 @@ export default function FormularioCursos() {
     if (carregamentoInicial)
       return;
 
+    setCodigoPrimeiroHorario("");
+
+    if (primeiraOpcaoCurso == segundaOpcaoCurso)
+      setCodigoSegundoCurso("");
+
     (async () => {
       if (primeiraOpcaoCurso) {
         setOpcoesHorario1(await callApi(getCursoHorarios, false, primeiraOpcaoCurso?.id));
@@ -65,6 +70,7 @@ export default function FormularioCursos() {
     if (carregamentoInicial)
       return;
 
+    setCodigoSegundoHorario("");
     (async () => {
       if (segundaOpcaoCurso) {
         setOpcoesHorario2(await callApi(getCursoHorarios, false, segundaOpcaoCurso?.id));
@@ -81,13 +87,18 @@ export default function FormularioCursos() {
   const navigate = useNavigate();
 
   async function submit() {
+    if (!codigoPrimeiroCurso || !codigoPrimeiroHorario || !codigoSegundoCurso || !codigoSegundoHorario) {
+      toast.error("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
     setCarregando(true);
 
     const r = await callApi(criaInscricao, true, {
       firstChoiceCourseCode: codigoPrimeiroCurso,
       firstChoicePeriodCode: codigoPrimeiroHorario,
       secondChoiceCourseCode: codigoSegundoCurso,
-      secondChoicePeriodCode: codigoSegundoCurso
+      secondChoicePeriodCode: codigoSegundoHorario
     });
 
     if (r) {
@@ -101,84 +112,84 @@ export default function FormularioCursos() {
   }
 
   return (
-      <form>
-        <table className="tabela-form">
-          <tbody>
-            <tr>
-              <td className="label obrigatorio">Primeira Opção de Curso</td>
-              <td className="input">
+    <form>
+      <table className="tabela-form">
+        <tbody>
+          <tr>
+            <td className="label obrigatorio">Primeira Opção de Curso</td>
+            <td className="input">
 
-                <Select
-                  disabled={carregamentoInicial}
-                  placeholder="Selecione um curso..."
-                  dropIcon="/assets/images/icons/angulo.svg"
-                  value={codigoPrimeiroCurso}
-                  onChange={novoValor => setCodigoPrimeiroCurso(novoValor)}>
-                  {opcoesCurso.map((curso, index) =>
-                    <SelectItem key={'po' + index} value={String(curso.code)}>
-                      {curso.name}
-                    </SelectItem>
-                  )}
-                </Select>
+              <Select
+                disabled={carregamentoInicial}
+                placeholder="Selecione um curso..."
+                dropIcon="/assets/images/icons/angulo.svg"
+                value={codigoPrimeiroCurso}
+                onChange={novoValor => setCodigoPrimeiroCurso(novoValor)}>
+                {opcoesCurso.map((curso, index) =>
+                  <SelectItem key={'po' + index} value={String(curso.code)}>
+                    {curso.name}
+                  </SelectItem>
+                )}
+              </Select>
 
-              </td>
-            </tr>
-            <tr>
-              <td className="label obrigatorio">Horário para a Primeira Opção</td>
-              <td className="input">
+            </td>
+          </tr>
+          <tr>
+            <td className="label obrigatorio">Horário para a Primeira Opção</td>
+            <td className="input">
 
-                <Select
-                  disabled={!primeiraOpcaoCurso || carregamentoInicial}
-                  placeholder="Selecione um horário..."
-                  dropIcon="/assets/images/icons/angulo.svg"
-                  value={codigoPrimeiroHorario}
-                  onChange={novoValor => setCodigoPrimeiroHorario(novoValor)}>
-                  {opcoesHorario1.map((horario, index) =>
-                    <SelectItem key={'ph' + index} value={String(horario.code)}>{horario.name}</SelectItem>
-                  )}
-                </Select>
-              </td>
-            </tr>
-            <tr>
-              <td className="label obrigatorio">Segunda Opção de Curso</td>
-              <td className="input">
+              <Select
+                disabled={!primeiraOpcaoCurso || carregamentoInicial}
+                placeholder="Selecione um horário..."
+                dropIcon="/assets/images/icons/angulo.svg"
+                value={codigoPrimeiroHorario}
+                onChange={novoValor => setCodigoPrimeiroHorario(novoValor)}>
+                {opcoesHorario1.map((horario, index) =>
+                  <SelectItem key={'ph' + index} value={String(horario.code)}>{horario.name}</SelectItem>
+                )}
+              </Select>
+            </td>
+          </tr>
+          <tr>
+            <td className="label obrigatorio">Segunda Opção de Curso</td>
+            <td className="input">
 
-                <Select
-                  placeholder="Selecione um curso..."
-                  dropIcon="/assets/images/icons/angulo.svg"
-                  disabled={!primeiraOpcaoCurso || carregamentoInicial}
-                  value={codigoSegundoCurso}
-                  onChange={novoValor => setCodigoSegundoCurso(novoValor)}>
-                  {opcoesCurso.filter(curso => curso.code !== primeiraOpcaoCurso?.code).map((curso, index) =>
-                    <SelectItem key={'po' + index} value={String(curso.code)}>{curso.name}</SelectItem>
-                  )}
-                </Select>
-              </td>
-            </tr>
-            <tr>
-              <td className="label obrigatorio">Horário para a Segunda Opção</td>
-              <td className="input">
-                <Select
-                  disabled={!segundaOpcaoCurso || carregamentoInicial}
-                  placeholder="Selecione um horário..."
-                  dropIcon="/assets/images/icons/angulo.svg"
-                  value={codigoSegundoHorario}
-                  onChange={novoValor => setCodigoSegundoHorario(novoValor)}>
-                  {opcoesHorario2.map((horario, index) =>
-                    <SelectItem key={'ph' + index} value={String(horario.code)}>{horario.name}</SelectItem>
-                  )}
-                </Select>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr className='submit'>
-              <td>
-                <input disabled={carregando} onClick={submit} type="submit" value="Registrar" />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </form>
+              <Select
+                placeholder="Selecione um curso..."
+                dropIcon="/assets/images/icons/angulo.svg"
+                disabled={!primeiraOpcaoCurso || carregamentoInicial}
+                value={codigoSegundoCurso}
+                onChange={novoValor => setCodigoSegundoCurso(novoValor)}>
+                {opcoesCurso.filter(curso => curso.code !== primeiraOpcaoCurso?.code).map((curso, index) =>
+                  <SelectItem key={'so' + index} value={String(curso.code)}>{curso.name}</SelectItem>
+                )}
+              </Select>
+            </td>
+          </tr>
+          <tr>
+            <td className="label obrigatorio">Horário para a Segunda Opção</td>
+            <td className="input">
+              <Select
+                disabled={!segundaOpcaoCurso || carregamentoInicial}
+                placeholder="Selecione um horário..."
+                dropIcon="/assets/images/icons/angulo.svg"
+                value={codigoSegundoHorario}
+                onChange={novoValor => setCodigoSegundoHorario(novoValor)}>
+                {opcoesHorario2.map((horario, index) =>
+                  <SelectItem key={'sh' + index} value={String(horario.code)}>{horario.name}</SelectItem>
+                )}
+              </Select>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr className='submit'>
+            <td>
+              <button type='button' disabled={carregando || carregamentoInicial} onClick={submit}>Concluir Inscrição</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </form>
   )
 }

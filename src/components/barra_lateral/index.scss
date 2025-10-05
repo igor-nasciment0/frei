@@ -23,7 +23,8 @@
     }
 
     &:not(.aberta) {
-
+        transition: width 0.01;
+        transition-delay: 0.2s;
     }
 }
 

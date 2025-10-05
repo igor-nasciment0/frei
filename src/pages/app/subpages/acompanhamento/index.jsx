@@ -11,7 +11,7 @@ export default function Acompanhamento() {
 
   const navigate = useNavigate();
 
-  const [dadosUsuario, setDadosUsuario] = useState();
+  const [dadosInscricao, setDadosInscricao] = useState();
   const [naoPossui, setNaoPossui] = useState(false);
   const [carregando, setCarregando] = useState(true);
 
@@ -22,7 +22,7 @@ export default function Acompanhamento() {
       if (r.status == 404)
         setNaoPossui(true);
 
-      else setDadosUsuario(r.data);
+      else setDadosInscricao(r.data);
 
       setTimeout(() => setCarregando(false), 1000)
     })();
@@ -57,16 +57,16 @@ export default function Acompanhamento() {
                 <img src="/assets/images/icons/sacola.svg" alt="" />
               </span>
               <span className="option-label">{carregando ? <Skeleton /> : "Primeira Opção"}</span>
-              <h3>{carregando ? <Skeleton /> : dadosUsuario?.firstChoice.courseName}</h3>
-              <p>{carregando ? <Skeleton /> : dadosUsuario?.firstChoice.periodName}</p>
+              <h3>{carregando ? <Skeleton /> : dadosInscricao?.firstChoice.courseName}</h3>
+              <p>{carregando ? <Skeleton /> : dadosInscricao?.firstChoice.periodName}</p>
             </div>
             <div className="card-opcao">
               <span className="icon-container">
                 <img src="/assets/images/icons/sacola.svg" alt="" />
               </span>
               <span className="option-label">{carregando ? <Skeleton /> : "Segunda Opção"}</span>
-              <h3>{carregando ? <Skeleton /> : dadosUsuario?.secondChoice.courseName}</h3>
-              <p>{carregando ? <Skeleton /> : dadosUsuario?.secondChoice.periodName}</p>
+              <h3>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.courseName}</h3>
+              <p>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.periodName}</p>
             </div>
           </SkeletonTheme>
         </div>
@@ -76,7 +76,7 @@ export default function Acompanhamento() {
         <h2>{carregando ? <Skeleton /> : "Próximos Passos"}</h2>
 
         {!carregando &&
-          <LinhaTempo />
+          <LinhaTempo statusInscricao={dadosInscricao?.status} />
         }
       </section>
     </section>
