@@ -74,24 +74,6 @@ export function SeletorDeAgendamento({ datasDisponiveis, confirmar }) {
             </div>
           </div>
         )
-
-        // (
-        //   <div className='horarios'>
-        //     <p>Horários disponíveis: </p>
-        //     <div>
-        //       {horariosDoDiaSelecionado.map(horario => (
-        //         <button
-        //           key={horario}
-        //           onClick={() => handleSelecaoHorario(horario)}
-        //           className={'botao-horario' + (horarioSelecionado === horario ? ' selecionado' : '')}
-        //         >
-        //           {horario}
-        //         </button>
-        //       ))}
-        //     </div>
-        //   </div>
-        // )
-
       }
 
       {horarioSelecionado && (

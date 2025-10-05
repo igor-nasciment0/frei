@@ -79,13 +79,26 @@ export function formatarAgendamentoParaISO(dia, horario) {
     dataCombinada.setMilliseconds(0);
 
     // 5. Retorna a data no formato ISO 8601 (ex: "2025-10-27T14:00:00.000Z")
-    return dataCombinada.toISOString();
+    return toLocalISOString(dataCombinada);
 
   } catch (error) {
     console.error("Erro ao formatar a data:", error);
     return null;
   }
 }
+
+function toLocalISOString(date) {
+  // 1. Pega o desvio de fuso horário em minutos (ex: para UTC-3, retorna 180)
+  const offset = date.getTimezoneOffset();
+  
+  // 2. Cria uma nova data, subtraindo o desvio.
+  //    Isso "move" a data para que o UTC dela corresponda ao horário local original.
+  const adjustedDate = new Date(date.getTime() - (offset * 60 * 1000));
+  
+  // 3. Converte a data ajustada para ISO e remove a parte dos milissegundos e o 'Z'
+  return adjustedDate.toISOString().slice(0, 19);
+}
+
 
 export function converterDataUTCParaLocalSemMudarDia(dataStringUTC) {
   if(!dataStringUTC)
