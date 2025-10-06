@@ -9,6 +9,7 @@ import ToasterContainer from "../../components/toaster_container";
 import { useLoadingBar } from "react-top-loading-bar";
 import { IMaskInput } from "react-imask";
 import { generateFormData } from "../../util/form";
+import toast from "react-hot-toast";
 
 export default function Cadastro() {
 
@@ -29,6 +30,11 @@ export default function Cadastro() {
   });
 
   async function submit(dadosCadastro) {
+    if (dadosCadastro.password !== dadosCadastro.confirmPassword) {
+      toast.error("As senhas não conferem")
+      return;
+    }
+
     const r = await callApi(cadastro, true, dadosCadastro);
 
     if (r) {
@@ -112,6 +118,14 @@ export default function Cadastro() {
               <label htmlFor="password">Senha</label>
               <input
                 {...register("password", { required: "Campo obrigatório" })}
+                type="password"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirmar senha</label>
+              <input
+                {...register("confirmPassword", { required: "Campo obrigatório" })}
                 type="password"
               />
             </div>

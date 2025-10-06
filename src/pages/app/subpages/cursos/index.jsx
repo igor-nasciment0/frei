@@ -7,7 +7,11 @@ import Carregamento from "../../../../components/carregamento";
 
 export default function Cursos() {
 
-  const [cursos, setCursos] = useState();
+  const [cursos, setCursos] = useState([]);
+  const [filtro, setFiltro] = useState('');
+  const [cursosFiltrados, setCursosFiltrados] = useState([]);
+
+  const tiposCurso = [...new Set(cursos.map(c => c.type.trim()))];
 
   useEffect(() => {
     async function getData() {
@@ -16,6 +20,14 @@ export default function Cursos() {
 
     getData();
   }, [])
+
+  useEffect(() => {
+    if (filtro) {
+      setCursosFiltrados(cursos.filter(c => c.type === filtro));
+    } else {
+      setCursosFiltrados(cursos);
+    }
+  }, [filtro, cursos])
 
   const { id: idCurso } = useParams();
 
@@ -31,8 +43,20 @@ export default function Cursos() {
 
       <h2 className="titulo-pagina">Nossos Cursos</h2>
 
+      <div className="filtro">
+        {tiposCurso.map((tipo, index) => (
+          <button
+            key={index}
+            className={filtro === tipo ? 'ativo' : ''}
+            onClick={() => setFiltro(filtro === tipo.trim() ? '' : tipo)}
+          >
+            {tipo}
+          </button>
+        ))}
+      </div>
+
       <div className="grid">
-        {cursos.map((curso, index) => (
+        {cursosFiltrados.map((curso, index) => (
           <CardCurso infoCurso={curso} key={index} />
         ))}
       </div>
@@ -43,7 +67,7 @@ export default function Cursos() {
 function CardCurso({ infoCurso }) {
 
   const [imagemURL, setImagemURL] = useState();
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   useEffect(() => {
     let currentUrl = '';

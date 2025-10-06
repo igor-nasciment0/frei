@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './index.scss';
 import callApi from '../../api/callAPI';
 import { getFAQ } from '../../api/services/faq';
+import { formatarComoHTML } from '../../util/string';
 
 export default function AcordeaoPerguntas({ max }) {
   const [selecionada, setSelecionada] = useState(-1);
@@ -29,10 +30,10 @@ export default function AcordeaoPerguntas({ max }) {
           onClick={() => setSelecionada(index == selecionada ? -1 : index)}
         >
           <h4>
-            {`${p.order + 1}. ${p.question}`}
+            {`${p.order}. ${p.question}`}
             <img src="/assets/images/icons/angulo.svg" alt="" />
           </h4>
-          <p>{p.answer}</p>
+          <p>{formatarComoHTML(p.answer)}</p>
         </div>
       )}
     </div>

@@ -3,6 +3,10 @@ import { IMaskInput } from 'react-imask'; // 1. Importe de 'react-imask'
 import Input from "./input";
 import { Select, SelectItem } from "../../../../../components/select";
 import { comoConheceu, escolaridades, genero, parentesco, tipoEscola } from "../selects";
+import { getEnderecoCompleto } from "../../../../../api/services/enderecos";
+import { set } from "date-fns/set";
+import { useState } from "react";
+import callApi from "../../../../../api/callAPI";
 
 export function FormularioDadosPessoais({ avancar }) {
   const { register, control } = useFormContext();
@@ -68,7 +72,23 @@ export function FormularioDadosPessoais({ avancar }) {
 }
 
 export function FormularioEndereco({ avancar, retornar }) {
-  const { register, control } = useFormContext();
+  const { register, control, setValue } = useFormContext();
+
+  const [carregandoEndereco, setCarregandoEndereco] = useState(false);
+
+  async function preenchePorCep(CEP) {
+    setCarregandoEndereco(true);
+    const endereco = await callApi(getEnderecoCompleto, false, CEP);
+
+    if (endereco) {
+      setValue("address.street", endereco.logradouro || '');
+      setValue("address.neighborhood", endereco.bairro || '');
+      setValue("address.city", endereco.localidade || '');
+      setValue("address.state", endereco.uf || '');
+    }
+
+    setCarregandoEndereco(false);
+  }
 
   return (
     <table className="tabela-form">
@@ -91,21 +111,22 @@ export function FormularioEndereco({ avancar, retornar }) {
                 placeholder="Informe o CEP"
                 mask="00000-000"
                 id="address.cep"
+                onBlur={(e) => preenchePorCep(e.target.value)}
               />
             )}
           />
         </tr>
         <tr>
           <td className="label obrigatorio">Rua</td>
-          <Input name="address.street" type="text" placeholder="Informe a rua" {...register("address.street", { required: "Campo obrigatório" })} />
+          <Input name="address.street" type="text" placeholder="Informe a rua" {...register("address.street", { required: "Campo obrigatório" })} disabled={carregandoEndereco} />
         </tr>
         <tr>
           <td className="label obrigatorio">Bairro</td>
-          <Input name="address.neighborhood" type="text" placeholder="Informe o bairro" {...register("address.neighborhood", { required: "Campo obrigatório" })} />
+          <Input name="address.neighborhood" type="text" placeholder="Informe o bairro" {...register("address.neighborhood", { required: "Campo obrigatório" })} disabled={carregandoEndereco} />
         </tr>
         <tr>
           <td className="label obrigatorio">Cidade</td>
-          <Input name="address.city" type="text" placeholder="Informe a cidade" {...register("address.city", { required: "Campo obrigatório" })} />
+          <Input name="address.city" type="text" placeholder="Informe a cidade" {...register("address.city", { required: "Campo obrigatório" })} disabled={carregandoEndereco} />
         </tr>
         <tr>
           <td className="label obrigatorio">Estado</td>

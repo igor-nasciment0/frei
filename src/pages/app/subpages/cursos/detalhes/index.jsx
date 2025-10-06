@@ -47,7 +47,7 @@ export default function DetalhesCurso() {
         <h3 className='nav'>Frei Online {'>'} Cursos {'>'} {infoCurso?.name}</h3>
       }
 
-      <Link className="voltar" to=".." >{"<"} Voltar</Link>
+      <Link className="voltar" to=".." >Voltar</Link>
 
       {loading ?
         <Skeleton height={250} style={{ marginBottom: '3rem' }} /> :
@@ -59,6 +59,7 @@ export default function DetalhesCurso() {
       }
 
       <section className="secao">
+        <h2 className="nome-curso">{loading ? <Skeleton /> : infoCurso?.name}</h2>
         <h3 className="secao-titulo">{loading ? <Skeleton /> : "Visão Geral"}</h3>
         <div className="card">
           <p>
@@ -117,11 +118,13 @@ export default function DetalhesCurso() {
                 <td>
                   <div className="valor">
                     <img src="/assets/images/icons/alarme.svg" alt="" />
-                    {infoCurso?.availablePeriods.filter(periodo => periodo.isActive).map(periodo =>
-                      <span>
-                        {periodo.entryTime} a {periodo.exitTime} <small>{periodo.name}</small>
-                      </span>
-                    )}
+                    <div className="periodos">
+                      {infoCurso?.availablePeriods.filter(periodo => periodo.isActive).map(periodo =>
+                        <span>
+                          {periodo.entryTime} a {periodo.exitTime} <small>{periodo.name}</small>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </td>
               </tr>

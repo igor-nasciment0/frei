@@ -22,7 +22,7 @@ export default function TrocarSenha() {
   }, [])
 
   async function submit(dados) {
-    if (dados.password !== dados.confirmPassword) {
+    if (dados.newPassword !== dados.confirmPassword) {
       toast.error("As senhas não conferem")
       return;
     }
@@ -48,7 +48,7 @@ export default function TrocarSenha() {
       <div className="trocar-left">
 
         <div className="trocar-card">
-          <Link to='/login'>{'<'} Voltar</Link>
+          <Link to='/login'>Voltar</Link>
 
           <p>Um código de recuperação foi enviado para o seu e-mail. Por favor, verifique.</p>
 
@@ -61,7 +61,7 @@ export default function TrocarSenha() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Senha</label>
+              <label htmlFor="newPassword">Senha</label>
               <input
                 {...register("newPassword", { required: "Campo obrigatório" })}
                 type="password"

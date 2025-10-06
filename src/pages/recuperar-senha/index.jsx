@@ -36,7 +36,7 @@ export default function RecuperarSenha() {
       <div className="recuperar-left">
 
         <div className="recuperar-card">
-          <Link to='/login'>{'<'} Voltar</Link>
+          <Link to='/login'>Voltar</Link>
 
           <form onSubmit={handleSubmit(data => submit(data))}>
             <div className="form-group">

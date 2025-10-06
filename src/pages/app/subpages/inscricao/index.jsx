@@ -39,8 +39,8 @@ export default function Inscricao() {
   if (infoAtual.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = String(infoAtual.generalInfo.peopleAtHome);
   if (infoAtual.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = String(infoAtual.generalInfo.peopleWorking);
 
-  if(infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual.birthInfo.date);
-  if(infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual.rgInfo.issueDate);
+  if (infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual.birthInfo.date);
+  if (infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual.rgInfo.issueDate);
 
 
   const methods = useForm({ defaultValues: mergeObjects({ ...padroes }, infoAtual) });
@@ -68,6 +68,8 @@ export default function Inscricao() {
 
   return (
     <section className='inscricao'>
+      <h3 className='nav'>Frei Online {'>'} Inscrição</h3>
+
       <ToasterContainer />
       <h3>Minha Pré-Inscrição</h3>
 
