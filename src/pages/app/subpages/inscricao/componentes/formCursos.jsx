@@ -38,13 +38,15 @@ export default function FormularioCursos() {
         setOpcoesHorario1(await callApi(getCursoHorarios, false, idOpcao1));
         setOpcoesHorario2(await callApi(getCursoHorarios, false, idOpcao2));
 
-        setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
-        setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
-        setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
-        setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
+        setTimeout(() => {
+          setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
+          setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
+          setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
+          setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
+        }, 0);
       }
 
-      setTimeout(() => setCarregamentoInicial(false), 0);
+      setTimeout(() => setCarregamentoInicial(false), 100);
     })();
   }, [])
 
