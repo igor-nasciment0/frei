@@ -3,15 +3,18 @@ import callApi from "../../api/callAPI";
 import { login } from "../../api/services/user";
 import "./index.scss";
 
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
 import { generateFormData } from "../../util/form";
 import { useLoadingBar } from "react-top-loading-bar";
 
 export default function Login() {
-
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const navigate = useNavigate();
 
@@ -34,14 +37,17 @@ export default function Login() {
 
   return (
     <div className="login-page">
-
       <ToasterContainer />
 
       <div className="login-left">
         <div className="login-card">
-          <form onSubmit={handleSubmit(data => submit(data))}>
-            <div className="form-group">
+          <form onSubmit={handleSubmit(submit)}>
+            {/* E-mail */}
+            <div className={"form-group " + (errors.Email ? "erro" : "")}>
               <label htmlFor="email">E-mail</label>
+              {errors.Email && (
+                <span className="error-message">{errors.Email.message}</span>
+              )}
               <input
                 {...register("Email", { required: "Campo obrigatório" })}
                 type="email"
@@ -49,8 +55,12 @@ export default function Login() {
               />
             </div>
 
-            <div className="form-group">
+            {/* Senha */}
+            <div className={"form-group " + (errors.Password ? "erro" : "")}>
               <label htmlFor="password">Senha</label>
+              {errors.Password && (
+                <span className="error-message">{errors.Password.message}</span>
+              )}
               <input
                 {...register("Password", { required: "Campo obrigatório" })}
                 type="password"
@@ -58,13 +68,18 @@ export default function Login() {
             </div>
 
             <div className="esqueci-senha">
-              <Link to='/recuperar-senha'>Esqueci a senha</Link>
+              <Link to="/recuperar-senha">Esqueci a senha</Link>
             </div>
 
-            <input disabled={isSubmitting} className="btn-enter" type="submit" value="Entrar" />
+            <input
+              disabled={isSubmitting}
+              className="btn-enter"
+              type="submit"
+              value="Entrar"
+            />
 
             <span className="link-cadastro">
-              Não possui conta? <Link to='/cadastro'> Cadastre-se</Link>
+              Não possui conta? <Link to="/cadastro">Cadastre-se</Link>
             </span>
           </form>
         </div>
@@ -72,9 +87,14 @@ export default function Login() {
 
       <div className="login-right">
         <div className="logo-placeholder">
-          <img src="/assets/images/logo.svg" alt="Logo do Instituto Social Nossa Senhora de Fátima" />
+          <img
+            src="/assets/images/logo.svg"
+            alt="Logo do Instituto Social Nossa Senhora de Fátima"
+          />
         </div>
-        <h1 className="main-title">Ação Social Nossa Senhora de Fátima</h1>
+        <h1 className="main-title">
+          Ação Social Nossa Senhora de Fátima
+        </h1>
         <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>

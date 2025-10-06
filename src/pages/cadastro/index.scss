@@ -3,6 +3,25 @@
     height: 100vh;
     background-color: #F9F9F9;
 
+    .erro {
+        font-size: 0.7rem;
+        color: #FF5252;
+        margin-bottom: 2px;
+
+        .error-message {
+            padding-bottom: 0.3rem;
+        }
+
+        input {
+            background-color: #ff52524d !important;
+        }
+    }
+
+    input[type="submit"]:disabled {
+        opacity: 0.6;
+        cursor: wait;
+    }
+
     .cadastro-left {
         width: 100%;
         display: flex;
@@ -146,7 +165,9 @@
             background-color: unset;
 
             .logo-placeholder {
-                &,img {
+
+                &,
+                img {
                     max-width: 60px;
                 }
             }

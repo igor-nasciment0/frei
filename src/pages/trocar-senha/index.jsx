@@ -1,89 +1,129 @@
 import callApi from "../../api/callAPI";
-import { recuperacaoSenha, trocaSenha } from "../../api/services/user";
+import { trocaSenha } from "../../api/services/user";
 import "./index.scss";
 
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { useNavigate, Link, useLocation } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function TrocarSenha() {
-
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
-    if (!location.state?.email)
-      navigate("/login");
-  }, [])
+    if (!location.state?.email) navigate("/login");
+  }, [location, navigate]);
 
   async function submit(dados) {
     if (dados.newPassword !== dados.confirmPassword) {
-      toast.error("As senhas não conferem")
+      toast.error("As senhas não conferem");
       return;
     }
 
-    const r = await callApi(trocaSenha, true, { ...dados, email: location.state.email });
+    const r = await callApi(trocaSenha, true, {
+      ...dados,
+      email: location.state.email,
+    });
 
     if (!r.success) {
-      toast.error(r.message || "Não foi possível alterar a senha. Tente novamente mais tarde.");
-    }
-    else {
+      toast.error(
+        r.message ||
+          "Não foi possível alterar a senha. Tente novamente mais tarde."
+      );
+    } else {
       toast.success("Senha alterada com sucesso!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      setTimeout(() => navigate("/login"), 2000);
     }
   }
 
   return (
     <div className="trocar-senha">
-
       <ToasterContainer />
 
       <div className="trocar-left">
-
         <div className="trocar-card">
-          <Link to='/login'>Voltar</Link>
+          <Link to="/login">Voltar</Link>
 
-          <p>Um código de recuperação foi enviado para o seu e-mail. Por favor, verifique.</p>
+          <p>
+            Um código de recuperação foi enviado para o seu e-mail. Por favor,
+            verifique.
+          </p>
 
-          <form onSubmit={handleSubmit(data => submit(data))}>
-            <div className="form-group">
+          <form onSubmit={handleSubmit(submit)}>
+            {/* Código de Recuperação */}
+            <div className={"form-group " + (errors.code ? "erro" : "")}>
               <label htmlFor="code">Código de Recuperação</label>
+              {errors.code && (
+                <span className="error-message">{errors.code.message}</span>
+              )}
               <input
                 {...register("code", { required: "Campo obrigatório" })}
                 type="text"
               />
             </div>
-            <div className="form-group">
+
+            {/* Nova Senha */}
+            <div className={"form-group " + (errors.newPassword ? "erro" : "")}>
               <label htmlFor="newPassword">Senha</label>
+              {errors.newPassword && (
+                <span className="error-message">
+                  {errors.newPassword.message}
+                </span>
+              )}
               <input
                 {...register("newPassword", { required: "Campo obrigatório" })}
                 type="password"
               />
             </div>
-            <div className="form-group">
+
+            {/* Confirmar Senha */}
+            <div
+              className={
+                "form-group " + (errors.confirmPassword ? "erro" : "")
+              }
+            >
               <label htmlFor="confirmPassword">Confirmar Senha</label>
+              {errors.confirmPassword && (
+                <span className="error-message">
+                  {errors.confirmPassword.message}
+                </span>
+              )}
               <input
-                {...register("confirmPassword", { required: "Campo obrigatório" })}
+                {...register("confirmPassword", {
+                  required: "Campo obrigatório",
+                })}
                 type="password"
               />
             </div>
-            <input disabled={isSubmitting} className="btn-enter" type="submit" value="Alterar Senha" />
+
+            <input
+              disabled={isSubmitting}
+              className="btn-enter"
+              type="submit"
+              value="Alterar Senha"
+            />
           </form>
         </div>
       </div>
 
       <div className="trocar-right">
         <div className="logo-placeholder">
-          <img src="/assets/images/logo.svg" alt="Logo do Instituto Social Nossa Senhora de Fátima" />
+          <img
+            src="/assets/images/logo.svg"
+            alt="Logo do Instituto Social Nossa Senhora de Fátima"
+          />
         </div>
-        <h1 className="main-title">Ação Social Nossa Senhora de Fátima</h1>
+        <h1 className="main-title">
+          Ação Social Nossa Senhora de Fátima
+        </h1>
         <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>
