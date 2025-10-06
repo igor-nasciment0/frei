@@ -38,15 +38,13 @@ export default function FormularioCursos() {
         setOpcoesHorario1(await callApi(getCursoHorarios, false, idOpcao1));
         setOpcoesHorario2(await callApi(getCursoHorarios, false, idOpcao2));
 
-        setTimeout(() => {
-          setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
-          setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
-          setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
-          setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
-        }, 0)
+        setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
+        setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
+        setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
+        setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
       }
 
-      setCarregamentoInicial(false);
+      setTimeout(() => setCarregamentoInicial(false), 0);
     })();
   }, [])
 
@@ -135,7 +133,7 @@ export default function FormularioCursos() {
             </td>
           </tr>
           <tr>
-            <td className="label obrigatorio">Horário para a Primeira Opção</td>
+            <td className="label obrigatorio">Período Primeira Opção</td>
             <td className="input">
 
               <Select
@@ -167,7 +165,7 @@ export default function FormularioCursos() {
             </td>
           </tr>
           <tr>
-            <td className="label obrigatorio">Horário para a Segunda Opção</td>
+            <td className="label obrigatorio">Período Segunda Opção</td>
             <td className="input">
               <Select
                 disabled={!segundaOpcaoCurso || carregamentoInicial}

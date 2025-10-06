@@ -33,7 +33,9 @@ export default function AcordeaoPerguntas({ max }) {
             {`${p.order}. ${p.question}`}
             <img src="/assets/images/icons/angulo.svg" alt="" />
           </h4>
-          <p>{formatarComoHTML(p.answer)}</p>
+          <div>
+            <p>{formatarComoHTML(p.answer)}</p>
+          </div>
         </div>
       )}
     </div>
