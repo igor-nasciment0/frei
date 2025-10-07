@@ -120,9 +120,9 @@ export default function DetalhesCurso() {
                     <img src="/assets/images/icons/alarme.svg" alt="" />
                     <div className="periodos">
                       {infoCurso?.availablePeriods.filter(periodo => periodo.isActive).map(periodo =>
-                        <span>
-                          {periodo.entryTime} a {periodo.exitTime} <small>{periodo.name}</small>
-                        </span>
+                        formatarComoHTML(
+                          `${periodo.entryTime} a ${periodo.exitTime} <small> ${periodo.name}</small>`
+                        )
                       )}
                     </div>
                   </div>
@@ -133,14 +133,17 @@ export default function DetalhesCurso() {
         }
       </section>
 
-      <section className="secao">
-        <h3 className="secao-titulo">{loading ? <Skeleton /> : "Mercado de Trabalho"}</h3>
-        <div className="card">
-          <p>
-            {loading ? <Skeleton count={5} /> : formatarComoHTML(infoCurso?.jobMarket)}
-          </p>
-        </div>
-      </section>
-    </section>
+      {
+        (infoCurso?.jobMarket || loading) &&
+        <section className="secao">
+          <h3 className="secao-titulo">{loading ? <Skeleton /> : "Mercado de Trabalho"}</h3>
+          <div className="card">
+            <p>
+              {loading ? <Skeleton count={5} /> : formatarComoHTML(infoCurso?.jobMarket)}
+            </p>
+          </div>
+        </section>
+      }
+    </section >
   );
 }

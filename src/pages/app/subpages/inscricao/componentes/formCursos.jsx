@@ -46,37 +46,37 @@ export default function FormularioCursos() {
         }, 0);
       }
 
-      setTimeout(() => setCarregamentoInicial(false), 100);
+      setCarregamentoInicial(false);
+
     })();
   }, [])
 
-  useEffect(() => {
-    if (carregamentoInicial)
-      return;
-
+  async function handleMudaPrimeiraOpcaoCurso(novaOpcao) {
+    setCodigoPrimeiroCurso(novaOpcao);
     setCodigoPrimeiroHorario("");
 
-    if (primeiraOpcaoCurso == segundaOpcaoCurso)
+    if (novaOpcao == codigoSegundoCurso) {
       setCodigoSegundoCurso("");
+      setCodigoSegundoHorario("");
+    }
 
-    (async () => {
-      if (primeiraOpcaoCurso) {
-        setOpcoesHorario1(await callApi(getCursoHorarios, false, primeiraOpcaoCurso?.id));
-      }
-    })();
-  }, [primeiraOpcaoCurso])
+    const cursoId = (opcoesCurso?.find(opcao => opcao.code == novaOpcao))?.id;
 
-  useEffect(() => {
-    if (carregamentoInicial)
-      return;
+    if (cursoId) {
+      setOpcoesHorario1(await callApi(getCursoHorarios, false, cursoId));
+    }
+  }
 
+  async function handleMudaSegundaOpcaoCurso(novaOpcao) {
+    setCodigoSegundoCurso(novaOpcao);
     setCodigoSegundoHorario("");
-    (async () => {
-      if (segundaOpcaoCurso) {
-        setOpcoesHorario2(await callApi(getCursoHorarios, false, segundaOpcaoCurso?.id));
-      }
-    })();
-  }, [segundaOpcaoCurso])
+
+    const cursoId = (opcoesCurso?.find(opcao => opcao.code == novaOpcao))?.id;
+
+    if (cursoId) {
+      setOpcoesHorario2(await callApi(getCursoHorarios, false, cursoId));
+    }
+  }
 
   const { start, complete } = useLoadingBar({
     color: "#4EA2FF",
@@ -124,7 +124,7 @@ export default function FormularioCursos() {
                 placeholder="Selecione um curso..."
                 dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoPrimeiroCurso}
-                onChange={novoValor => setCodigoPrimeiroCurso(novoValor)}>
+                onChange={novoValor => handleMudaPrimeiraOpcaoCurso(novoValor)}>
                 {opcoesCurso.map((curso, index) =>
                   <SelectItem key={'po' + index} value={String(curso.code)}>
                     {curso.name}
@@ -159,7 +159,7 @@ export default function FormularioCursos() {
                 dropIcon="/assets/images/icons/angulo.svg"
                 disabled={!primeiraOpcaoCurso || carregamentoInicial}
                 value={codigoSegundoCurso}
-                onChange={novoValor => setCodigoSegundoCurso(novoValor)}>
+                onChange={novoValor => handleMudaSegundaOpcaoCurso(novoValor)}>
                 {opcoesCurso.filter(curso => curso.code !== primeiraOpcaoCurso?.code).map((curso, index) =>
                   <SelectItem key={'so' + index} value={String(curso.code)}>{curso.name}</SelectItem>
                 )}

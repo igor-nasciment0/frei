@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import callApi from "../../../../api/callAPI";
 import { getCursoImagem, getCursos } from "../../../../api/services/cursos";
 import Carregamento from "../../../../components/carregamento";
-import { sleep } from "../../../../util/general";
+import Skeleton from "react-loading-skeleton";
 
 export default function Cursos() {
 
@@ -12,15 +12,11 @@ export default function Cursos() {
   const [filtro, setFiltro] = useState('');
   const [cursosFiltrados, setCursosFiltrados] = useState([]);
 
-  const tiposCurso = [...new Set(cursos.map(c => c.type.trim()))];
+  const tiposCurso = [...new Set(cursos.map(c => c.type.trim())), "Inglês"];
 
   useEffect(() => {
     async function getData() {
       const r = (await callApi(getCursos));
-      for(const curso of r) {
-        curso.image = await fetchImage(curso.imageId);
-      }
-      await sleep(500);
       setCursos(r);
     }
 
@@ -28,8 +24,11 @@ export default function Cursos() {
   }, [])
 
   useEffect(() => {
+    if(filtro === "Inglês") 
+      return setCursosFiltrados(cursos.filter(c => c.name.toLowerCase().normalize().trim().includes('inglês')));
+
     if (filtro) {
-      setCursosFiltrados(cursos.filter(c => c.type === filtro));
+      setCursosFiltrados(cursos.filter(c => c.type.trim() === filtro.trim()));
     } else {
       setCursosFiltrados(cursos);
     }
@@ -63,7 +62,7 @@ export default function Cursos() {
 
       <div className="grid">
         {cursosFiltrados.map((curso, index) => (
-          <CardCurso infoCurso={curso} key={index} />
+          <CardCurso infoCurso={curso} key={'curso' + index} />
         ))}
       </div>
     </section>
@@ -74,12 +73,39 @@ function CardCurso({ infoCurso }) {
 
   const navigate = useNavigate();
 
+  const [imageUrl, setImageUrl] = useState('');
+
+  const fetchImage = async (imageId) => {
+    if (imageId) {
+      try {
+        const blob = await callApi(getCursoImagem, false, imageId);
+        let currentUrl = URL.createObjectURL(blob);
+        return currentUrl;
+      } catch (error) {
+        console.error("Erro ao buscar a imagem do curso:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const url = await fetchImage(infoCurso.imageId);
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        setImageUrl(url)
+      };
+    })()
+  }, [infoCurso.imageId]);
+
   return (
     <div className="card">
       <div
         className="card-imagem"
-        style={{ backgroundImage: `url(${infoCurso.image})` }}
-      ></div>
+        style={{ backgroundImage: `url(${imageUrl})` }}
+      >
+        {!imageUrl && <Skeleton height="100%" width="100%" />}
+      </div>
 
       <div className="card-conteudo">
         <h3 className="card-titulo">{infoCurso.name}</h3>
@@ -97,15 +123,3 @@ function CardCurso({ infoCurso }) {
     </div>
   )
 }
-
-const fetchImage = async (imageId) => {
-  if (imageId) {
-    try {
-      const blob = await callApi(getCursoImagem, false, imageId);
-      let currentUrl = URL.createObjectURL(blob);
-      return currentUrl;
-    } catch (error) {
-      console.error("Erro ao buscar a imagem do curso:", error);
-    }
-  }
-};
