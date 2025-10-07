@@ -129,7 +129,7 @@ export default function Cadastro() {
         <div className="logo-placeholder">
           <img src="/assets/images/logo.svg" alt="Logo do Instituto Social Nossa Senhora de Fátima" />
         </div>
-        <h1 className="main-title">Ação Social Nossa Senhora de Fátima</h1>
+        <h1 className="main-title">Instituto Social Nossa Senhora de Fátima</h1>
         <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>

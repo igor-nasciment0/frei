@@ -87,12 +87,12 @@ export function ConcluirInscricao({ dataAgendada, realizado }) {
     <div className={"conteudo " + (realizado ? "realizado" : "")}>
       <p>Para concluir sua inscrição, dirija-se presencialmente ao instituto na data agendada{dataAgendada ? (" " + converterDataUTCParaLocalSemMudarDia(dataAgendada?.appointmentDate)) : ""}, levando os documentos abaixo:</p>
       <ul>
-        <li>Valor da inscrição: R$ 50,00</li>
+        <li>Valor da inscrição: R$ 40,00</li>
         <li>Cópia do RG, CPF</li>
         <li>Atestado de escolaridade.</li>
       </ul>
       <strong>Instituto Social Nossa Senhora de Fátima</strong>
-      <p>Av. Coronel Octaviano de Freitas Costa, 463 - Socorro, São Paulo - SP, 04773-000</p>
+      <p>Av. Coronel Octaviano de Freitas Costa, 463 - Veleiros, São Paulo - SP, 04773-000</p>
     </div>
   );
 }
@@ -107,7 +107,7 @@ export function ProvaVestibular({ realizado }) {
         <li>RG e CPF</li>
       </ul>
       <strong>Instituto Social Nossa Senhora de Fátima</strong>
-      <p>Av. Coronel Octaviano de Freitas Costa, 463 - Socorro, São Paulo - SP, 04773-000</p>
+      <p>Av. Coronel Octaviano de Freitas Costa, 463 - Veleiros, São Paulo - SP, 04773-000</p>
     </div>
   );
 }

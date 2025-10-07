@@ -12,6 +12,7 @@ function gerarHorariosFixos() {
 
   for (let hora = horaInicial; hora <= horaFinal; hora++) {
     for (let minuto = 0; minuto < 60; minuto += 30) {
+      if (hora === 17 && minuto === 30) continue;
       // Formata a hora e o minuto para terem sempre dois dígitos (ex: 08, 09, 00, 30)
       const horaFormatada = String(hora).padStart(2, '0');
       const minutoFormatado = String(minuto).padStart(2, '0');
