@@ -28,7 +28,7 @@ export default function Cursos() {
       return setCursosFiltrados(cursos.filter(c => c.name.toLowerCase().normalize().trim().includes('inglês')));
 
     if (filtro) {
-      setCursosFiltrados(cursos.filter(c => c.type.trim() === filtro.trim()));
+      setCursosFiltrados(cursos.filter(c => c.type.trim() === filtro.trim() && !c.name.toLowerCase().trim().includes('inglês')));
     } else {
       setCursosFiltrados(cursos);
     }
