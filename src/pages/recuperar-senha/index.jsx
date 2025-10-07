@@ -2,15 +2,18 @@ import callApi from "../../api/callAPI";
 import { recuperacaoSenha } from "../../api/services/user";
 import "./index.scss";
 
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
 import toast from "react-hot-toast";
 import { useLoadingBar } from "react-top-loading-bar";
 
 export default function RecuperarSenha() {
-
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
   const navigate = useNavigate();
 
@@ -23,38 +26,54 @@ export default function RecuperarSenha() {
     const r = await callApi(recuperacaoSenha, true, dados);
 
     if (r.success) {
+      start("continuous", 0, 100);
       setTimeout(() => toast.success("Email enviado!"), 500);
-      setTimeout(() => navigate("/trocar-senha", { state: { email: dados.Email } }), 1500);
+      setTimeout(
+        () => navigate("/trocar-senha", { state: { email: dados.Email } }),
+        1500
+      );
+      setTimeout(complete, 800);
     }
   }
 
   return (
     <div className="recuperar-senha">
-
       <ToasterContainer />
 
       <div className="recuperar-left">
-
         <div className="recuperar-card">
-          <Link to='/login'>{'<'} Voltar</Link>
+          <Link to="/login">Voltar</Link>
 
-          <form onSubmit={handleSubmit(data => submit(data))}>
-            <div className="form-group">
+          <form onSubmit={handleSubmit(submit)}>
+            {/* E-mail */}
+            <div className={"form-group " + (errors.Email ? "erro" : "")}>
               <label htmlFor="email">E-mail</label>
+              {errors.Email && (
+                <span className="error-message">{errors.Email.message}</span>
+              )}
               <input
                 {...register("Email", { required: "Campo obrigatório" })}
                 type="email"
                 placeholder="usuario@email.com"
               />
             </div>
-            <input disabled={isSubmitting} className="btn-enter" type="submit" value="Enviar código de recuperação" />
+
+            <input
+              disabled={isSubmitting}
+              className="btn-enter"
+              type="submit"
+              value="Enviar código de recuperação"
+            />
           </form>
         </div>
       </div>
 
       <div className="recuperar-right">
         <div className="logo-placeholder">
-          <img src="/assets/images/logo.svg" alt="Logo do Instituto Social Nossa Senhora de Fátima" />
+          <img
+            src="/assets/images/logo.svg"
+            alt="Logo do Instituto Social Nossa Senhora de Fátima"
+          />
         </div>
         <h1 className="main-title">Instituto Social Nossa Senhora de Fátima</h1>
         <h2 className="sub-title">Pré-Inscrições</h2>

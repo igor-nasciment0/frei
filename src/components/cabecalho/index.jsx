@@ -42,9 +42,6 @@ export default function Cabecalho() {
           <h3>{user?.name}</h3>
           <h4>Online</h4>
         </div>
-        <div className='img'>
-          <img src="/assets/images/user.svg" alt="" />
-        </div>
 
         {mostrarMenu &&
           <div className="menu">

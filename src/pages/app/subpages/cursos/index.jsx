@@ -4,35 +4,65 @@ import { useEffect, useState } from "react";
 import callApi from "../../../../api/callAPI";
 import { getCursoImagem, getCursos } from "../../../../api/services/cursos";
 import Carregamento from "../../../../components/carregamento";
+import { sleep } from "../../../../util/general";
 
 export default function Cursos() {
 
-  const [cursos, setCursos] = useState();
+  const [cursos, setCursos] = useState([]);
+  const [filtro, setFiltro] = useState('');
+  const [cursosFiltrados, setCursosFiltrados] = useState([]);
+
+  const tiposCurso = [...new Set(cursos.map(c => c.type.trim()))];
 
   useEffect(() => {
     async function getData() {
-      setCursos(await callApi(getCursos));
+      const r = (await callApi(getCursos));
+      for(const curso of r) {
+        curso.image = await fetchImage(curso.imageId);
+      }
+      await sleep(500);
+      setCursos(r);
     }
 
     getData();
   }, [])
+
+  useEffect(() => {
+    if (filtro) {
+      setCursosFiltrados(cursos.filter(c => c.type === filtro));
+    } else {
+      setCursosFiltrados(cursos);
+    }
+  }, [filtro, cursos])
 
   const { id: idCurso } = useParams();
 
   if (idCurso)
     return (<Outlet context={idCurso} />)
 
-  if (!cursos)
+  if (!cursos.length)
     return <Carregamento />
 
   return (
     <section className="cursos">
-      <h3 className='nav'>Frei Online {'>'} Início</h3>
+      <h3 className='nav'>Frei Online {'>'} Cursos</h3>
 
       <h2 className="titulo-pagina">Nossos Cursos</h2>
 
+      <div className="filtro">
+        {tiposCurso.map((tipo, index) => (
+          <button
+            key={index}
+            className={filtro === tipo ? 'ativo' : ''}
+            onClick={() => setFiltro(filtro === tipo.trim() ? '' : tipo)}
+          >
+            {tipo}
+          </button>
+        ))}
+      </div>
+
       <div className="grid">
-        {cursos.map((curso, index) => (
+        {cursosFiltrados.map((curso, index) => (
           <CardCurso infoCurso={curso} key={index} />
         ))}
       </div>
@@ -42,38 +72,13 @@ export default function Cursos() {
 
 function CardCurso({ infoCurso }) {
 
-  const [imagemURL, setImagemURL] = useState();
-  const navigate = useNavigate();  
-
-  useEffect(() => {
-    let currentUrl = '';
-
-    const fetchImage = async () => {
-      if (infoCurso.imageId) {
-        try {
-          const blob = await callApi(getCursoImagem, false, infoCurso.imageId);
-          currentUrl = URL.createObjectURL(blob);
-          setImagemURL(currentUrl);
-        } catch (error) {
-          console.error("Erro ao buscar a imagem do curso:", error);
-        }
-      }
-    };
-
-    fetchImage();
-
-    return () => {
-      if (currentUrl) {
-        URL.revokeObjectURL(currentUrl);
-      }
-    };
-  }, [infoCurso.imageId]);
+  const navigate = useNavigate();
 
   return (
     <div className="card">
       <div
         className="card-imagem"
-        style={{ backgroundImage: `url(${imagemURL})` }}
+        style={{ backgroundImage: `url(${infoCurso.image})` }}
       ></div>
 
       <div className="card-conteudo">
@@ -92,3 +97,15 @@ function CardCurso({ infoCurso }) {
     </div>
   )
 }
+
+const fetchImage = async (imageId) => {
+  if (imageId) {
+    try {
+      const blob = await callApi(getCursoImagem, false, imageId);
+      let currentUrl = URL.createObjectURL(blob);
+      return currentUrl;
+    } catch (error) {
+      console.error("Erro ao buscar a imagem do curso:", error);
+    }
+  }
+};

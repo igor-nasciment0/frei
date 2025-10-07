@@ -43,10 +43,10 @@ export default function FormularioCursos() {
           setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
           setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
           setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
-        }, 0)
+        }, 0);
       }
 
-      setCarregamentoInicial(false);
+      setTimeout(() => setCarregamentoInicial(false), 100);
     })();
   }, [])
 
@@ -135,7 +135,7 @@ export default function FormularioCursos() {
             </td>
           </tr>
           <tr>
-            <td className="label obrigatorio">Horário para a Primeira Opção</td>
+            <td className="label obrigatorio">Período Primeira Opção</td>
             <td className="input">
 
               <Select
@@ -167,7 +167,7 @@ export default function FormularioCursos() {
             </td>
           </tr>
           <tr>
-            <td className="label obrigatorio">Horário para a Segunda Opção</td>
+            <td className="label obrigatorio">Período Segunda Opção</td>
             <td className="input">
               <Select
                 disabled={!segundaOpcaoCurso || carregamentoInicial}
