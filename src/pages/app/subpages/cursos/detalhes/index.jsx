@@ -49,14 +49,14 @@ export default function DetalhesCurso() {
 
       <Link className="voltar" to=".." >Voltar</Link>
 
-      {loading ?
+      {/* {loading ?
         <Skeleton height={250} style={{ marginBottom: '3rem' }} /> :
         <>
           {infoCurso?.apresentationVideoUrl &&
             <iframe className="banner" src={corrigeURLVideo(infoCurso?.apresentationVideoUrl)} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
           }
         </>
-      }
+      } */}
 
       <section className="secao">
         <h2 className="nome-curso">{loading ? <Skeleton /> : infoCurso?.name}</h2>
