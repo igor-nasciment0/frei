@@ -2,7 +2,7 @@ import { Link, useOutletContext } from "react-router";
 import "./index.scss";
 import { useEffect, useState } from "react";
 import callApi from "../../../../../api/callAPI";
-import { getCursoId } from "../../../../../api/services/cursos";
+import { getCursoId, getCursoImagem } from "../../../../../api/services/cursos";
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -16,6 +16,32 @@ export default function DetalhesCurso() {
 
   const [infoCurso, setInfoCurso] = useState();
   const [loading, setLoading] = useState(true);
+
+  const [imageUrl, setImageUrl] = useState('');
+
+  const fetchImage = async (imageId) => {
+    if (imageId) {
+      try {
+        const blob = await callApi(getCursoImagem, false, imageId);
+        let currentUrl = URL.createObjectURL(blob);
+        return currentUrl;
+      } catch (error) {
+        console.error("Erro ao buscar a imagem do curso:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (!infoCurso?.image) return;
+      const url = await fetchImage(infoCurso.image);
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        setImageUrl(url)
+      };
+    })()
+  }, [infoCurso?.image]);
 
   useEffect(() => {
     (async () => {
@@ -49,14 +75,17 @@ export default function DetalhesCurso() {
 
       <Link className="voltar" to=".." >Voltar</Link>
 
-      {/* {loading ?
+      {loading ?
         <Skeleton height={250} style={{ marginBottom: '3rem' }} /> :
         <>
-          {infoCurso?.apresentationVideoUrl &&
-            <iframe className="banner" src={corrigeURLVideo(infoCurso?.apresentationVideoUrl)} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
-          }
+          <div
+            className="curso-imagem"
+            style={{ backgroundImage: `url(${imageUrl})` }}
+          >
+            {!imageUrl && <Skeleton height="100%" width="100%" />}
+          </div>
         </>
-      } */}
+      }
 
       <section className="secao">
         <h2 className="nome-curso">{loading ? <Skeleton /> : infoCurso?.name}</h2>
