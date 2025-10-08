@@ -11,6 +11,8 @@ export default function FormularioCursos() {
 
   const [carregamentoInicial, setCarregamentoInicial] = useState(true);
 
+  const [minhaInscricao, setMinhaInscricao] = useState(null);
+
   const [codigoPrimeiroCurso, setCodigoPrimeiroCurso] = useState("");
   const [codigoPrimeiroHorario, setCodigoPrimeiroHorario] = useState("");
   const [codigoSegundoCurso, setCodigoSegundoCurso] = useState("");
@@ -29,27 +31,34 @@ export default function FormularioCursos() {
       const cursos = await callApi(getCursos);
       setOpcoesCurso(cursos);
 
-      const minhaInscricao = (await callApi(getInscricao))?.data;
+      const insc = (await callApi(getInscricao))?.data;
 
-      if (minhaInscricao.firstChoice) {
-        const idOpcao1 = cursos.find(curso => curso.code == minhaInscricao.firstChoice.courseCode).id;
-        const idOpcao2 = cursos.find(curso => curso.code == minhaInscricao.secondChoice.courseCode).id;
+      if (insc.firstChoice) {
 
-        setOpcoesHorario1(await callApi(getCursoHorarios, false, idOpcao1));
-        setOpcoesHorario2(await callApi(getCursoHorarios, false, idOpcao2));
+        const idOpcao1 = cursos.find(curso => curso.code == insc.firstChoice.courseCode).id;
+        const idOpcao2 = cursos.find(curso => curso.code == insc.secondChoice.courseCode).id;
 
-        setTimeout(() => {
-          setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
-          setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
-          setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
-          setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
-        }, 0);
+        const h1 = await callApi(getCursoHorarios, false, idOpcao1);
+        const h2 = await callApi(getCursoHorarios, false, idOpcao2);
+
+        setOpcoesHorario1(h1);
+        setOpcoesHorario2(h2);
+
+        setMinhaInscricao(insc);
       }
-
-      setCarregamentoInicial(false);
-
     })();
   }, [])
+
+  useEffect(() => {
+    if (minhaInscricao) {
+      setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
+      setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
+      setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
+      setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
+
+      setCarregamentoInicial(false);
+    }
+  }, [minhaInscricao])
 
   async function handleMudaPrimeiraOpcaoCurso(novaOpcao) {
     setCodigoPrimeiroCurso(novaOpcao);
