@@ -11,6 +11,8 @@ export default function FormularioCursos() {
 
   const [carregamentoInicial, setCarregamentoInicial] = useState(true);
 
+  const [minhaInscricao, setMinhaInscricao] = useState(null);
+
   const [codigoPrimeiroCurso, setCodigoPrimeiroCurso] = useState("");
   const [codigoPrimeiroHorario, setCodigoPrimeiroHorario] = useState("");
   const [codigoSegundoCurso, setCodigoSegundoCurso] = useState("");
@@ -29,36 +31,38 @@ export default function FormularioCursos() {
       const cursos = await callApi(getCursos);
       setOpcoesCurso(cursos);
 
-      const minhaInscricao = (await callApi(getInscricao))?.data;
+      const insc = (await callApi(getInscricao))?.data;
 
-      if (minhaInscricao.firstChoice) {
-        const idOpcao1 = cursos.find(curso => curso.code == minhaInscricao.firstChoice.courseCode).id;
-        const idOpcao2 = cursos.find(curso => curso.code == minhaInscricao.secondChoice.courseCode).id;
+      if (insc.firstChoice) {
 
-        setOpcoesHorario1(await callApi(getCursoHorarios, false, idOpcao1));
-        setOpcoesHorario2(await callApi(getCursoHorarios, false, idOpcao2));
+        const idOpcao1 = cursos.find(curso => curso.code == insc.firstChoice.courseCode).id;
+        const idOpcao2 = cursos.find(curso => curso.code == insc.secondChoice.courseCode).id;
 
-        setTimeout(() => {
-          setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
-          setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
-          setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
-          setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
-        }, 0);
+        const h1 = await callApi(getCursoHorarios, false, idOpcao1);
+        const h2 = await callApi(getCursoHorarios, false, idOpcao2);
+
+        setOpcoesHorario1(h1);
+        setOpcoesHorario2(h2);
+
+        setMinhaInscricao(insc);
       }
-
-      setCarregamentoInicial(false);
-
     })();
   }, [])
+
+  useEffect(() => {
+    if (minhaInscricao) {
+      setCodigoPrimeiroCurso(String(minhaInscricao.firstChoice.courseCode));
+      setCodigoSegundoCurso(String(minhaInscricao.secondChoice.courseCode));
+      setCodigoPrimeiroHorario(String(minhaInscricao.firstChoice.periodCode));
+      setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
+    }
+
+    setCarregamentoInicial(false);
+  }, [minhaInscricao])
 
   async function handleMudaPrimeiraOpcaoCurso(novaOpcao) {
     setCodigoPrimeiroCurso(novaOpcao);
     setCodigoPrimeiroHorario("");
-
-    if (novaOpcao == codigoSegundoCurso) {
-      setCodigoSegundoCurso("");
-      setCodigoSegundoHorario("");
-    }
 
     const cursoId = (opcoesCurso?.find(opcao => opcao.code == novaOpcao))?.id;
 
@@ -78,6 +82,24 @@ export default function FormularioCursos() {
     }
   }
 
+  function handleMudaHorario1(novaOpcao) {
+    if (codigoPrimeiroCurso == codigoSegundoCurso && codigoSegundoHorario == novaOpcao) {
+      setCodigoSegundoCurso("");
+      setCodigoSegundoHorario("");
+    }
+
+    setCodigoPrimeiroHorario(novaOpcao);
+  }
+
+  function handleMudaHorario2(novaOpcao) {
+    if (codigoPrimeiroCurso == codigoSegundoCurso && codigoPrimeiroHorario == novaOpcao) {
+      setCodigoPrimeiroCurso("");
+      setCodigoPrimeiroHorario("");
+    }
+
+    setCodigoSegundoHorario(novaOpcao);
+  }
+
   const { start, complete } = useLoadingBar({
     color: "#4EA2FF",
     height: 2,
@@ -86,9 +108,19 @@ export default function FormularioCursos() {
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
 
+  console.log(primeiraOpcaoCurso);
+
+
   async function submit() {
-    if (!codigoPrimeiroCurso || !codigoPrimeiroHorario || !codigoSegundoCurso || !codigoSegundoHorario) {
+    if (!codigoPrimeiroCurso || !codigoPrimeiroHorario) {
       toast.error("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    const nomePrimeiraOpcaoCurso = primeiraOpcaoCurso?.name.toLowerCase().normalize();
+
+    if ((!codigoSegundoCurso || !codigoSegundoHorario) && !nomePrimeiraOpcaoCurso.includes("teens")) {
+      toast.error("Por favor, preencha a segunda opção de curso.")
       return;
     }
 
@@ -143,7 +175,7 @@ export default function FormularioCursos() {
                 placeholder="Selecione um horário..."
                 dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoPrimeiroHorario}
-                onChange={novoValor => setCodigoPrimeiroHorario(novoValor)}>
+                onChange={novoValor => handleMudaHorario1(novoValor)}>
                 {opcoesHorario1.map((horario, index) =>
                   <SelectItem key={'ph' + index} value={String(horario.code)}>{horario.name}</SelectItem>
                 )}
@@ -157,10 +189,11 @@ export default function FormularioCursos() {
               <Select
                 placeholder="Selecione um curso..."
                 dropIcon="/assets/images/icons/angulo.svg"
-                disabled={!primeiraOpcaoCurso || carregamentoInicial}
+                disabled={carregamentoInicial}
                 value={codigoSegundoCurso}
                 onChange={novoValor => handleMudaSegundaOpcaoCurso(novoValor)}>
-                {opcoesCurso.filter(curso => curso.code !== primeiraOpcaoCurso?.code).map((curso, index) =>
+                <SelectItem placeholder>Sem segunda opção</SelectItem>
+                {opcoesCurso.map((curso, index) =>
                   <SelectItem key={'so' + index} value={String(curso.code)}>{curso.name}</SelectItem>
                 )}
               </Select>
@@ -174,7 +207,7 @@ export default function FormularioCursos() {
                 placeholder="Selecione um horário..."
                 dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoSegundoHorario}
-                onChange={novoValor => setCodigoSegundoHorario(novoValor)}>
+                onChange={novoValor => handleMudaHorario2(novoValor)}>
                 {opcoesHorario2.map((horario, index) =>
                   <SelectItem key={'sh' + index} value={String(horario.code)}>{horario.name}</SelectItem>
                 )}

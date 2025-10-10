@@ -5,7 +5,7 @@ import { Select, SelectItem } from "../../../../../components/select";
 import { comoConheceu, escolaridades, genero, parentesco, tipoEscola } from "../selects";
 import { getEnderecoCompleto } from "../../../../../api/services/enderecos";
 import { set } from "date-fns/set";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import callApi from "../../../../../api/callAPI";
 
 export function FormularioDadosPessoais({ avancar }) {
@@ -302,7 +302,7 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
   return (
     <table className="tabela-form">
       <tbody>
-        <tr className="group-label"><td colSpan={2}>Responsável Primário</td></tr>
+        <tr className="group-label"><td colSpan={2}>Dados da Mãe</td></tr>
         <tr><td className="label obrigatorio">Nome</td><Input name="primaryResponsible.name" type="text" placeholder="Informe o nome" {...register("primaryResponsible.name", { required: "Campo obrigatório" })} /></tr>
         <tr><td className="label obrigatorio">E-mail</td><Input name="primaryResponsible.email" type="email" placeholder="Informe o e-mail" {...register("primaryResponsible.email", { required: "Campo obrigatório" })} /></tr>
         <tr><td className="label obrigatorio">Telefone</td>
@@ -361,7 +361,9 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
                 as={Select}
                 {...field}
                 name="primaryResponsible.relationship"
+                disabled
                 placeholder="Informe o parentesco"
+                value="Mãe"
               >
                 {parentesco.map(p =>
                   <SelectItem key={p} value={p}>{p}</SelectItem>

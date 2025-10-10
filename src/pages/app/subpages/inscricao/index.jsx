@@ -14,7 +14,7 @@ import { useOutletContext } from 'react-router';
 import { formatarParaInputDate } from '../../../../util/date';
 
 const formularios = [FormularioDadosPessoais, FormularioEndereco, FormularioNascimento, FormularioRG, FormularioResponsavelPrimario, FormularioResponsavelSecundario, FormularioEscolar, FormularioInformacoesGerais]
-const titulos = ["Informações Pessoais", "Endereço", "Informações de Nascimento", "Documento", "Responsável Primário", "Responsável Secundário", "Escolaridade", "Informações Gerais"]
+const titulos = ["Informações Pessoais", "Endereço", "Informações de Nascimento", "Documento", "Dados da mãe", "Responsável Secundário", "Escolaridade", "Informações Gerais"]
 
 export default function Inscricao() {
 
@@ -42,11 +42,17 @@ export default function Inscricao() {
   if (infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual.birthInfo.date);
   if (infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual.rgInfo.issueDate);
 
+  // o primeiro responsável é sempre a mãe
+  infoAtual.primaryResponsible.relationship = "Mãe";
 
   const methods = useForm({ defaultValues: mergeObjects({ ...padroes }, infoAtual) });
 
   async function submitInfoUsuario(novosDados) {
+    novosDados.primaryResponsible.relationship = "Mãe";
+
     if (!testState(novosDados, padroes, ["complement"])) {
+      console.log(novosDados);
+
       toast.error("Preencha todos os campos obrigatórios.");
       return;
     }
