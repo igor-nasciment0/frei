@@ -264,7 +264,6 @@ export function FormularioRG({ avancar, retornar }) {
                 as={IMaskInput}
                 name="rgInfo.number"
                 placeholder="Informe o número do RG"
-                mask="00.000.000-0"
                 id="rgInfo.number"
                 onAccept={(value) => field.onChange(value)}
               />
