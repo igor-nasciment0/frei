@@ -54,14 +54,14 @@ export const estadosBrasileiros = [
 ];
 
 export const escolaridades = [
-  "6° ano EF",
-  "7° ano EF",
-  "8° ano EF",
-  "9° ano EF",
+  "6° ano",
+  "7° ano",
+  "8° ano",
+  "9° ano",
   "1° ano EM",
   "2° ano EM",
   "3° ano EM",
-  "Ensino Médio Completo",
+  "Ensino Médio Concluído",
   "Superior"
 ]
 
