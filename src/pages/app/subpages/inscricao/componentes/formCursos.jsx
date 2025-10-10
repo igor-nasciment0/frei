@@ -108,9 +108,6 @@ export default function FormularioCursos() {
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
 
-  console.log(primeiraOpcaoCurso);
-
-
   async function submit() {
     if (!codigoPrimeiroCurso || !codigoPrimeiroHorario) {
       toast.error("Preencha todos os campos obrigatórios.");

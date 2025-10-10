@@ -51,8 +51,6 @@ export default function Inscricao() {
     novosDados.primaryResponsible.relationship = "Mãe";
 
     if (!testState(novosDados, padroes, ["complement"])) {
-      console.log(novosDados);
-
       toast.error("Preencha todos os campos obrigatórios.");
       return;
     }
@@ -71,6 +69,8 @@ export default function Inscricao() {
   }
 
   const FormAtual = formularios[passoAtual];
+
+  const podeSelecionarAbaCurso = infoAtual.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário 
 
   return (
     <section className='inscricao'>
@@ -108,22 +108,29 @@ export default function Inscricao() {
 
         <ul className='passos'>{
           titulos.map((nomePasso, i) => (
-            <li onClick={() => setPassoAtual(i)} key={i} className={(i === passoAtual && !mostraFormCursos) ? 'ativo' : ((i < passoAtual && !mostraFormCursos) ? 'completo' : '')}>
-              <p className={!mostraFormCursos ? 'selecionavel' : ''}>{nomePasso}</p>
+            <li onClick={() => { setMostraFormCursos(false); setPassoAtual(i) }} key={i} className={(i === passoAtual && !mostraFormCursos) ? 'ativo' : ((i < passoAtual || mostraFormCursos) ? 'completo' : '')}>
+              <p className="selecionavel">{nomePasso}</p>
             </li>
           ))
         }
-          <li className={mostraFormCursos ? "ativo" : ""}>Escolha do Curso</li>
+          <li className={(mostraFormCursos ? "ativo" : "")} onClick={() => {
+            if (podeSelecionarAbaCurso)
+              setMostraFormCursos(true);
+          }} >
+            <p className={(podeSelecionarAbaCurso ? " selecionavel" : "")}>Escolha do Curso</p>
+          </li>
         </ul>
 
         <ul className='passos-mobile'>{
           titulos.map((_, i) => (
-            <li onClick={() => setPassoAtual(i)} key={i} className={(i <= passoAtual && !mostraFormCursos) ? 'passado' : ""}>
+            <li onClick={() => { setMostraFormCursos(false); setPassoAtual(i) }} key={i} className={(i <= passoAtual && !mostraFormCursos) ? 'passado' : ""}>
               <span>{i + 1}</span>
             </li>
           ))
         }
-          <li className={mostraFormCursos ? "passado" : ""}>*</li>
+          <li className={mostraFormCursos ? "passado" : ""}>
+            <span>*</span>
+          </li>
         </ul>
       </section>
 

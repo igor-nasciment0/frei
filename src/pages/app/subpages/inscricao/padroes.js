@@ -2,6 +2,7 @@ export default {
   name: "",
   phone: "",
   gender: "",
+  cpf: "",
   address: {
     cep: "",
     street: "",
