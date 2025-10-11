@@ -103,7 +103,8 @@ export function ProvaVestibular({ realizado, dadosInscricao }) {
       <div className={"conteudo"}>
         <p>A prova será realizada presencialmente no Instituto
           {dadosInscricao?.testDate && `, no dia ${converterDataUTCParaLocalSemMudarDia(dadosInscricao.testDate)}`}
-          {dadosInscricao?.testTime && `, às ${dadosInscricao.testTime}`}.
+          {dadosInscricao?.testTime && `, às ${dadosInscricao.testTime}`}
+          {dadosInscricao?.testRoom && `, na sala ${dadosInscricao.testRoom}`}.
         </p>
         <p>Não se esqueça de levar:</p>
         <ul>
@@ -119,7 +120,8 @@ export function ProvaVestibular({ realizado, dadosInscricao }) {
     <div className="conteudo realizado">
       <p>A prova foi aplicada com sucesso aos presentes no dia marcado
         {dadosInscricao?.testDate && `, ${converterDataUTCParaLocalSemMudarDia(dadosInscricao.testDate)}`}
-        {dadosInscricao?.testTime && `, às ${dadosInscricao.testTime}`}.
+        {dadosInscricao?.testTime && `, às ${dadosInscricao.testTime}`}
+        {dadosInscricao?.testRoom && `, na sala ${dadosInscricao.testRoom}`}.
       </p>
     </div>
   )
