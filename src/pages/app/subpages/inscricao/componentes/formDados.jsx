@@ -249,24 +249,28 @@ export function FormularioRG({ avancar, retornar }) {
     <table className="tabela-form">
       <tbody>
         <tr className="group-label"><td>Cadastro de Pessoa Física (CPF)</td></tr>
-        <Controller
-          name="cpf"
-          control={control}
-          rules={{
-            required: "Campo obrigatório",
-          }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              as={IMaskInput}
-              name="cpf"
-              placeholder="Informe o número do CPF"
-              id="cpf"
-              onAccept={(value) => field.onChange(value)}
-              mask="000.000.000-00"
-            />
-          )}
-        />
+        <tr>
+          <td className="label obrigatorio">Número</td>
+
+          <Controller
+            name="cpf"
+            control={control}
+            rules={{
+              required: "Campo obrigatório",
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                as={IMaskInput}
+                name="cpf"
+                placeholder="Informe o número do CPF"
+                id="cpf"
+                onAccept={(value) => field.onChange(value)}
+                mask="000.000.000-00"
+              />
+            )}
+          />
+        </tr>
 
         <tr className="group-label"><td colSpan={2}>Documento de Identidade (RG)</td></tr>
         <tr>
