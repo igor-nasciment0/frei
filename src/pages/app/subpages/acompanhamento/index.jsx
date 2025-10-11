@@ -76,7 +76,7 @@ export default function Acompanhamento() {
         <h2>{carregando ? <Skeleton /> : "Próximos Passos"}</h2>
 
         {!carregando &&
-          <LinhaTempo statusInscricao={dadosInscricao?.status} />
+          <LinhaTempo dadosInscricao={dadosInscricao} />
         }
       </section>
     </section>

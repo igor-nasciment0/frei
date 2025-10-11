@@ -72,7 +72,7 @@ export default function Cadastro() {
           <form onSubmit={handleSubmit(submit)}>
             {/* Nome */}
             <div className={"form-group " + (errors.name ? "erro" : "")}>
-              <label htmlFor="name">Nome Completo</label>
+              <label htmlFor="name">Nome Completo do Candidato(a)</label>
               {errors.name && (
                 <span className="error-message">{errors.name.message}</span>
               )}
@@ -86,7 +86,7 @@ export default function Cadastro() {
             {/* Linha CPF e Data */}
             <div className="row">
               <div className={"form-group " + (errors.cpf ? "erro" : "")}>
-                <label htmlFor="cpf">CPF</label>
+                <label htmlFor="cpf">CPF do Candidato(a)</label>
                 {errors.cpf && (
                   <span className="error-message">{errors.cpf.message}</span>
                 )}
@@ -110,7 +110,7 @@ export default function Cadastro() {
               </div>
 
               <div className={"form-group " + (errors.birthDate ? "erro" : "")}>
-                <label htmlFor="birthDate">Data de Nascimento</label>
+                <label htmlFor="birthDate">Data de Nascimento do Candidato(a)</label>
                 {errors.birthDate && (
                   <span className="error-message">
                     {errors.birthDate.message}
@@ -125,7 +125,7 @@ export default function Cadastro() {
 
             {/* Email */}
             <div className={"form-group " + (errors.email ? "erro" : "")}>
-              <label htmlFor="email">E-mail</label>
+              <label htmlFor="email">E-mail do Candidato(a)</label>
               {errors.email && (
                 <span className="error-message">{errors.email.message}</span>
               )}

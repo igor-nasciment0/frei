@@ -33,7 +33,7 @@ export default function FormularioCursos() {
 
       const insc = (await callApi(getInscricao))?.data;
 
-      if (insc.firstChoice) {
+      if (insc?.firstChoice) {
 
         const idOpcao1 = cursos.find(curso => curso.code == insc.firstChoice.courseCode).id;
         const idOpcao2 = cursos.find(curso => curso.code == insc.secondChoice.courseCode).id;

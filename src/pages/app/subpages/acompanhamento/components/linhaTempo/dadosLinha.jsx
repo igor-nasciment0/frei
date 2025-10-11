@@ -97,19 +97,32 @@ export function ConcluirInscricao({ dataAgendada, realizado }) {
   );
 }
 
-export function ProvaVestibular({ realizado }) {
-  return (
-    <div className={"conteudo " + (realizado ? "realizado" : "")}>
-      <p>A prova será realizada presencialmente no Instituto.</p>
-      <p>Não se esqueça de levar:</p>
-      <ul>
-        <li>Manual do candidato</li>
-        <li>RG e CPF</li>
-      </ul>
-      <strong>Instituto Social Nossa Senhora de Fátima</strong>
-      <p>Av. Coronel Octaviano de Freitas Costa, 463 - Veleiros, São Paulo - SP, 04773-000</p>
+export function ProvaVestibular({ realizado, dadosInscricao }) {
+  if (!realizado)
+    return (
+      <div className={"conteudo"}>
+        <p>A prova será realizada presencialmente no Instituto
+          {dadosInscricao?.testDate && `, no dia ${new Date(dadosInscricao.testDate).toLocaleDateString()}`}
+          {dadosInscricao?.testTime && `, às ${dadosInscricao.testTime}`}.
+        </p>
+        <p>Não se esqueça de levar:</p>
+        <ul>
+          <li>Manual do candidato</li>
+          <li>RG e CPF</li>
+        </ul>
+        <strong>Instituto Social Nossa Senhora de Fátima</strong>
+        <p>Av. Coronel Octaviano de Freitas Costa, 463 - Veleiros, São Paulo - SP, 04773-000</p>
+      </div>
+    );
+
+  else return (
+    <div className="conteudo realizado">
+      <p>A prova foi aplicada com sucesso aos presentes no dia marcado
+        {dadosInscricao?.testDate && `, ${new Date(dadosInscricao.testDate).toLocaleDateString()}`}
+        {dadosInscricao?.testTime && `, às ${dadosInscricao.testTime}`}.
+      </p>
     </div>
-  );
+  )
 }
 
 export function Resultado({ realizado, dataPublicacao, urlResultado, mostrarUrl }) {
@@ -124,7 +137,7 @@ export function Resultado({ realizado, dataPublicacao, urlResultado, mostrarUrl 
     );
   }
 
-  return (
+  else return (
     <div className="conteudo">
       <p>
         O resultado ficará disponível em nosso site no dia {converterDataUTCParaLocalSemMudarDia(dataPublicacao)}.

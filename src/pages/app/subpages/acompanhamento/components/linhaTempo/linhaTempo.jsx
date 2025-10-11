@@ -5,7 +5,7 @@ import callApi from '../../../../../../api/callAPI';
 import { getAgendamento } from '../../../../../../api/services/agendamento';
 import { useOutletContext } from 'react-router';
 
-export default function Timeline({ statusInscricao }) {
+export default function Timeline({ dadosInscricao }) {
   
   const statusVestibular = useOutletContext();
   
@@ -27,15 +27,15 @@ export default function Timeline({ statusInscricao }) {
       </TimelineItem>
 
       <TimelineItem titulo="Agendamento">
-        <Agendamento dataAgendada={agendamento} alteravel={statusInscricao != 2} />
+        <Agendamento dataAgendada={agendamento} alteravel={dadosInscricao?.status != 2} />
       </TimelineItem>
 
       <TimelineItem titulo="Concluir Inscrição">
-        <ConcluirInscricao dataAgendada={agendamento} realizado={statusInscricao == 2} />
+        <ConcluirInscricao dataAgendada={agendamento} realizado={dadosInscricao?.status == 2} />
       </TimelineItem>
 
       <TimelineItem titulo="Vestibular">
-        <ProvaVestibular realizado={new Date(statusVestibular?.resultPublicationDate) <= new Date()} />
+        <ProvaVestibular realizado={new Date(dadosInscricao?.testDate) <= new Date()} dadosInscricao={dadosInscricao} />
       </TimelineItem>
 
       <TimelineItem titulo="Resultado">

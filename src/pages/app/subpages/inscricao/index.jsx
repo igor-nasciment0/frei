@@ -117,7 +117,7 @@ export default function Inscricao() {
             if (podeSelecionarAbaCurso)
               setMostraFormCursos(true);
           }} >
-            <p className={(podeSelecionarAbaCurso ? " selecionavel" : "")}>Escolha do Curso</p>
+            <p className={(podeSelecionarAbaCurso ? "selecionavel" : "")}>Escolha do Curso</p>
           </li>
         </ul>
 
