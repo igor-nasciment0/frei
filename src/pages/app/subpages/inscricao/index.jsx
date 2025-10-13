@@ -35,12 +35,12 @@ export default function Inscricao() {
   const infoAtual = get("user");
   delete infoAtual.id, infoAtual.age;
 
-  if (infoAtual.generalInfo.income !== undefined) infoAtual.generalInfo.income = String(infoAtual.generalInfo.income);
-  if (infoAtual.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = String(infoAtual.generalInfo.peopleAtHome);
-  if (infoAtual.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = String(infoAtual.generalInfo.peopleWorking);
+  if (infoAtual?.generalInfo.income !== undefined) infoAtual.generalInfo.income = String(infoAtual?.generalInfo.income);
+  if (infoAtual?.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = String(infoAtual?.generalInfo.peopleAtHome);
+  if (infoAtual?.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = String(infoAtual?.generalInfo.peopleWorking);
 
-  if (infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual.birthInfo.date);
-  if (infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual.rgInfo.issueDate);
+  if (infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual?.birthInfo.date);
+  if (infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual?.rgInfo.issueDate);
 
   // o primeiro responsável é sempre a mãe
   infoAtual.primaryResponsible.relationship = "Mãe";
@@ -128,7 +128,10 @@ export default function Inscricao() {
             </li>
           ))
         }
-          <li className={mostraFormCursos ? "passado" : ""}>
+          <li className={mostraFormCursos ? "passado" : ""} onClick={() => {
+            if (podeSelecionarAbaCurso)
+              setMostraFormCursos(true);
+          }} >
             <span>*</span>
           </li>
         </ul>
