@@ -211,7 +211,7 @@ export default function FormularioCursos() {
                 disabled={carregamentoInicial}
                 value={codigoSegundoCurso}
                 onChange={novoValor => handleMudaSegundaOpcaoCurso(novoValor)}>
-                <SelectItem placeholder>Sem segunda opção</SelectItem>
+                <SelectItem value="" placeholder>Sem segunda opção</SelectItem>
                 {opcoesCurso.map((curso, index) =>
                   <SelectItem key={'so' + index} value={String(curso.code)}>{curso.name}</SelectItem>
                 )}

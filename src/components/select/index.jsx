@@ -6,13 +6,9 @@ import React from 'react';
 export function Select({ defaultValue, value, disabled, onChange, children, dropIcon = "/assets/images/icons/angulo.svg", className, placeholder }) {
 
   return (
-    <select disabled={disabled} value={value} placeholder={"Selecione"} onChange={e => onChange(e.target.value)} className={"fallback " + (className || "")} >
+    <select disabled={disabled} value={value} onChange={e => onChange(e.target.value)} className={"fallback " + (className || "")} >
       <option value="" disabled selected hidden>{placeholder}</option>
-      {React.Children.map(children, child =>
-        React.isValidElement(child) ? (
-          <option value={child.props.value}>{child.props.children}</option>
-        ) : null
-      )}
+        {children}
     </select>
   );
 
@@ -37,9 +33,16 @@ export function Select({ defaultValue, value, disabled, onChange, children, drop
 }
 
 export function SelectItem({ disabled, onClick, value, children, className }) {
+
   return (
+    <option value={value}>
+      {children}
+    </option>
+  )
+
+/*   return (
     <ReactSelect.Item disabled={disabled} onClick={onClick} value={value} className={"select-item " + (className ? className : "")}>
       <ReactSelect.ItemText>{children}</ReactSelect.ItemText>
     </ReactSelect.Item>
-  );
+  ); */
 }
