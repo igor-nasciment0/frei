@@ -4,22 +4,19 @@ import './index.scss';
 import React from 'react';
 
 export function Select({ defaultValue, value, disabled, onChange, children, dropIcon = "/assets/images/icons/angulo.svg", className, placeholder }) {
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    return (
-      <select disabled={disabled} value={value} placeholder={"Selecione"} onChange={e => onChange(e.target.value)} className={"fallback " + (className || "")} >
-        <option value="" disabled selected hidden>{placeholder}</option>
-        {React.Children.map(children, child =>
-          React.isValidElement(child) ? (
-            <option value={child.props.value}>{child.props.children}</option>
-          ) : null
-        )}
-      </select>
-    );
-  }
 
   return (
+    <select disabled={disabled} value={value} placeholder={"Selecione"} onChange={e => onChange(e.target.value)} className={"fallback " + (className || "")} >
+      <option value="" disabled selected hidden>{placeholder}</option>
+      {React.Children.map(children, child =>
+        React.isValidElement(child) ? (
+          <option value={child.props.value}>{child.props.children}</option>
+        ) : null
+      )}
+    </select>
+  );
+
+/*   return (
     <div className={'custom-select ' + (disabled ? "disabled " : "") + (className ?? "")}>
       <ReactSelect.Root disabled={disabled} defaultValue={defaultValue} value={value} onValueChange={onChange}>
         <ReactSelect.Trigger className="select-trigger" aria-label="Select">
@@ -36,7 +33,7 @@ export function Select({ defaultValue, value, disabled, onChange, children, drop
         </ReactSelect.Content>
       </ReactSelect.Root>
     </div>
-  );
+  ); */
 }
 
 export function SelectItem({ disabled, onClick, value, children, className }) {
