@@ -94,7 +94,7 @@ export default function FormularioCursos() {
     if (codigoPrimeiroCurso == codigoSegundoCurso && codigoSegundoHorario == novaOpcao) {
       setCodigoSegundoCurso("");
       setCodigoSegundoHorario("");
-      setErro("Opções de curso e horário não podem ser iguais.");
+      setErro("Opções de curso e período não podem ser iguais.");
     }
 
     setCodigoPrimeiroHorario(novaOpcao);
@@ -107,7 +107,7 @@ export default function FormularioCursos() {
     if (codigoPrimeiroCurso == codigoSegundoCurso && codigoPrimeiroHorario == novaOpcao) {
       setCodigoPrimeiroCurso("");
       setCodigoPrimeiroHorario("");
-      setErro("Opções de curso e horário não podem ser iguais.");
+      setErro("Opções de curso e período não podem ser iguais.");
     }
 
     setCodigoSegundoHorario(novaOpcao);
