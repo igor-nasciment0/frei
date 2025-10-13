@@ -1,7 +1,6 @@
-import { forwardRef } from "react";
 import { useFormContext } from "react-hook-form";
 
-const Input = forwardRef(({ as: Component = 'input', name, children, ...params }, ref) => {
+export default function Input({ as: Component = 'input', name, children, ref, ...params }) {
   const { formState: { errors } } = useFormContext();
   const erroDoCampo = encontraErro(errors, name);
 
@@ -25,10 +24,10 @@ const Input = forwardRef(({ as: Component = 'input', name, children, ...params }
       </Component>
     </td>
   );
-});
+};
 
 
-function encontraErro(errors, name) {
+export function encontraErro(errors, name) {
   const caminho = name.split('.');
   let erro = errors;
 
@@ -38,5 +37,3 @@ function encontraErro(errors, name) {
   }
   return erro;
 }
-
-export default Input;

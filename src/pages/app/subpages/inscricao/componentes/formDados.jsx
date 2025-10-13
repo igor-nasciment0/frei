@@ -1,15 +1,14 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { IMaskInput } from 'react-imask'; // 1. Importe de 'react-imask'
-import Input from "./input";
+import { IMaskInput } from 'react-imask';
+import Input, { encontraErro } from "./input";
 import { Select, SelectItem } from "../../../../../components/select";
 import { comoConheceu, escolaridades, genero, parentesco, tipoEscola } from "../selects";
 import { getEnderecoCompleto } from "../../../../../api/services/enderecos";
-import { set } from "date-fns/set";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import callApi from "../../../../../api/callAPI";
 
 export function FormularioDadosPessoais({ avancar }) {
-  const { register, control } = useFormContext();
+  const { register, control, formState: { errors } } = useFormContext();
 
   return (
     <table className="tabela-form">
@@ -42,25 +41,32 @@ export function FormularioDadosPessoais({ avancar }) {
         </tr>
         <tr>
           <td className="label obrigatorio">Gênero</td>
-          <Controller
-            name="gender"
-            control={control}
-            rules={{
-              required: "Campo obrigatório",
-            }}
-            render={({ field }) => (
-              <Input
-                as={Select}
-                {...field}
-                name="gender"
-                placeholder="Informe o gênero"
-              >
-                {genero.map(g =>
-                  <SelectItem key={g} value={g}>{g}</SelectItem>
-                )}
-              </Input>
-            )}
-          />
+          <td className="input">
+            <Controller
+              name="gender"
+              control={control}
+              rules={{
+                required: "Campo obrigatório",
+              }}
+              render={({ field }) => {
+                const erroDoCampo = encontraErro(errors, field.name);
+                return (
+                  <>
+                    {erroDoCampo && <span className="erro">{erroDoCampo.message}</span>}
+                    <Select
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Informe o gênero"
+                    >
+                      {genero.map(g =>
+                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                      )}
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </td>
         </tr>
       </tbody>
       <tfoot>
@@ -70,6 +76,7 @@ export function FormularioDadosPessoais({ avancar }) {
     </table>
   );
 }
+
 
 export function FormularioEndereco({ avancar, retornar }) {
   const { register, control, setValue } = useFormContext();
@@ -320,7 +327,7 @@ export function FormularioRG({ avancar, retornar }) {
 }
 
 export function FormularioResponsavelPrimario({ avancar, retornar }) {
-  const { register, control } = useFormContext();
+  const { register, control, formState: { errors } } = useFormContext();
 
   return (
     <table className="tabela-form">
@@ -373,27 +380,33 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
 
         </tr>
         <tr><td className="label obrigatorio">Parentesco</td>
-          <Controller
-            name="primaryResponsible.relationship"
-            control={control}
-            rules={{
-              required: "Campo obrigatório",
-            }}
-            render={({ field }) => (
-              <Input
-                as={Select}
-                {...field}
-                name="primaryResponsible.relationship"
-                disabled
-                placeholder="Informe o parentesco"
-                value="Mãe"
-              >
-                {parentesco.map(p =>
-                  <SelectItem key={p} value={p}>{p}</SelectItem>
-                )}
-              </Input>
-            )}
-          />
+          <td className="input">
+            <Controller
+              name="primaryResponsible.relationship"
+              control={control}
+              rules={{
+                required: "Campo obrigatório",
+              }}
+              render={({ field }) => {
+                const erroDoCampo = encontraErro(errors, field.name);
+                return (
+                  <>
+                    {erroDoCampo && <span className="erro">{erroDoCampo.message}</span>}
+                    <Select
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled
+                      placeholder="Informe o parentesco"
+                    >
+                      {parentesco.map(g =>
+                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                      )}
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </td>
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
@@ -413,7 +426,7 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
 }
 
 export function FormularioResponsavelSecundario({ avancar, retornar }) {
-  const { register, control } = useFormContext();
+  const { register, control, formState: { errors } } = useFormContext();
 
   return (
     <table className="tabela-form">
@@ -464,25 +477,32 @@ export function FormularioResponsavelSecundario({ avancar, retornar }) {
           />
         </tr>
         <tr><td className="label obrigatorio">Parentesco</td>
-          <Controller
-            name="secondaryResponsible.relationship"
-            control={control}
-            rules={{
-              required: "Campo obrigatório",
-            }}
-            render={({ field }) => (
-              <Input
-                as={Select}
-                {...field}
-                name="secondaryResponsible.relationship"
-                placeholder="Informe o parentesco"
-              >
-                {parentesco.map(p =>
-                  <SelectItem key={p} value={p}>{p}</SelectItem>
-                )}
-              </Input>
-            )}
-          />
+          <td className="input">
+            <Controller
+              name="secondaryResponsible.relationship"
+              control={control}
+              rules={{
+                required: "Campo obrigatório",
+              }}
+              render={({ field }) => {
+                const erroDoCampo = encontraErro(errors, field.name);
+                return (
+                  <>
+                    {erroDoCampo && <span className="erro">{erroDoCampo.message}</span>}
+                    <Select
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Informe o parentesco"
+                    >
+                      {parentesco.map(g =>
+                        <SelectItem key={g} value={g}>{g}</SelectItem>
+                      )}
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </td>
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
@@ -502,7 +522,7 @@ export function FormularioResponsavelSecundario({ avancar, retornar }) {
 }
 
 export function FormularioEscolar({ avancar, retornar }) {
-  const { register, control } = useFormContext();
+  const { register, control, formState: { errors } } = useFormContext();
 
   return (
     <table className="tabela-form">
@@ -514,48 +534,61 @@ export function FormularioEscolar({ avancar, retornar }) {
         </tr>
         <tr>
           <td className="label obrigatorio">Série atual</td>
-          <Controller
-            name="schoolInfo.currentGrade"
-            control={control}
-            rules={{
-              required: "Campo obrigatório",
-            }}
-            render={({ field }) => (
-              <Input
-                as={Select}
-                {...field}
-                name="schoolInfo.currentGrade"
-                placeholder="Informe a série atual"
-              >
-                {escolaridades.map(e =>
-                  <SelectItem key={e} value={e}>{e}</SelectItem>
-                )}
-              </Input>
-            )}
-          />
-
+          <td className="input">
+            <Controller
+              name="schoolInfo.currentGrade"
+              control={control}
+              rules={{
+                required: "Campo obrigatório",
+              }}
+              render={({ field }) => {
+                const erroDoCampo = encontraErro(errors, field.name);
+                return (
+                  <>
+                    {erroDoCampo && <span className="erro">{erroDoCampo.message}</span>}
+                    <Select
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Informe a série atual"
+                    >
+                      {escolaridades.map(e =>
+                        <SelectItem key={e} value={e}>{e}</SelectItem>
+                      )}
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </td>
         </tr>
         <tr>
           <td className="label obrigatorio">Tipo de escola</td>
-          <Controller
-            name="schoolInfo.schoolType"
-            control={control}
-            rules={{
-              required: "Campo obrigatório",
-            }}
-            render={({ field }) => (
-              <Input
-                as={Select}
-                {...field}
-                name="schoolInfo.schoolType"
-                placeholder="Informe o tipo de escola"
-              >
-                {tipoEscola.map(e =>
-                  <SelectItem key={e} value={e}>{e}</SelectItem>
-                )}
-              </Input>
-            )}
-          />
+          <td className="input">
+            <Controller
+              name="schoolInfo.schoolType"
+              control={control}
+              rules={{
+                required: "Campo obrigatório",
+              }}
+              render={({ field }) => {
+                const erroDoCampo = encontraErro(errors, field.name);
+                return (
+                  <>
+                    {erroDoCampo && <span className="erro">{erroDoCampo.message}</span>}
+                    <Select
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Informe o tipo de escola"
+                    >
+                      {tipoEscola.map(e =>
+                        <SelectItem key={e} value={e}>{e}</SelectItem>
+                      )}
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </td>
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
@@ -573,7 +606,7 @@ export function FormularioEscolar({ avancar, retornar }) {
 }
 
 export function FormularioInformacoesGerais({ avancar, retornar }) {
-  const { register, control } = useFormContext();
+  const { register, control, formState: { errors } } = useFormContext();
 
   return (
     <table className="tabela-form">
@@ -581,27 +614,32 @@ export function FormularioInformacoesGerais({ avancar, retornar }) {
         <tr className="group-label"><td colSpan={2}>Informações Gerais</td></tr>
         <tr>
           <td className="label obrigatorio">Como conheceu o Instituto?</td>
-
-          <Controller
-            name="generalInfo.howDidYouKnow"
-            control={control}
-            rules={{
-              required: "Campo obrigatório",
-            }}
-            render={({ field }) => (
-              <Input
-                as={Select}
-                {...field}
-                name="generalInfo.howDidYouKnow"
-                placeholder="Informe como conheceu"
-              >
-                {comoConheceu.map(c =>
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
-                )}
-              </Input>
-            )}
-          />
-
+          <td className="input">
+            <Controller
+              name="generalInfo.howDidYouKnow"
+              control={control}
+              rules={{
+                required: "Campo obrigatório",
+              }}
+              render={({ field }) => {
+                const erroDoCampo = encontraErro(errors, field.name);
+                return (
+                  <>
+                    {erroDoCampo && <span className="erro">{erroDoCampo.message}</span>}
+                    <Select
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Informe como conheceu"
+                    >
+                      {comoConheceu.map(c =>
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      )}
+                    </Select>
+                  </>
+                );
+              }}
+            />
+          </td>
         </tr>
         <tr>
           <td className="label obrigatorio">Renda mensal da família (R$)</td>
