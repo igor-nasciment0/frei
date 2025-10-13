@@ -70,7 +70,7 @@ export default function Inscricao() {
 
   const FormAtual = formularios[passoAtual];
 
-  const podeSelecionarAbaCurso = infoAtual.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário 
+  const podeSelecionarAbaCurso = infoAtual?.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário 
 
   return (
     <section className='inscricao'>
