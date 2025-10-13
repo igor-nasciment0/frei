@@ -130,12 +130,12 @@ export default function FormularioCursos() {
       return;
     }
 
-    const nomePrimeiraOpcaoCurso = primeiraOpcaoCurso?.name.toLowerCase().normalize();
+    // const nomePrimeiraOpcaoCurso = primeiraOpcaoCurso?.name.toLowerCase().normalize();
 
-    if ((!codigoSegundoCurso || !codigoSegundoHorario) && !nomePrimeiraOpcaoCurso.includes("teens")) {
-      toast.error(`"Sem segunda opção" só está disponível para os cursos Teens.`);
-      return;
-    }
+    // if ((!codigoSegundoCurso || !codigoSegundoHorario) && !nomePrimeiraOpcaoCurso.includes("teens")) {
+    //   toast.error(`"Sem segunda opção" só está disponível para os cursos Teens.`);
+    //   return;
+    // }
 
     setCarregando(true);
 
