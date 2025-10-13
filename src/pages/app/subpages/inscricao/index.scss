@@ -19,6 +19,25 @@
         max-width: 660px;
     }
 
+    .cursos-erro {
+        background-color: #ff525236;
+        color: #FF5252;
+        font-size: 0.75rem;
+        border-radius: 3px;
+
+        display: flex;
+
+        >td:first-child {
+            width: 0;
+            padding: 0;
+        }
+
+        > td {
+            width: 100%;
+            text-align: center;            
+        }
+    }
+
     .tabela-form {
         container-type: inline-size;
         container-name: tabela-form;

@@ -22,6 +22,8 @@ export default function FormularioCursos() {
   const [opcoesHorario1, setOpcoesHorario1] = useState([]);
   const [opcoesHorario2, setOpcoesHorario2] = useState([]);
 
+  const [erro, setErro] = useState("");
+
   const primeiraOpcaoCurso = opcoesCurso?.find(opcao => opcao.code == codigoPrimeiroCurso);
   const segundaOpcaoCurso = opcoesCurso?.find(opcao => opcao.code == codigoSegundoCurso);
 
@@ -69,6 +71,9 @@ export default function FormularioCursos() {
     if (cursoId) {
       setOpcoesHorario1(await callApi(getCursoHorarios, false, cursoId));
     }
+
+    if (erro)
+      setErro("")
   }
 
   async function handleMudaSegundaOpcaoCurso(novaOpcao) {
@@ -80,24 +85,35 @@ export default function FormularioCursos() {
     if (cursoId) {
       setOpcoesHorario2(await callApi(getCursoHorarios, false, cursoId));
     }
+
+    if (erro)
+      setErro("")
   }
 
   function handleMudaHorario1(novaOpcao) {
     if (codigoPrimeiroCurso == codigoSegundoCurso && codigoSegundoHorario == novaOpcao) {
       setCodigoSegundoCurso("");
       setCodigoSegundoHorario("");
+      setErro("Opções de curso e horário não podem ser iguais.");
     }
 
     setCodigoPrimeiroHorario(novaOpcao);
+
+    if (erro)
+      setErro("")
   }
 
   function handleMudaHorario2(novaOpcao) {
     if (codigoPrimeiroCurso == codigoSegundoCurso && codigoPrimeiroHorario == novaOpcao) {
       setCodigoPrimeiroCurso("");
       setCodigoPrimeiroHorario("");
+      setErro("Opções de curso e horário não podem ser iguais.");
     }
 
     setCodigoSegundoHorario(novaOpcao);
+
+    if (erro)
+      setErro("")
   }
 
   const { start, complete } = useLoadingBar({
@@ -117,7 +133,7 @@ export default function FormularioCursos() {
     const nomePrimeiraOpcaoCurso = primeiraOpcaoCurso?.name.toLowerCase().normalize();
 
     if ((!codigoSegundoCurso || !codigoSegundoHorario) && !nomePrimeiraOpcaoCurso.includes("teens")) {
-      toast.error("Por favor, preencha a segunda opção de curso.")
+      toast.error(`"Sem segunda opção" só está disponível para os cursos Teens.`);
       return;
     }
 
@@ -144,6 +160,12 @@ export default function FormularioCursos() {
     <form>
       <table className="tabela-form">
         <tbody>
+          {erro &&
+            <tr className='cursos-erro'>
+              <td />
+              <td>{erro}</td>
+            </tr>
+          }
           <tr>
             <td className="label obrigatorio">Primeira Opção de Curso</td>
             <td className="input">
@@ -184,7 +206,7 @@ export default function FormularioCursos() {
             <td className="input">
 
               <Select
-                placeholder="Selecione um curso..."
+                placeholder="Sem segunda opção"
                 dropIcon="/assets/images/icons/angulo.svg"
                 disabled={carregamentoInicial}
                 value={codigoSegundoCurso}
