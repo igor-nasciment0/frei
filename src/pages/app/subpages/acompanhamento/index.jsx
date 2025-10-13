@@ -60,14 +60,17 @@ export default function Acompanhamento() {
               <h3>{carregando ? <Skeleton /> : dadosInscricao?.firstChoice.courseName}</h3>
               <p>{carregando ? <Skeleton /> : dadosInscricao?.firstChoice.periodName}</p>
             </div>
-            <div className="card-opcao">
-              <span className="icon-container">
-                <img src="/assets/images/icons/sacola.svg" alt="" />
-              </span>
-              <span className="option-label">{carregando ? <Skeleton /> : "Segunda Opção"}</span>
-              <h3>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.courseName}</h3>
-              <p>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.periodName}</p>
-            </div>
+
+            {(carregando || dadosInscricao?.secondChoice.courseName) &&
+              <div className="card-opcao">
+                <span className="icon-container">
+                  <img src="/assets/images/icons/sacola.svg" alt="" />
+                </span>
+                <span className="option-label">{carregando ? <Skeleton /> : "Segunda Opção"}</span>
+                <h3>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.courseName}</h3>
+                <p>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.periodName}</p>
+              </div>
+            }
           </SkeletonTheme>
         </div>
       </section>
