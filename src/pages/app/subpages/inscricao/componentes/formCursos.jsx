@@ -149,10 +149,9 @@ export default function FormularioCursos() {
 
     if (r) {
       start("continuous", 0, 100);
-      toast.success("Sucesso!")
+      toast.success("Sucesso!");
       setTimeout(complete, 750);
       setTimeout(() => navigate("/acompanhamento"), 1000);
-      setTimeout(() => window.location.reload(), 1050);
     }
 
     setCarregando(false);

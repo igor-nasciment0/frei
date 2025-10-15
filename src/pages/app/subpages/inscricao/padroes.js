@@ -26,7 +26,7 @@ export default {
   },
   rgInfo: {
     number: "",
-    issueDate: "2010-01-01",
+    issueDate: "",
     issuingAuthority: ""
   },
   primaryResponsible: {

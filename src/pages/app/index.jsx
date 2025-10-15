@@ -6,6 +6,8 @@ import Cabecalho from "../../components/cabecalho";
 import callApi from '../../api/callAPI';
 import { getStatusVestibular } from '../../api/services/vestibular';
 import { useEffect, useState } from 'react';
+import { getInfoUsuario } from '../../api/services/user';
+import { set } from 'local-storage';
 
 export default function App() {
 
@@ -14,6 +16,13 @@ export default function App() {
   useEffect(() => {
     (async () => {
       setStatusVestibular(await callApi(getStatusVestibular))
+    })()
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      const user = await callApi(getInfoUsuario);
+      set("user", user);
     })()
   }, [])
 
