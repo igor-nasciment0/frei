@@ -53,7 +53,7 @@ export default function Timeline({ dadosInscricao }) {
 function TimelineItem({ titulo, children }) {
   return (
     <div className="timeline-item">
-      <div className="timeline-item-content">
+      <div className={"timeline-item-content " + (titulo === 'Agendamento' ? 'agendamento-pendente' : '')}>
         <h3>{titulo}</h3>
         {children}
       </div>

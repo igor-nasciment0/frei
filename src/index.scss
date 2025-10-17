@@ -28,6 +28,31 @@ input:-webkit-autofill {
     animation-fill-mode: both;
 }
 
+
+.aviso-agendamento {
+    background-color: #ffdddd;
+    padding: 20px 15px;
+    border-radius: 5px;
+    color: #c3615f;
+    font-weight: 500;
+    margin-bottom: 50px;
+    font-size: 16px;
+}
+
+.agendamento-pendente {
+    background-color: #ffffff;
+    animation: agendamento-pisca 1s infinite alternate;
+}
+
+/* keyframes: de branco para cinza claro */
+@keyframes agendamento-pisca {
+    from { background-color: #F9F9F9; color: #F9F9F9; }
+    to   { background-color: #ffdddd; color: #c3615f } /* cinza suave */
+}
+
+
+
+
 @keyframes onAutoFillStart {
     from {
     }

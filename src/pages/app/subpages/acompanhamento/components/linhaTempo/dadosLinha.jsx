@@ -89,7 +89,6 @@ export function ConcluirInscricao({ dataAgendada, realizado }) {
       <ul>
         <li>Valor da inscrição: R$ 40,00</li>
         <li>Cópia do RG, CPF</li>
-        <li>Atestado de escolaridade.</li>
       </ul>
       <strong>Instituto Social Nossa Senhora de Fátima</strong>
       <p>Av. Coronel Octaviano de Freitas Costa, 463 - Veleiros, São Paulo - SP, 04773-000</p>

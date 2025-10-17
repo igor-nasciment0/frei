@@ -1,7 +1,7 @@
 import { get } from 'local-storage';
 import AcordeaoPerguntas from '../../../../components/acordeao_perguntas';
 import './index.scss';
-import { useNavigate, useOutletContext } from 'react-router';
+import { Link, useNavigate, useOutletContext } from 'react-router';
 import { useEffect, useState } from 'react';
 import callApi from '../../../../api/callAPI';
 import { formatarData } from '../../../../util/string';
@@ -30,6 +30,11 @@ export default function Inicio() {
 
       <h1>Olá! Seja bem-vindo,</h1>
       <h2>{user?.name}!</h2>
+
+      <div className='agendamento-pendente aviso-agendamento'>
+        Para concluir sua inscrição, realize o agendamento da sua prova clicando <Link style={{textDecoration: 'underline'}} to="/acompanhamento">aqui</Link>.
+        Depois, dirija-se presencialmente à nossa instituição no dia agendado.
+      </div>
 
       <Anuncio statusVestibular={statusVestibular} usuarioInscrito={usuarioInscrito} />
 
