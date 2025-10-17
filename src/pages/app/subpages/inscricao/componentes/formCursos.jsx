@@ -48,6 +48,8 @@ export default function FormularioCursos() {
 
         setMinhaInscricao(insc);
       }
+      
+      setCarregamentoInicial(false);
     })();
   }, [])
 
@@ -59,7 +61,6 @@ export default function FormularioCursos() {
       setCodigoSegundoHorario(String(minhaInscricao.secondChoice.periodCode));
     }
 
-    setCarregamentoInicial(false);
   }, [minhaInscricao])
 
   async function handleMudaPrimeiraOpcaoCurso(novaOpcao) {
@@ -148,7 +149,7 @@ export default function FormularioCursos() {
 
     if (r) {
       start("continuous", 0, 100);
-      toast.success("Sucesso!")
+      toast.success("Sucesso!");
       setTimeout(complete, 750);
       setTimeout(() => navigate("/acompanhamento"), 1000);
     }
@@ -175,7 +176,9 @@ export default function FormularioCursos() {
                 placeholder="Selecione um curso..."
                 dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoPrimeiroCurso}
+                className={carregamentoInicial ? "carregando" : ""}
                 onChange={novoValor => handleMudaPrimeiraOpcaoCurso(novoValor)}>
+                
                 {opcoesCurso.map((curso, index) =>
                   <SelectItem key={'po' + index} value={String(curso.code)}>
                     {curso.name}

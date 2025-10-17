@@ -32,20 +32,31 @@ export default function Inscricao() {
 
 
   // SETUP DO FORMULÁRIO
-  const infoAtual = get("user");
-  delete infoAtual.id, infoAtual.age;
+  function getInfoAtual() {
+    const infoAtual = get("user");
+    delete infoAtual.id, infoAtual.age;
 
-  if (infoAtual?.generalInfo.income !== undefined) infoAtual.generalInfo.income = String(infoAtual?.generalInfo.income);
-  if (infoAtual?.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = String(infoAtual?.generalInfo.peopleAtHome);
-  if (infoAtual?.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = String(infoAtual?.generalInfo.peopleWorking);
+    if (infoAtual?.generalInfo.income !== undefined) infoAtual.generalInfo.income = String(infoAtual?.generalInfo.income);
+    if (infoAtual?.generalInfo.peopleAtHome !== undefined) infoAtual.generalInfo.peopleAtHome = String(infoAtual?.generalInfo.peopleAtHome);
+    if (infoAtual?.generalInfo.peopleWorking !== undefined) infoAtual.generalInfo.peopleWorking = String(infoAtual?.generalInfo.peopleWorking);
 
-  if (infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual?.birthInfo.date);
-  if (infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual?.rgInfo.issueDate);
+    if (infoAtual?.birthInfo.date !== undefined) infoAtual.birthInfo.date = formatarParaInputDate(infoAtual?.birthInfo.date);
+    if (infoAtual?.rgInfo.issueDate !== undefined) infoAtual.rgInfo.issueDate = formatarParaInputDate(infoAtual?.rgInfo.issueDate);
 
-  // o primeiro responsável é sempre a mãe
-  infoAtual.primaryResponsible.relationship = "Mãe";
+    // o primeiro responsável é sempre a mãe
+    infoAtual.primaryResponsible.relationship = "Mãe";
 
-  const methods = useForm({ defaultValues: mergeObjects({ ...padroes }, infoAtual) });
+    return infoAtual;
+  }
+
+  const methods = useForm({ defaultValues: mergeObjects({ ...padroes }, getInfoAtual()) });
+
+  useEffect(() => {
+    const values = mergeObjects({ ...padroes }, getInfoAtual())
+    console.log(values);
+    
+    methods.reset(values)
+  }, [window.location.pathname])
 
   async function submitInfoUsuario(novosDados) {
     novosDados.primaryResponsible.relationship = "Mãe";
@@ -70,7 +81,7 @@ export default function Inscricao() {
 
   const FormAtual = formularios[passoAtual];
 
-  const podeSelecionarAbaCurso = infoAtual.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário 
+  const podeSelecionarAbaCurso = getInfoAtual()?.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário 
 
   return (
     <section className='inscricao'>

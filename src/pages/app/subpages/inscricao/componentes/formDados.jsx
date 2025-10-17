@@ -303,7 +303,14 @@ export function FormularioRG({ avancar, retornar }) {
         </tr>
         <tr>
           <td className="label obrigatorio">Data de emissão</td>
-          <Input name="rgInfo.issueDate" type="date" placeholder="Informe a data de emissão" {...register("rgInfo.issueDate", { required: "Campo obrigatório" })} />
+          <Input
+            name="rgInfo.issueDate"
+            type="date"
+            placeholder="Informe a data de emissão" {
+            ...register("rgInfo.issueDate", {
+              required: "Campo obrigatório",
+              min: { value: "01/01/1900", message: "Data precisa ser maior que 01/01/1900" }
+            })} />
         </tr>
         <tr>
           <td className="label obrigatorio">Órgão emissor</td>

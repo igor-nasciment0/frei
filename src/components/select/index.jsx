@@ -1,7 +1,6 @@
-import * as ReactSelect from '@radix-ui/react-select';
+// import * as ReactSelect from '@radix-ui/react-select';
 
 import './index.scss';
-import React from 'react';
 
 export function Select({ defaultValue, value, disabled, onChange, children, dropIcon = "/assets/images/icons/angulo.svg", className, placeholder }) {
 

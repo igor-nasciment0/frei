@@ -24,3 +24,9 @@ export async function trocaSenha(dados) {
     const r = await api().post('/users/reset-password', dados);
     return r.data;
 }
+
+export async function getInfoUsuario() {
+    const r = await api().get('/users/profile');
+
+    return r.data;
+}

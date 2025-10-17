@@ -6,6 +6,10 @@
     cursor: pointer;
     font-size: 0.875rem;
     background-color: #FFF;
+
+    &.carregando {
+        cursor: wait;
+    }
 }
 
 .custom-select {

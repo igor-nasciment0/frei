@@ -1,24 +1,29 @@
+import { cloneDeep } from "lodash";
+
 export async function sleep(ms) {
   return new Promise((resolve => setTimeout(resolve, ms)))
 }
 
 export function mergeObjects(target, source) {
+  const targetClone = cloneDeep(target);
+
   for (const key in source) {
     if (source.hasOwnProperty(key)) {
       const sourceValue = source[key];
-      const targetValue = target[key];
+      const targetValue = targetClone[key];
 
       // Check if sourceValue is a non-array object and targetValue is also a non-array object
       if (isObject(sourceValue) && isObject(targetValue)) {
-        mergeObjects(targetValue, sourceValue);
+        targetClone[key] = mergeObjects(targetValue, sourceValue);
       } else if (isPrimitive(sourceValue)) {
-        if (shouldFill(target, key)) {
-          target[key] = sourceValue;
+        if (shouldFill(targetClone, key)) {
+          targetClone[key] = sourceValue;
         }
       }
     }
   }
-  return target;
+
+  return targetClone;
 }
 
 export function testState(current, model, optional = []) {
@@ -37,7 +42,7 @@ export function testState(current, model, optional = []) {
       }
     }
   }
-  
+
   return true;
 }
 
@@ -51,8 +56,8 @@ function isPrimitive(value) {
 }
 
 function shouldFill(obj, key) {
-  return !(key in obj) || 
-          obj[key] === null || 
-          obj[key] === undefined || 
-          obj[key] === '';
+  return !(key in obj) ||
+    obj[key] === null ||
+    obj[key] === undefined ||
+    obj[key] === '';
 }
