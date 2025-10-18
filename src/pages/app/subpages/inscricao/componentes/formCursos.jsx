@@ -36,19 +36,21 @@ export default function FormularioCursos() {
       const insc = (await callApi(getInscricao))?.data;
 
       if (insc?.firstChoice) {
-
         const idOpcao1 = cursos.find(curso => curso.code == insc.firstChoice.courseCode).id;
-        const idOpcao2 = cursos.find(curso => curso.code == insc.secondChoice.courseCode).id;
+        const idOpcao2 = cursos.find(curso => curso.code == insc.secondChoice.courseCode)?.id;
 
         const h1 = await callApi(getCursoHorarios, false, idOpcao1);
-        const h2 = await callApi(getCursoHorarios, false, idOpcao2);
 
         setOpcoesHorario1(h1);
-        setOpcoesHorario2(h2);
+
+        if (idOpcao2) {
+          const h2 = await callApi(getCursoHorarios, false, idOpcao2);
+          setOpcoesHorario2(h2);
+        }
 
         setMinhaInscricao(insc);
       }
-      
+
       setCarregamentoInicial(false);
     })();
   }, [])
@@ -178,7 +180,7 @@ export default function FormularioCursos() {
                 value={codigoPrimeiroCurso}
                 className={carregamentoInicial ? "carregando" : ""}
                 onChange={novoValor => handleMudaPrimeiraOpcaoCurso(novoValor)}>
-                
+
                 {opcoesCurso.map((curso, index) =>
                   <SelectItem key={'po' + index} value={String(curso.code)}>
                     {curso.name}

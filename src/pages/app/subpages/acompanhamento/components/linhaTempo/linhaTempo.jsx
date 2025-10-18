@@ -26,7 +26,7 @@ export default function Timeline({ dadosInscricao }) {
         <PreInscricao />
       </TimelineItem>
 
-      <TimelineItem titulo="Agendamento">
+      <TimelineItem titulo="Agendamento" agendamento={agendamento}>
         <Agendamento dataAgendada={agendamento} alteravel={dadosInscricao?.status != 2} />
       </TimelineItem>
 
@@ -50,10 +50,10 @@ export default function Timeline({ dadosInscricao }) {
   );
 };
 
-function TimelineItem({ titulo, children }) {
+function TimelineItem({ titulo, children, agendamento }) {
   return (
     <div className="timeline-item">
-      <div className={"timeline-item-content " + (titulo === 'Agendamento' ? 'agendamento-pendente' : '')}>
+      <div className={"timeline-item-content " + ((titulo === 'Agendamento' && agendamento == null) ? 'agendamento-pendente' : '')}>
         <h3>{titulo}</h3>
         {children}
       </div>

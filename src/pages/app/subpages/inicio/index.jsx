@@ -7,6 +7,7 @@ import callApi from '../../../../api/callAPI';
 import { formatarData } from '../../../../util/string';
 import { getInscricao } from '../../../../api/services/inscricao';
 import Skeleton from 'react-loading-skeleton';
+import { getAgendamento } from '../../../../api/services/agendamento';
 
 export default function Inicio() {
 
@@ -15,12 +16,21 @@ export default function Inicio() {
   const user = get("user");
   const navigate = useNavigate();
 
-  const [usuarioInscrito, setUsuarioInscrito] = useState();
+  const [usuarioInscrito, setUsuarioInscrito] = useState(false);
+  const [agendamento, setAgendamento] = useState();
 
   useEffect(() => {
     (async () => {
       const r = await callApi(getInscricao);
-      if (r?.data?.firstChoice) setUsuarioInscrito(true);
+      if (r?.data?.firstChoice) {
+
+        const r2 = await callApi(getAgendamento);
+
+        if (r2)
+          setAgendamento(r2);
+
+        setUsuarioInscrito(true);
+      }
     })()
   }, [])
 
@@ -31,10 +41,12 @@ export default function Inicio() {
       <h1>Olá! Seja bem-vindo,</h1>
       <h2>{user?.name}!</h2>
 
-      <div className='agendamento-pendente aviso-agendamento'>
-        Para concluir sua inscrição, realize o agendamento da sua prova clicando <Link style={{textDecoration: 'underline'}} to="/acompanhamento">aqui</Link>.
-        Depois, dirija-se presencialmente à nossa instituição no dia agendado.
-      </div>
+      {agendamento == null && usuarioInscrito &&
+        <div className='agendamento-pendente aviso-agendamento'>
+          Para concluir sua inscrição, realize o agendamento da sua prova clicando <Link style={{ textDecoration: 'underline' }} to="/acompanhamento">aqui</Link>.
+          Depois, dirija-se presencialmente à nossa instituição no dia agendado.
+        </div>
+      }
 
       <Anuncio statusVestibular={statusVestibular} usuarioInscrito={usuarioInscrito} />
 
