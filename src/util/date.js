@@ -1,4 +1,5 @@
 import { addMinutes, format, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 /**
  * Função auxiliar que gera um array de horários das 08:00 às 18:00,
@@ -113,7 +114,9 @@ export function converterDataUTCParaLocalSemMudarDia(dataStringUTC) {
   const dataAjustada = addMinutes(dataObj, offset);
 
   // 4. Agora, formata a data ajustada. Ela sairá com o dia correto.
-  return format(dataAjustada, 'dd/MM/yyyy');
+  return format(dataAjustada, 'dd/MM/yyyy', {
+    locale: ptBR
+  });
 }
 
 /**

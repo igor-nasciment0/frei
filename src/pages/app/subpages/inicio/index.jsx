@@ -8,6 +8,7 @@ import { formatarData } from '../../../../util/string';
 import { getInscricao } from '../../../../api/services/inscricao';
 import Skeleton from 'react-loading-skeleton';
 import { getAgendamento } from '../../../../api/services/agendamento';
+import { converterDataUTCParaLocalSemMudarDia } from '../../../../util/date';
 
 export default function Inicio() {
 
@@ -93,13 +94,13 @@ function Anuncio({ statusVestibular, usuarioInscrito }) {
   if (!statusVestibular?.isRegistrationOpen)
     return (
       <div className='anuncio'>
-        <h3>As inscrições para o vestibular <br /> irão começar em {formatarData(statusVestibular?.startDate)}</h3>
+        <h3>As inscrições para o vestibular <br /> irão começar em {converterDataUTCParaLocalSemMudarDia(statusVestibular?.startDate)}</h3>
         <BotaoAnuncio usuarioInscrito={usuarioInscrito} />
       </div>
     )
   else return (
     <div className='anuncio'>
-      <h3>As inscrições para o vestibular <br /> estarão abertas até {formatarData(statusVestibular?.endDate)}</h3>
+      <h3>As inscrições para o vestibular <br /> estarão abertas até {converterDataUTCParaLocalSemMudarDia(statusVestibular?.endDate)}</h3>
       <BotaoAnuncio usuarioInscrito={usuarioInscrito} />
     </div>
   )
