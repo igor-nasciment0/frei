@@ -14,7 +14,8 @@ import { useOutletContext } from 'react-router';
 import { formatarParaInputDate } from '../../../../util/date';
 
 const formularios = [FormularioDadosPessoais, FormularioEndereco, FormularioNascimento, FormularioRG, FormularioResponsavelPrimario, FormularioResponsavelSecundario, FormularioEscolar, FormularioInformacoesGerais]
-const titulos = ["Informações Pessoais", "Endereço", "Informações de Nascimento", "Documento", "Dados da mãe", "Responsável Secundário", "Escolaridade", "Informações Gerais"]
+const titulos = ["Informações Pessoais", "Endereço", "Informações de Nascimento", "Documento", "Dados da Mãe", "Responsável Secundário", "Escolaridade", "Informações Gerais"]
+const TOTAL_ETAPAS = titulos.length + 1; // 8 passos de dados pessoais + escolha do curso
 
 export default function Inscricao() {
 
@@ -53,7 +54,7 @@ export default function Inscricao() {
 
   useEffect(() => {
     const values = mergeObjects({ ...padroes }, getInfoAtual())
-    
+
     methods.reset(values)
   }, [window.location.pathname])
 
@@ -80,16 +81,58 @@ export default function Inscricao() {
 
   const FormAtual = formularios[passoAtual];
 
-  const podeSelecionarAbaCurso = getInfoAtual()?.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário 
+  const podeSelecionarAbaCurso = getInfoAtual()?.generalInfo.howDidYouKnow !== ""; // se uns dos campos do final está preenchido, a pessoa já passou por este formulário
+
+  const etapasConcluidas = mostraFormCursos ? formularios.length : passoAtual;
+  const progressoPct = Math.round((etapasConcluidas / TOTAL_ETAPAS) * 100);
 
   return (
     <section className='inscricao'>
-      <h3 className='nav'>Frei Online {'>'} Inscrição</h3>
+      <p className="eyebrow">Vestibular 2026 · Etapa {etapasConcluidas + 1} de {TOTAL_ETAPAS}</p>
+      <h1>Minha pré-inscrição</h1>
 
       <ToasterContainer />
-      <h3>Minha Pré-Inscrição</h3>
 
-      <section className="conteudo">
+      <div className="conteudo">
+        <aside className="coluna-passos">
+          <div className="barra-progresso">
+            <div style={{ width: `${progressoPct}%` }} />
+          </div>
+          <p className="contador">{etapasConcluidas}/{TOTAL_ETAPAS}</p>
+
+          <ul className='passos'>{
+            titulos.map((nomePasso, i) => (
+              <li onClick={() => { setMostraFormCursos(false); setPassoAtual(i) }} key={i} className={(i === passoAtual && !mostraFormCursos) ? 'ativo' : ((i < passoAtual || mostraFormCursos) ? 'completo' : '')}>
+                <span className="marca">{(i < passoAtual || mostraFormCursos) ? '✓' : i + 1}</span>
+                <p className="selecionavel">{nomePasso}</p>
+              </li>
+            ))
+          }
+            <li className={(mostraFormCursos ? "ativo" : "")} onClick={() => {
+              if (podeSelecionarAbaCurso)
+                setMostraFormCursos(true);
+            }} >
+              <span className="marca">{mostraFormCursos ? titulos.length + 1 : titulos.length + 1}</span>
+              <p className={(podeSelecionarAbaCurso ? "selecionavel" : "")}>Escolha do curso</p>
+            </li>
+          </ul>
+
+          <ul className='passos-mobile'>{
+            titulos.map((_, i) => (
+              <li onClick={() => { setMostraFormCursos(false); setPassoAtual(i) }} key={i} className={(i <= passoAtual && !mostraFormCursos) ? 'passado' : ""}>
+                <span>{i + 1}</span>
+              </li>
+            ))
+          }
+            <li className={mostraFormCursos ? "passado" : ""} onClick={() => {
+              if (podeSelecionarAbaCurso)
+                setMostraFormCursos(true);
+            }} >
+              <span>{titulos.length + 1}</span>
+            </li>
+          </ul>
+        </aside>
+
         {!mostraFormCursos ?
           <FormProvider {...methods}>
             <form id='form-inscricao' onSubmit={methods.handleSubmit(submitInfoUsuario)}>
@@ -115,37 +158,7 @@ export default function Inscricao() {
           :
           <FormularioCursos />
         }
-
-        <ul className='passos'>{
-          titulos.map((nomePasso, i) => (
-            <li onClick={() => { setMostraFormCursos(false); setPassoAtual(i) }} key={i} className={(i === passoAtual && !mostraFormCursos) ? 'ativo' : ((i < passoAtual || mostraFormCursos) ? 'completo' : '')}>
-              <p className="selecionavel">{nomePasso}</p>
-            </li>
-          ))
-        }
-          <li className={(mostraFormCursos ? "ativo" : "")} onClick={() => {
-            if (podeSelecionarAbaCurso)
-              setMostraFormCursos(true);
-          }} >
-            <p className={(podeSelecionarAbaCurso ? "selecionavel" : "")}>Escolha do Curso</p>
-          </li>
-        </ul>
-
-        <ul className='passos-mobile'>{
-          titulos.map((_, i) => (
-            <li onClick={() => { setMostraFormCursos(false); setPassoAtual(i) }} key={i} className={(i <= passoAtual && !mostraFormCursos) ? 'passado' : ""}>
-              <span>{i + 1}</span>
-            </li>
-          ))
-        }
-          <li className={mostraFormCursos ? "passado" : ""} onClick={() => {
-            if (podeSelecionarAbaCurso)
-              setMostraFormCursos(true);
-          }} >
-            <span>*</span>
-          </li>
-        </ul>
-      </section>
+      </div>
 
     </section>
   )

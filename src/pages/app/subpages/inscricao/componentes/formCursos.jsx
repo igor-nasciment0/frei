@@ -120,7 +120,7 @@ export default function FormularioCursos() {
   }
 
   const { start, complete } = useLoadingBar({
-    color: "#4EA2FF",
+    color: "#C2A46A",
     height: 2,
   });
 
@@ -176,7 +176,6 @@ export default function FormularioCursos() {
               <Select
                 disabled={carregamentoInicial}
                 placeholder="Selecione um curso..."
-                dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoPrimeiroCurso}
                 className={carregamentoInicial ? "carregando" : ""}
                 onChange={novoValor => handleMudaPrimeiraOpcaoCurso(novoValor)}>
@@ -197,7 +196,6 @@ export default function FormularioCursos() {
               <Select
                 disabled={!primeiraOpcaoCurso || carregamentoInicial}
                 placeholder="Selecione um horário..."
-                dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoPrimeiroHorario}
                 onChange={novoValor => handleMudaHorario1(novoValor)}>
                 {opcoesHorario1.map((horario, index) =>
@@ -212,7 +210,6 @@ export default function FormularioCursos() {
 
               <Select
                 placeholder="Sem segunda opção"
-                dropIcon="/assets/images/icons/angulo.svg"
                 disabled={carregamentoInicial}
                 value={codigoSegundoCurso}
                 onChange={novoValor => handleMudaSegundaOpcaoCurso(novoValor)}>
@@ -229,7 +226,6 @@ export default function FormularioCursos() {
               <Select
                 disabled={!segundaOpcaoCurso || carregamentoInicial}
                 placeholder="Selecione um horário..."
-                dropIcon="/assets/images/icons/angulo.svg"
                 value={codigoSegundoHorario}
                 onChange={novoValor => handleMudaHorario2(novoValor)}>
                 {opcoesHorario2.map((horario, index) =>

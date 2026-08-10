@@ -2,16 +2,21 @@ import { useEffect, useState } from "react";
 import "./index.scss";
 import callApi from "../../../../api/callAPI";
 import { getInscricao } from "../../../../api/services/inscricao";
-import { useNavigate } from "react-router";
+import { getCursos } from "../../../../api/services/cursos";
+import { Link, useNavigate } from "react-router";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import LinhaTempo from "./components/linhaTempo/linhaTempo";
 import ToasterContainer from "../../../../components/toaster_container";
+import { converterDataUTCParaLocalSemMudarDia } from "../../../../util/date";
+
+const ENDERECO_INSTITUTO = "Av. Coronel Octaviano de Freitas Costa, 463 - Veleiros, São Paulo - SP, 04773-000";
 
 export default function Acompanhamento() {
 
   const navigate = useNavigate();
 
   const [dadosInscricao, setDadosInscricao] = useState();
+  const [cursos, setCursos] = useState([]);
   const [naoPossui, setNaoPossui] = useState(false);
   const [carregando, setCarregando] = useState(true);
 
@@ -21,67 +26,137 @@ export default function Acompanhamento() {
 
       if (r.status == 404)
         setNaoPossui(true);
+      else
+        setDadosInscricao(r.data);
 
-      else setDadosInscricao(r.data);
+      setCursos(await callApi(getCursos) ?? []);
 
       setTimeout(() => setCarregando(false), 1000)
     })();
   }, [])
 
+  function tipoDoCurso(courseCode) {
+    return cursos.find(c => c.code == courseCode)?.type || "Curso";
+  }
+
   if (naoPossui && !carregando)
     return (
       <section className="sem-inscricao">
-        <h2>Acompanhamento</h2>
-        <p>Você ainda não possui inscrição.</p>
-
+        <p className="eyebrow">Acompanhamento</p>
+        <h1>Você ainda não possui inscrição.</h1>
         <button onClick={() => navigate("/inscricao")}>Realizar pré-inscrição</button>
       </section>
     )
 
   return (
     <section className="acompanhamento-page">
-
       <ToasterContainer />
 
-      {
-        !carregando &&
-        <h3 className='nav'>Frei Online {'>'} Acompanhamento</h3>
-      }
+      <p className="eyebrow">{carregando ? <Skeleton width={140} /> : `Inscrição ${dadosInscricao?.protocol ?? ""}`}</p>
+      <h1>Acompanhamento</h1>
 
-      <section className="acompanhamento">
-        <h2>{carregando ? <Skeleton /> : "Acompanhamento"}</h2>
-        <div className="opcoes">
-          <SkeletonTheme baseColor="#e0e0e0" highlightColor="#ffffffff">
-            <div className="card-opcao">
-              <span className="icon-container">
-                <img src="/assets/images/icons/sacola.svg" alt="" />
-              </span>
-              <span className="option-label">{carregando ? <Skeleton /> : "Primeira Opção"}</span>
-              <h3>{carregando ? <Skeleton /> : dadosInscricao?.firstChoice.courseName}</h3>
-              <p>{carregando ? <Skeleton /> : dadosInscricao?.firstChoice.periodName}</p>
+      <SkeletonTheme baseColor="#e7e5da" highlightColor="#f5f4f1">
+        <section className="cursos-escolhidos">
+          <p className="titulo-secao">Cursos escolhidos</p>
+
+          <div className="opcoes">
+            <CardOpcao
+              carregando={carregando}
+              rank="1ª opção"
+              tom="sand"
+              tipo={carregando ? null : tipoDoCurso(dadosInscricao?.firstChoice.courseCode)}
+              nome={dadosInscricao?.firstChoice.courseName}
+              periodo={dadosInscricao?.firstChoice.periodName}
+              idCurso={dadosInscricao?.firstChoice.courseCode}
+              cursos={cursos}
+            />
+
+            {(carregando || dadosInscricao?.secondChoice?.courseName) &&
+              <CardOpcao
+                carregando={carregando}
+                rank="2ª opção"
+                tom="slate"
+                tipo={carregando ? null : tipoDoCurso(dadosInscricao?.secondChoice.courseCode)}
+                nome={dadosInscricao?.secondChoice.courseName}
+                periodo={dadosInscricao?.secondChoice.periodName}
+                idCurso={dadosInscricao?.secondChoice.courseCode}
+                cursos={cursos}
+              />
+            }
+          </div>
+        </section>
+      </SkeletonTheme>
+
+      {!carregando &&
+        <div className="grid-principal">
+          <section className="proximos-passos">
+            <p className="titulo-secao">Próximos passos</p>
+            <LinhaTempo dadosInscricao={dadosInscricao} />
+          </section>
+
+          <div className="coluna-lateral">
+            <div className="card-convocacao">
+              <p className="eyebrow">Convocação para a prova</p>
+              <p className="nota">Local, data e sala definidos pela secretaria. Chegue com 30 minutos de antecedência.</p>
+
+              <div className="linha">
+                <span>Data</span>
+                <strong>{dadosInscricao?.testDate ? converterDataUTCParaLocalSemMudarDia(dadosInscricao.testDate) : "A definir"}</strong>
+              </div>
+              <div className="linha">
+                <span>Horário</span>
+                <strong>{dadosInscricao?.testTime || "A definir"}</strong>
+              </div>
+              <div className="linha">
+                <span>Local</span>
+                <strong>{ENDERECO_INSTITUTO}</strong>
+              </div>
+              <div className="linha">
+                <span>Sala</span>
+                <strong>{dadosInscricao?.testRoom || "A definir"}</strong>
+              </div>
             </div>
 
-            {(carregando || dadosInscricao?.secondChoice.courseName) &&
-              <div className="card-opcao">
-                <span className="icon-container">
-                  <img src="/assets/images/icons/sacola.svg" alt="" />
-                </span>
-                <span className="option-label">{carregando ? <Skeleton /> : "Segunda Opção"}</span>
-                <h3>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.courseName}</h3>
-                <p>{carregando ? <Skeleton /> : dadosInscricao?.secondChoice.periodName}</p>
-              </div>
-            }
-          </SkeletonTheme>
+            <div className="card-levar">
+              <p className="titulo-card">Levar no dia</p>
+              <div className="item">RG e CPF do candidato</div>
+              <div className="item">Comprovante de escolaridade</div>
+              <div className="item">Comprovante de residência</div>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <section className="proximos-passos">
-        <h2>{carregando ? <Skeleton /> : "Próximos Passos"}</h2>
-
-        {!carregando &&
-          <LinhaTempo dadosInscricao={dadosInscricao} />
-        }
-      </section>
+      }
     </section>
   );
 };
+
+function CardOpcao({ carregando, rank, tom, tipo, nome, periodo, idCurso, cursos }) {
+  const curso = cursos.find(c => c.code == idCurso);
+
+  return (
+    <div className={"card-opcao tom-" + tom}>
+      <div className="topo">
+        <span className="rank">{carregando ? <Skeleton width={60} /> : rank}</span>
+        {!carregando && tipo && <span className="tag">{tipo}</span>}
+      </div>
+
+      <h3>{carregando ? <Skeleton /> : nome}</h3>
+
+      {!carregando &&
+        <>
+          <div className="divisor" />
+          <div className="detalhe">
+            <div>
+              <span className="rotulo">Período</span>
+              <span className="valor">{periodo}</span>
+            </div>
+          </div>
+
+          {curso &&
+            <Link to={`/cursos/${curso.id}`}>Ver o curso</Link>
+          }
+        </>
+      }
+    </div>
+  );
+}

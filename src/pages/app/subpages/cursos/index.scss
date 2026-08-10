@@ -1,133 +1,159 @@
-.cursos {
-    max-width: 1000px;
-    container-type: inline-size;
+@use '../../../../styles/tokens' as t;
 
-    .titulo-pagina {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
+.cursos {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        flex-wrap: wrap;
+
+        .eyebrow {
+            @include t.type-eyebrow;
+            color: t.$c-sand;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            @include t.type-h1-page;
+            color: t.$c-navy;
+        }
+
+        .filtro {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            button {
+                padding: 10px 18px;
+                border: 1px solid #dad7ce;
+                font-size: 13px;
+                color: t.$c-text;
+                transition: t.$transition;
+
+                &:hover {
+                    border-color: t.$c-navy;
+                }
+
+                &.ativo {
+                    background: t.$c-navy;
+                    border-color: t.$c-navy;
+                    color: t.$c-white;
+                }
+            }
+        }
     }
 
     .grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-
-        @container (max-width: 620px) {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .filtro {
-        display: flex;
-        gap: 0.5rem;
-
-        > button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            padding: 0.25rem 1rem;
-            border-radius: 4px;
-            border: 1px solid #5D636B;
-
-            color: #5D636B;
-            font-weight: 500;
-            margin-bottom: 3rem;
-
-            font-size: 0.875rem;
-
-            cursor: pointer;
-            transition: 0.1s;
-
-            &:hover {
-                background-color: rgba($color: #000000, $alpha: 0.05);
-            }
-
-            &.ativo {
-                background-color: #5D636B;
-                color: #FFF;
-
-            }
-        }
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px;
     }
 
     .card {
-        border: 1px solid #BCBCBC;
-        border-radius: 6px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        background-color: #FFF;
+        background: t.$c-white;
+        border: 1px solid t.$c-border;
+        cursor: pointer;
+        transition: border-color t.$transition;
 
-        * {
-            font-family: 'Geist';
+        &:hover {
+            border-color: t.$c-navy;
+        }
+
+        &.esqueleto {
+            cursor: default;
+
+            &:hover {
+                border-color: t.$c-border;
+            }
         }
 
         .card-imagem {
-            min-height: 86px;
+            height: 132px;
             background-size: cover;
             background-position: center;
-            background-image: url("");
+
+            &.placeholder {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background-image: repeating-linear-gradient(45deg, #e7e5da, #e7e5da 10px, #f2f1ea 10px, #f2f1ea 20px);
+
+                span {
+                    font-family: t.$font-mono;
+                    font-size: 10px;
+                    letter-spacing: 0.04em;
+                    color: t.$c-text-muted;
+                    background: rgba(255, 255, 255, 0.8);
+                    padding: 4px 10px;
+                }
+            }
         }
 
         .card-conteudo {
-            color: #252525;
-            padding: 1.25rem 1rem;
+            padding: 22px 24px 24px;
             display: flex;
             flex-direction: column;
 
             .card-titulo {
-                font-size: 1.25rem;
-                font-weight: 500;
-                margin-bottom: 4px;
-                line-height: 120%;
+                font-size: 18px;
+                font-weight: 600;
+                color: t.$c-navy;
+                margin-bottom: 10px;
             }
 
             .tags {
                 display: flex;
-                gap: 4px;
-                margin-bottom: 1rem;
+                gap: 8px;
+                margin-bottom: 16px;
 
                 .tag {
-                    border-radius: 4px;
-                    padding: 4px 6px;
-                    font-size: 0.8rem;
-                    background-color: #e8e8e8;
-                    font-weight: 500;
-                    color: #2e2e2e;
+                    @include t.type-tag;
+                    color: t.$c-text-muted;
+
+                    &.categoria {
+                        color: t.$c-slate;
+                        border: 1px solid t.$c-tag-border;
+                        padding: 3px 8px;
+                    }
                 }
             }
 
-            .btn-detalhes {
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                background-color: #252525;
-                color: #FFF;
+            .divisor {
+                height: 1px;
+                background: t.$c-divider-strong;
+                margin-bottom: 14px;
+            }
 
-                line-height: 120%;
-                font-size: 0.875rem;
-                padding: 0.5rem 1rem;
+            .rodape {
+                display: flex;
+                justify-content: flex-end;
 
-                align-self: flex-end;
-
-                width: fit-content;
-
-                transition: 0.2s;
-
-                &:hover {
-                    background-color: #313131;
-                    filter: brightness(1.1);
-                }
-
-                .icone {
-                    width: 16px;
+                .btn-detalhes {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: t.$c-navy;
+                    border-bottom: 1px solid t.$c-sand;
+                    padding-bottom: 1px;
                 }
             }
+        }
+    }
+
+    @include t.bp-1150 {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @include t.bp-640 {
+        .grid {
+            grid-template-columns: 1fr;
         }
     }
 }

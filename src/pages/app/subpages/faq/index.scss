@@ -1,13 +1,56 @@
-.faq {
-    max-width: 780px;
+@use '../../../../styles/tokens' as t;
 
-    h3 {
-        font-size: 1.5rem;
-        margin-bottom: 3rem;
-        line-height: 1.625rem;
+.faq {
+    max-width: 840px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .eyebrow {
+        @include t.type-eyebrow;
+        color: t.$c-sand;
+        margin-bottom: 10px;
     }
 
-    @media screen and (max-width: 768px) {
-        max-width: unset;
+    > h1 {
+        @include t.type-h1-page;
+        color: t.$c-navy;
+    }
+
+    .faixa-contato {
+        background: t.$c-slate;
+        color: t.$c-white;
+        padding: 30px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+
+        .titulo {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .texto {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+        }
+
+        .btn-fantasma {
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: t.$c-white;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 12px 22px;
+            transition: t.$transition;
+            white-space: nowrap;
+
+            &:hover {
+                background: t.$c-white;
+                color: t.$c-slate;
+            }
+        }
     }
 }

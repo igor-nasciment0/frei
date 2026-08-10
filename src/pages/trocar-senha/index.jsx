@@ -5,6 +5,7 @@ import "./index.scss";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link, useLocation } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
+import PainelInstitucional from "../../components/painel_institucional";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 
@@ -45,84 +46,52 @@ export default function TrocarSenha() {
   }
 
   return (
-    <div className="trocar-senha">
+    <div className="auth-page">
       <ToasterContainer />
 
-      <div className="trocar-left">
-        <div className="trocar-card">
-          <Link to="/login">Voltar</Link>
+      <PainelInstitucional />
 
-          <p>
-            Um código de recuperação foi enviado para o seu e-mail. Por favor,
-            verifique.
-          </p>
+      <div className="painel-form">
+        <div className="card">
+          <Link className="voltar" to="/login">← Voltar</Link>
+
+          <div>
+            <p className="eyebrow">Área do candidato</p>
+            <h2>Trocar senha</h2>
+            <p className="intro">Um código de recuperação foi enviado para o seu e-mail. Por favor, verifique.</p>
+          </div>
 
           <form onSubmit={handleSubmit(submit)}>
-            {/* Código de Recuperação */}
-            <div className={"form-group " + (errors.code ? "erro" : "")}>
-              <label htmlFor="code">Código de Recuperação</label>
-              {errors.code && (
-                <span className="error-message">{errors.code.message}</span>
-              )}
+            <div className={"campo " + (errors.code ? "erro" : "")}>
+              <label htmlFor="code">Código de recuperação</label>
               <input
                 {...register("code", { required: "Campo obrigatório" })}
                 type="text"
               />
+              {errors.code && <span className="mensagem-erro">{errors.code.message}</span>}
             </div>
 
-            {/* Nova Senha */}
-            <div className={"form-group " + (errors.newPassword ? "erro" : "")}>
-              <label htmlFor="newPassword">Senha</label>
-              {errors.newPassword && (
-                <span className="error-message">
-                  {errors.newPassword.message}
-                </span>
-              )}
+            <div className={"campo " + (errors.newPassword ? "erro" : "")}>
+              <label htmlFor="newPassword">Nova senha</label>
               <input
                 {...register("newPassword", { required: "Campo obrigatório" })}
                 type="password"
               />
+              {errors.newPassword && <span className="mensagem-erro">{errors.newPassword.message}</span>}
             </div>
 
-            {/* Confirmar Senha */}
-            <div
-              className={
-                "form-group " + (errors.confirmPassword ? "erro" : "")
-              }
-            >
-              <label htmlFor="confirmPassword">Confirmar Senha</label>
-              {errors.confirmPassword && (
-                <span className="error-message">
-                  {errors.confirmPassword.message}
-                </span>
-              )}
+            <div className={"campo " + (errors.confirmPassword ? "erro" : "")}>
+              <label htmlFor="confirmPassword">Confirmar senha</label>
               <input
-                {...register("confirmPassword", {
-                  required: "Campo obrigatório",
-                })}
+                {...register("confirmPassword", { required: "Campo obrigatório" })}
                 type="password"
               />
+              {errors.confirmPassword && <span className="mensagem-erro">{errors.confirmPassword.message}</span>}
             </div>
 
-            <input
-              disabled={isSubmitting}
-              className="btn-enter"
-              type="submit"
-              value="Alterar Senha"
-            />
+            <button disabled={isSubmitting} className="btn-primario" type="submit">Alterar senha</button>
           </form>
         </div>
-      </div>
-
-      <div className="trocar-right">
-        <div className="logo-placeholder">
-          <img
-            src="/assets/images/logo.svg"
-            alt="Logo do Instituto Social Nossa Senhora de Fátima"
-          />
-        </div>
-        <h1 className="main-title">Instituto Social Nossa Senhora de Fátima</h1>
-        <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>
   );

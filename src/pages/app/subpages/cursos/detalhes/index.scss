@@ -1,154 +1,153 @@
+@use '../../../../../styles/tokens' as t;
+
 .curso-detalhes {
-    max-width: 780px;
+    display: flex;
+    flex-direction: column;
 
     .voltar {
         display: inline-block;
-        margin-bottom: 0.75rem;
-        font-size: 1rem;
-        color: #4EA2FF;
-        text-decoration: none;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: t.$c-slate;
 
         &:hover {
-            text-decoration: underline;
+            color: t.$c-navy;
         }
     }
 
-    .curso-imagem {
+    .hero {
         width: 100%;
-        height: 130px;
-        border-radius: 10px;
+        height: clamp(140px, 26vw, 200px);
         background-size: cover;
-        background-position: 0px -80px;
-        margin: 10px 0px 30px 0px;
-    }
+        background-position: center;
+        margin-bottom: 28px;
 
-    .banner {
-        position: relative;
-        height: 100vh;
-        max-height: 250px;
-        border-radius: 8px;
-        background: url("/caminho/da/imagem.jpg") center/cover no-repeat;
-        margin-bottom: 3rem;
-    }
-
-    .secao {
-        margin-bottom: 3rem;
-
-        .nome-curso {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .secao-titulo {
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            font-size: 1.125rem;
-        }
-
-        .card {
-            background: #fff;
-            color: #364356;
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            border: 1px solid #ECECEC;
-
-            p {
-                font-family: 'Geist';
-                color: #555;
-                line-height: 1.5;
-                font-size: 1rem;
-            }
-        }
-    }
-
-    .tabela-infos {
-        display: flex;
-        flex-direction: column;
-        background-color: #FFF;
-        color: #364356;
-
-        container-type: inline-size;
-
-        border-collapse: collapse;
-
-        border: 1px solid #ECECEC;
-        border-radius: 16px;
-        padding: 0.75rem 1rem;
-
-        tr {
-            width: 100%;
-        }
-
-        td {
-            &:nth-child(even) {
-                width: 100%;
-            }
-
-            text-wrap: nowrap;
-            padding: 0.75rem 1rem;
-        }
-
-        tr:not(:last-child) {
-            td {
-                border-bottom: 1px solid #E9E9E9;
-            }
-        }
-
-        .label {
-            font-weight: 500;
-            min-width: 180px;
-            font-size: 1rem;
-            line-height: 1.75rem;
-        }
-
-        .valor {
+        &.placeholder {
             display: flex;
-            flex-direction: row;
             align-items: center;
-            font-size: 1rem;
-            color: #727272;
-            font-weight: 500;
+            justify-content: center;
 
-
-            img {
-                max-width: 24px;
-                margin-right: 1rem;
-            }
+            background-image: repeating-linear-gradient(45deg, #e7e5da, #e7e5da 10px, #f2f1ea 10px, #f2f1ea 20px);
 
             span {
-                display: flex;
-                flex-direction: column;
-                gap: 2px;
-                margin-right: 30px;
+                font-family: t.$font-mono;
+                font-size: 11px;
+                letter-spacing: 0.04em;
+                color: t.$c-text-muted;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 5px 12px;
+            }
+        }
+    }
+
+    .eyebrow {
+        @include t.type-eyebrow;
+        color: t.$c-sand;
+        margin-bottom: 10px;
+    }
+
+    > h1 {
+        @include t.type-h1-page;
+        color: t.$c-navy;
+        margin-bottom: 30px;
+    }
+
+    .grid-principal {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 36px;
+        align-items: start;
+    }
+
+    .coluna-esquerda {
+        .bloco {
+            .rotulo-bloco {
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                color: t.$c-text-muted;
+                margin-bottom: 12px;
+            }
+
+            .texto {
+                font-size: 15px;
+                line-height: 1.75;
+                color: t.$c-text;
+                text-wrap: pretty;
+            }
+        }
+
+        .divisor {
+            height: 1px;
+            background: t.$c-divider-strong;
+            margin: 28px 0;
+        }
+
+        .btn-primario {
+            margin-top: 28px;
+            background: t.$c-navy;
+            color: t.$c-white;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 14px 28px;
+            transition: background t.$transition;
+
+            &:hover {
+                background: t.$c-navy-hover;
+            }
+        }
+    }
+
+    .card-info {
+        background: t.$c-white;
+        border: 1px solid t.$c-border;
+        padding: 26px 28px;
+
+        .titulo-card {
+            @include t.type-eyebrow;
+            color: t.$c-text-muted;
+            margin-bottom: 16px;
+        }
+
+        .item {
+            padding: 14px 0;
+            border-bottom: 1px solid t.$c-divider-soft;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .rotulo {
+                font-size: 12px;
+                color: t.$c-text-muted;
+                margin-bottom: 4px;
+            }
+
+            .valor {
+                font-size: 15px;
+                font-weight: 600;
+                color: t.$c-navy;
 
                 small {
-                    color: #888;
-                    font-size: 0.875em;
+                    font-size: 11px;
+                    font-weight: 500;
+                    color: t.$c-text-muted;
                 }
             }
-        }
 
-        .periodos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.8rem;
-        }
-
-        @container (max-width: 570px) {
-            tr {
-                display: flex;
-                flex-direction: column;
-
-                &:not(:last-child) {
-                    margin-bottom: 0.8rem;
-                }
-
-                .label {
-                    font-size: 0.875rem;
-                    border-bottom: none !important;
-                    padding: 0;
-                }
+            .complemento {
+                font-family: t.$font-mono;
+                font-size: 11px;
+                color: t.$c-text-muted;
+                margin-top: 4px;
             }
+        }
+    }
+
+    @include t.bp-1150 {
+        .grid-principal {
+            grid-template-columns: 1fr;
         }
     }
 }

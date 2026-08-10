@@ -1,4 +1,4 @@
-import { Link, useOutletContext } from "react-router";
+import { Link, useNavigate, useOutletContext } from "react-router";
 import "./index.scss";
 import { useEffect, useState } from "react";
 import callApi from "../../../../../api/callAPI";
@@ -7,12 +7,13 @@ import { getCursoId, getCursoImagem } from "../../../../../api/services/cursos";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { sleep } from "../../../../../util/general";
-import { corrigeURLVideo, formatarComoHTML } from "../../../../../util/string";
+import { formatarComoHTML } from "../../../../../util/string";
 
 
 export default function DetalhesCurso() {
 
   const idCurso = useOutletContext();
+  const navigate = useNavigate();
 
   const [infoCurso, setInfoCurso] = useState();
   const [loading, setLoading] = useState(true);
@@ -57,7 +58,7 @@ export default function DetalhesCurso() {
 
   function separaStringIdade(string) {
     if (!string)
-      return;
+      return ["", ""];
 
     const resultado = [];
 
@@ -67,112 +68,88 @@ export default function DetalhesCurso() {
     return resultado;
   }
 
+  const [idadeMin, idadeMinSufixo] = separaStringIdade(infoCurso?.minAge);
+  const [idadeMax, idadeMaxSufixo] = separaStringIdade(infoCurso?.maxAge);
+
+  const periodosAtivos = infoCurso?.availablePeriods.filter(periodo => periodo.isActive) || [];
+
+  function formatarHorario(horario) {
+    return horario?.replace(':', 'h');
+  }
+
   return (
     <section className="curso-detalhes">
-      {!loading &&
-        <h3 className='nav'>Frei Online {'>'} Cursos {'>'} {infoCurso?.name}</h3>
-      }
-
-      <Link className="voltar" to=".." >Voltar</Link>
+      <Link className="voltar" to="..">← Todos os cursos</Link>
 
       {loading ?
-        <Skeleton height={250} style={{ marginBottom: '3rem' }} /> :
-        <>
-          <div
-            className="curso-imagem"
-            style={{ backgroundImage: `url(${imageUrl})` }}
-          >
-            {!imageUrl && <Skeleton height="100%" width="100%" />}
+        <Skeleton height={180} style={{ marginBottom: '30px' }} />
+        :
+        (imageUrl ?
+          <div className="hero" style={{ backgroundImage: `url(${imageUrl})` }} />
+          :
+          <div className="hero placeholder">
+            <span>foto do curso · 1600×500</span>
           </div>
-        </>
+        )
       }
 
-      <section className="secao">
-        <h2 className="nome-curso">{loading ? <Skeleton /> : infoCurso?.name}</h2>
-        <h3 className="secao-titulo">{loading ? <Skeleton /> : "Visão Geral"}</h3>
-        <div className="card">
-          <p>
-            {loading ? <Skeleton count={10} /> : formatarComoHTML(infoCurso?.description)}
-          </p>
+      <p className="eyebrow">{loading ? <Skeleton width={80} /> : infoCurso?.type}</p>
+      <h1>{loading ? <Skeleton /> : infoCurso?.name}</h1>
+
+      <div className="grid-principal">
+        <div className="coluna-esquerda">
+          <section className="bloco">
+            <p className="rotulo-bloco">Visão geral</p>
+            <p className="texto">{loading ? <Skeleton count={4} /> : formatarComoHTML(infoCurso?.description)}</p>
+          </section>
+
+          {(infoCurso?.jobMarket || loading) &&
+            <>
+              <div className="divisor" />
+              <section className="bloco">
+                <p className="rotulo-bloco">Mercado de trabalho</p>
+                <p className="texto">{loading ? <Skeleton count={3} /> : formatarComoHTML(infoCurso?.jobMarket)}</p>
+              </section>
+            </>
+          }
+
+          {!loading &&
+            <button className="btn-primario" onClick={() => navigate("/inscricao")}>Inscrever-se neste curso</button>
+          }
         </div>
-      </section>
 
-      <section className="secao">
-        <h3 className="secao-titulo">{loading ? <Skeleton /> : "Informações"}</h3>
+        <aside className="card-info">
+          <p className="titulo-card">Informações</p>
 
-        {loading ? <Skeleton height={300} /> :
-          <table className="tabela-infos">
-            <tbody>
-              <tr>
-                <td className="label">Carga Horária</td>
-                <td>
-                  <div className="valor">
-                    <img src="/assets/images/icons/relogio.svg" alt="" /> {infoCurso?.workload}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Idade Mínima/Máxima</td>
-                <td>
-                  <div className="valor">
-                    <img src="/assets/images/icons/calendario2.svg" alt="" />
-                    <span>
-                      {separaStringIdade(infoCurso?.minAge)[0]} <small>{separaStringIdade(infoCurso?.minAge)[1]}</small>
-                    </span>
-                    <img src="/assets/images/icons/calendario2.svg" alt="" />
-                    <span>
-                      {separaStringIdade(infoCurso?.maxAge)[0]} <small>{separaStringIdade(infoCurso?.maxAge)[1]}</small>
-                    </span>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Escolaridade mínima</td>
-                <td>
-                  <div className="valor">
-                    <img src="/assets/images/icons/chapeu.svg" alt="" /> {infoCurso?.minSchoolLevel}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Contribuição mensal</td>
-                <td>
-                  <div className="valor">
-                    <img src="/assets/images/icons/contribuicao.svg" alt="" /> {infoCurso?.contribution}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className="label">Períodos</td>
-                <td>
-                  <div className="valor">
-                    <img src="/assets/images/icons/alarme.svg" alt="" />
-                    <div className="periodos">
-                      {infoCurso?.availablePeriods.filter(periodo => periodo.isActive).map(periodo =>
-                        formatarComoHTML(
-                          `${periodo.entryTime} a ${periodo.exitTime} <small> ${periodo.name}</small>`
-                        )
-                      )}
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        }
-      </section>
-
-      {
-        (infoCurso?.jobMarket || loading) &&
-        <section className="secao">
-          <h3 className="secao-titulo">{loading ? <Skeleton /> : "Mercado de Trabalho"}</h3>
-          <div className="card">
-            <p>
-              {loading ? <Skeleton count={5} /> : formatarComoHTML(infoCurso?.jobMarket)}
-            </p>
-          </div>
-        </section>
-      }
-    </section >
+          {loading ? <Skeleton height={260} /> :
+            <>
+              <div className="item">
+                <p className="rotulo">Carga horária</p>
+                <p className="valor">{infoCurso?.workload}</p>
+              </div>
+              <div className="item">
+                <p className="rotulo">Idade</p>
+                <p className="valor">{idadeMin} <small>{idadeMinSufixo}</small> a {idadeMax} <small>{idadeMaxSufixo}</small></p>
+              </div>
+              <div className="item">
+                <p className="rotulo">Escolaridade mínima</p>
+                <p className="valor">{infoCurso?.minSchoolLevel}</p>
+              </div>
+              <div className="item">
+                <p className="rotulo">Contribuição mensal</p>
+                <p className="valor">{infoCurso?.contribution}</p>
+              </div>
+              <div className="item">
+                <p className="rotulo">Períodos</p>
+                <p className="valor">{periodosAtivos.map(p => p.name).join(" e ")}</p>
+                <p className="complemento">
+                  {periodosAtivos.map(p => `${formatarHorario(p.entryTime)}–${formatarHorario(p.exitTime)}`).join(" · ")}
+                </p>
+              </div>
+            </>
+          }
+        </aside>
+      </div>
+    </section>
   );
 }

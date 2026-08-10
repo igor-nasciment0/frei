@@ -1,114 +1,191 @@
-.container-barra-mobile {
-    position: absolute;
-    left: 0;
-    z-index: 2;
-    overflow-x: auto;
-
-    width: 0;
-
-    >.barra-lateral {
-        max-width: 0;
-        transition: 0.2s max-width ease-in-out;
-        overflow-x: auto;
-    }
-
-    &.aberta {
-        transition: 0.2s background-color;
-        background-color: #000000A6;
-        width: 100vw;
-
-        >.barra-lateral {
-            max-width: min(360px, calc(100vw - 30px));
-        }
-    }
-
-    &:not(.aberta) {
-        transition: width 0.01;
-        transition-delay: 0.2s;
-    }
-}
+@use '../../styles/tokens' as t;
 
 .barra-lateral {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 2rem 0;
 
+    width: 250px;
     height: 100vh;
-    width: 100%;
-    max-width: 240px;
-    position: relative;
+    position: sticky;
+    top: 0;
 
-    background-color: #2B3031;
-    color: #FFF;
+    background: t.$c-navy;
+    padding: 30px 0 24px;
 
-    >button {
-        padding: 10px;
-        background-color: #FFF;
-        border-radius: 100%;
-
+    .topo {
         display: flex;
         align-items: center;
+        gap: 12px;
+        padding: 0 26px 30px;
+    }
+
+    .burger {
+        display: none;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        align-items: center;
         justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+        border: 1px solid t.$c-on-navy-border;
+        transition: border-color t.$transition;
 
-        position: absolute;
-        top: 2rem;
-        right: 2rem;
+        span {
+            display: block;
+            width: 18px;
+            height: 1.5px;
+            background: t.$c-white;
+        }
+
+        &:hover {
+            border-color: t.$c-sand;
+        }
     }
 
-    .logo {
-        max-width: 2.8rem;
-        margin-bottom: 3rem;
+    .marca {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .monograma {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(194, 164, 106, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: t.$c-sand;
+            font-weight: 300;
+            font-size: 16px;
+        }
+
+        .eyebrow {
+            @include t.type-eyebrow;
+            color: t.$c-sand;
+        }
+
+        .sub {
+            font-size: 12px;
+            color: t.$c-on-navy-body;
+            margin-top: 2px;
+        }
     }
 
-    .links {
+    .rotulo-nav {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: t.$c-on-navy-label-faded;
+        padding: 0 26px 8px;
+    }
+
+    nav {
         display: flex;
         flex-direction: column;
-        gap: 10px;
 
-        width: 100%;
-
-        >a {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+        a {
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 13px 26px;
+            color: t.$c-on-navy-body;
+            font-size: 14.5px;
+            font-weight: 500;
+            transition: color t.$transition;
 
-            padding: 1rem;
-            gap: 10px;
-            width: 100%;
-
-            background-color: #00000000;
-            transition: 0.2s;
-
-            &.selecionado {
-                cursor: default;
-                background-color: #3F4647;
+            &:hover {
+                color: t.$c-white;
             }
 
-            &:not(.selecionado):hover {
-                .border {
-                    width: 2px;
-                    height: 100%;
+            &.ativo {
+                color: t.$c-white;
+                background: t.$c-on-navy-active-bg;
+                border-left: 2px solid t.$c-sand;
+                padding-left: 24px;
+            }
+
+            .marcador-ativo {
+                display: none;
+            }
+
+            .badge {
+                font-family: t.$font-mono;
+                font-size: 10px;
+                letter-spacing: 0.04em;
+                background: rgba(194, 164, 106, 0.16);
+                color: t.$c-sand;
+                padding: 2px 6px;
+            }
+        }
+    }
+
+    .rodape {
+        margin-top: auto;
+        padding: 0 26px;
+
+        .divisor {
+            height: 1px;
+            background: t.$c-on-navy-border-softest;
+            margin-bottom: 18px;
+        }
+
+        .atendimento {
+            font-size: 12px;
+            line-height: 1.6;
+            color: t.$c-on-navy-caption;
+            margin-bottom: 14px;
+        }
+
+        .sair {
+            font-size: 13px;
+            font-weight: 600;
+            color: t.$c-sand;
+        }
+    }
+
+    @include t.bp-960 {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 16px 0 18px;
+
+        .topo {
+            padding: 14px 20px;
+        }
+
+        .burger {
+            display: flex;
+        }
+
+        .rotulo-nav,
+        nav {
+            display: none;
+        }
+
+        .rodape {
+            display: none;
+        }
+
+        &[data-open='true'] {
+            nav {
+                display: flex;
+                border-top: 1px solid t.$c-on-navy-border-softest;
+                padding: 6px 0 10px;
+
+                a {
+                    padding: 15px 20px;
                 }
             }
 
-            .border {
-                position: absolute;
-                left: 0;
-                height: 0;
-                width: 0;
-                background-color: #FFF;
-                transition: 0.15s ease-out;
-            }
-
-            >img {
-                width: 1.5rem;
-            }
-
-            >p {
-                font-size: 0.875rem;
-                font-weight: 600;
+            .rodape {
+                display: block;
+                padding: 16px 20px 4px;
             }
         }
     }

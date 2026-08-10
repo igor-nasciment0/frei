@@ -1,15 +1,30 @@
 import './index.scss';
 
 import AcordeaoPerguntas from '../../../../components/acordeao_perguntas';
+import { useSearchParams } from 'react-router';
 
 export default function FAQ() {
+  const [searchParams] = useSearchParams();
+  const qParam = searchParams.get('q');
+  const aberta = qParam !== null ? Number(qParam) : undefined;
+
   return (
     <section className='faq'>
-      <h3 className='nav'>Frei Online {'>'} FAQ</h3>
+      <p className="eyebrow">Central de ajuda</p>
+      <h1>Perguntas frequentes</h1>
 
-      <h3>Perguntas Frequentes</h3>
+      <AcordeaoPerguntas aberta={aberta} />
 
-      <AcordeaoPerguntas />
+      <div className="faixa-contato">
+        <div>
+          <p className="titulo">Não encontrou sua dúvida?</p>
+          <p className="texto">Seg a sex · 8h–11h30 e 13h30–17h · (11) 4362-1000</p>
+        </div>
+
+        <a className="btn-fantasma" href="https://wa.me/551143621000" target="_blank" rel="noopener noreferrer">
+          Falar no WhatsApp
+        </a>
+      </div>
     </section>
   )
 }

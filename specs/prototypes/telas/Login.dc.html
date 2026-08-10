@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#F5F4F1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#4A6B7C;text-decoration:none}
+  a:hover{color:#20304F}
+  input,select,button{font-family:inherit}
+
+  @media (max-width:1150px){
+    [data-r=cols3]{grid-template-columns:repeat(2,1fr) !important}
+    [data-r=pad]{padding:36px 32px 64px !important}
+    [data-r=head]{padding:18px 32px !important}
+  }
+  @media (max-width:960px){
+    [data-r=shell]{display:block !important}
+    [data-r=side]{position:static !important;height:auto !important;padding:16px 0 18px !important}
+    [data-r=nav]{flex-direction:row !important;overflow-x:auto !important;border-top:1px solid rgba(255,255,255,.12) !important;border-bottom:1px solid rgba(255,255,255,.12) !important}
+    [data-r=nav] a{padding:14px 18px !important;white-space:nowrap !important}
+    [data-r=sidefoot]{display:none !important}
+    [data-r=login],[data-r=cols2],[data-r=cols3],[data-r=split],[data-r=steps],[data-r=field]{grid-template-columns:1fr !important}
+    [data-r=sticky]{position:static !important}
+    [data-r=loginL]{padding:40px 28px !important;gap:36px !important}
+    [data-r=loginR]{padding:40px 28px !important}
+    [data-r=pad]{padding:30px 22px 56px !important}
+    [data-r=head]{padding:16px 22px !important}
+  }
+  @media (max-width:640px){
+    [data-r=cols3],[data-r=cards2]{grid-template-columns:1fr !important}
+    [data-r=head]{flex-wrap:wrap !important;gap:12px !important}
+  }
+
+  [data-r=root]{container-type:inline-size}
+  @container (max-width:1150px){
+    [data-r=cols3]{grid-template-columns:repeat(2,1fr) !important}
+    [data-r=pad]{padding:36px 32px 64px !important}
+    [data-r=head]{padding:18px 32px !important}
+  }
+  @container (max-width:960px){
+    [data-r=shell]{display:block !important}
+    [data-r=side]{position:static !important;height:auto !important;padding:16px 0 18px !important}
+    [data-r=nav]{flex-direction:row !important;overflow-x:auto !important;border-top:1px solid rgba(255,255,255,.12) !important;border-bottom:1px solid rgba(255,255,255,.12) !important}
+    [data-r=nav] a{padding:14px 18px !important;white-space:nowrap !important}
+    [data-r=sidefoot]{display:none !important}
+    [data-r=login],[data-r=cols2],[data-r=cols3],[data-r=split],[data-r=steps],[data-r=field]{grid-template-columns:1fr !important}
+    [data-r=sticky]{position:static !important}
+    [data-r=loginL]{padding:40px 28px !important;gap:36px !important}
+    [data-r=loginR]{padding:40px 28px !important}
+    [data-r=pad]{padding:30px 22px 56px !important}
+    [data-r=head]{padding:16px 22px !important}
+  }
+  @container (max-width:640px){
+    [data-r=cols3],[data-r=cards2]{grid-template-columns:1fr !important}
+    [data-r=head]{flex-wrap:wrap !important;gap:12px !important}
+  }
+
+</style>
+</helmet>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+<div data-r="root">
+<div data-r="login" style="display:grid;grid-template-columns:1.05fr 1fr;min-height:100vh;background:#F5F4F1">
+  <div data-r="loginL" style="position:relative;background:#20304F;color:#fff;padding:56px 64px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:38px;height:38px;border:1px solid rgba(194,164,106,.55);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:300;font-size:20px;color:#C2A46A">A</div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#C2A46A;font-weight:600">Ação Social</div>
+        <div style="font-size:12px;letter-spacing:.04em;color:rgba(255,255,255,.68)">Nossa Senhora de Fátima</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:26px;max-width:460px">
+      <div style="width:52px;height:1px;background:#C2A46A"></div>
+      <h1 style="margin:0;font-weight:300;letter-spacing:-.035em;font-size:clamp(36px,6.4vw,60px);line-height:1.04;letter-spacing:-.02em">Pré-inscrições<br><span style="color:#C2A46A">2026</span></h1>
+      <p style="margin:0;font-size:15px;line-height:1.65;color:rgba(255,255,255,.72);text-wrap:pretty">Educação técnica e profissionalizante gratuita ou de baixo custo. Faça sua pré-inscrição, agende a prova e acompanhe cada etapa por aqui.</p>
+    </div>
+    <div style="display:flex;gap:40px">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:300;font-size:30px;color:#C2A46A">12</span><span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5)">Cursos</span></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-weight:300;font-size:30px;color:#C2A46A">64</span><span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5)">Anos de história</span></div>
+    </div>
+  </div>
+
+  <div data-r="loginR" style="display:flex;align-items:center;justify-content:center;padding:56px">
+    <div style="width:100%;max-width:376px;display:flex;flex-direction:column;gap:32px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Área do candidato</span>
+        <h2 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(27px,4vw,36px);line-height:1.12;color:#20304F">Acessar minha conta</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <label style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#4A6B7C">E-mail</span>
+          <input type="email" placeholder="voce@email.com" style="border:none;border-bottom:1px solid #D6D3CB;background:transparent;padding:10px 2px;font-size:16px;color:#333;outline:none" style-focus="border-bottom-color:#20304F">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#4A6B7C">Senha</span>
+          <input type="password" placeholder="••••••••" style="border:none;border-bottom:1px solid #D6D3CB;background:transparent;padding:10px 2px;font-size:16px;color:#333;outline:none" style-focus="border-bottom-color:#20304F">
+        </label>
+        <a href="#" style="align-self:flex-end;font-size:13px;color:#4A6B7C;border-bottom:1px solid rgba(43,86,114,.3);padding-bottom:1px">Esqueci minha senha</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <button onClick="{{ enter }}" style="border:none;background:#20304F;color:#fff;padding:16px 20px;font-size:15px;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:background .18s" style-hover="background:#17233C">Entrar</button>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;color:#8F8F8F">Não possui conta?<a href="Inicio.dc.html" onClick="{{ enter }}" style="color:#20304F;font-weight:600;border-bottom:1px solid #C2A46A;padding-bottom:1px">Criar cadastro</a></div>
+      </div>
+      <div style="height:1px;background:#E2E0D9"></div>
+      <p style="margin:0;font-size:12px;line-height:1.6;color:#8F8F8F">Dúvidas sobre a inscrição? Consulte as <a href="#" style="color:#4A6B7C;border-bottom:1px solid rgba(43,86,114,.3)">perguntas frequentes</a> ou ligue (11) 4362-1000.</p>
+    </div>
+  </div>
+</div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const COURSES = [
+  {id:'inf',name:'Técnico em Informática',kind:'Técnico',hours:'1.000 horas',price:'R$ 160,00 / mês',
+   about:'O curso Técnico em Informática forma profissionais qualificados para atuar em duas grandes áreas: Hardware e Software. Em Hardware, o aluno aprende montagem e manutenção de microcomputadores, além de configurar e gerenciar redes através de um servidor remoto.',
+   about2:'Em Software, o aluno é capacitado a desenvolver programas e sistemas web integrados a banco de dados, dominando JavaScript, HTML, CSS, ReactJS, NodeJS, MySQL, Figma, Trello e Github.',
+   market:'Ao final do curso o aluno está apto a atuar como Analista de Suporte e Redes ou como Desenvolvedor Frontend e Backend. A área de tecnologia está presente em todas as empresas e sofre carência de profissionais qualificados.',
+   info:[{k:'Carga horária',v:'1.000 horas',sub:'2 anos · 5 dias por semana'},{k:'Idade',v:'15 a 25 anos',sub:'até 26/01/2026'},{k:'Escolaridade mínima',v:'1º ano do Ensino Médio',sub:'cursando em 2026'},{k:'Contribuição mensal',v:'R$ 160,00',sub:'material didático à parte'},{k:'Períodos',v:'Manhã e tarde',sub:'07h05–12h00 · 13h40–18h30'}]},
+  {id:'adm',name:'Técnico em Administração',kind:'Técnico',hours:'1.000 horas',price:'R$ 160,00 / mês'},
+  {id:'ele',name:'Eletromecânica de Autos',kind:'Qualificação',hours:'880 horas',price:'R$ 120,00 / mês'},
+  {id:'com',name:'Comunicação Visual',kind:'Técnico',hours:'880 horas',price:'R$ 140,00 / mês'},
+  {id:'ing',name:'Inglês Básico e Pré-intermediário',kind:'Inglês',hours:'320 horas',price:'R$ 90,00 / mês'},
+  {id:'ing2',name:'Inglês Avançado (sábados)',kind:'Inglês',hours:'320 horas',price:'R$ 90,00 / mês'}
+];
+
+const STEPS = [
+  {name:'Informações pessoais',fields:[{label:'Nome completo',value:'Bruno de Oliveira',req:true},{label:'Telefone',value:'+55 (11) 99938-5764',req:true},{label:'Gênero',value:'Masculino',req:true,select:true}]},
+  {name:'Endereço',fields:[{label:'CEP',value:'06693-000',req:true},{label:'Logradouro',value:'Rua das Acácias, 214',req:true},{label:'Bairro',value:'Jardim Nova Itapevi',req:true},{label:'Cidade / UF',value:'Itapevi · SP',req:true,select:true}]},
+  {name:'Informações de nascimento',fields:[{label:'Data de nascimento',value:'14/03/2009',req:true},{label:'Naturalidade',value:'São Paulo · SP',req:true,select:true},{label:'Nacionalidade',value:'Brasileira',req:true,select:true}]},
+  {name:'Documento',fields:[{label:'CPF',value:'472.918.330-51',req:true},{label:'RG',value:'39.884.201-7',req:true},{label:'Órgão emissor',value:'SSP/SP',req:true,select:true}]},
+  {name:'Dados da mãe',fields:[{label:'Nome da mãe',value:'Ana Paula de Oliveira',req:true},{label:'Telefone',value:'+55 (11) 98122-4410',req:true},{label:'Profissão',value:'Auxiliar administrativa',req:false}]},
+  {name:'Responsável secundário',fields:[{label:'Nome',value:'Carlos de Oliveira',req:false},{label:'Parentesco',value:'Pai',req:false,select:true},{label:'Telefone',value:'+55 (11) 97431-2098',req:false}]},
+  {name:'Escolaridade',fields:[{label:'Série em 2026',value:'2º ano do Ensino Médio',req:true,select:true},{label:'Escola atual',value:'EE Prof. João Ribeiro',req:true},{label:'Rede de ensino',value:'Pública',req:true,select:true}]},
+  {name:'Informações gerais',fields:[{label:'Renda familiar',value:'De 1 a 2 salários mínimos',req:true,select:true},{label:'Pessoas na residência',value:'4',req:true},{label:'Como conheceu a escola',value:'Indicação de amigo',req:false,select:true}]},
+  {name:'Escolha do curso',fields:[{label:'Primeira opção',value:'Técnico em Informática',req:true,select:true},{label:'Período',value:'Manhã',req:true,select:true},{label:'Segunda opção',value:'Comunicação Visual',req:true,select:true},{label:'Período',value:'Tarde',req:true,select:true}]}
+];
+
+const FAQS = [
+  {q:'Quando começam as inscrições?',a:'As pré-inscrições para o vestibular 2026 começam em 13/10/2025 e seguem até o preenchimento das vagas. A convocação para a prova é emitida depois de concluir a pré-inscrição.'},
+  {q:'Quais cursos vocês têm?',a:'Oferecemos cursos técnicos (Informática, Administração, Comunicação Visual), qualificação profissional (Eletromecânica de Autos), cursos livres e turmas de Inglês em vários níveis.'},
+  {q:'Qual o horário de atendimento?',a:'De segunda a sexta-feira: manhã das 08h00 às 11h30 e tarde das 13h30 às 17h00.'},
+  {q:'Com que idade posso fazer o curso?',a:'Depende do curso. Os técnicos exigem de 15 a 25 anos completos até 26/01/2026, além da escolaridade mínima indicada na página do curso.'},
+  {q:'Quanto custa estudar aqui?',a:'A contribuição mensal varia de R$ 90,00 a R$ 160,00, conforme o curso. Há material didático de Moral Cristã no valor de R$ 10,00, adquirido no dia da matrícula.'},
+  {q:'Já fiz minha pré-inscrição, o que faço agora?',a:'A secretaria define data, horário, local e sala da sua prova. Essa convocação aparece na área de Acompanhamento — basta comparecer na data indicada com os documentos listados.'},
+  {q:'Quais documentos preciso levar?',a:'RG e CPF do candidato, comprovante de escolaridade e comprovante de residência atualizado. Menores de idade devem estar acompanhados do responsável.'},
+  {q:'Onde fica a escola?',a:'Rua Frei Damião, 145 — Itapevi/SP. Ficamos a 10 minutos da estação Itapevi da CPTM.'}
+];
+
+const TIMELINE = [
+  {title:'Cadastro criado',status:'concluído',desc:'Conta confirmada por e-mail em 14/10/2025.',dot:'#20304F'},
+  {title:'Pré-inscrição preenchida',status:'concluído',desc:'8 de 9 etapas concluídas. Falta apenas a escolha do curso.',dot:'#20304F'},
+  {title:'Convocação emitida',status:'confirmado',desc:'Data, local e sala definidos pela secretaria. Confira os dados ao lado e baixe o comprovante.',dot:'#20304F'},
+  {title:'Prova presencial',status:'aguardando',desc:'Português, Matemática e redação. Duração de 2 horas.',dot:'#C9C6BD'},
+  {title:'Resultado e matrícula',status:'aguardando',desc:'Divulgação em 05/12/2025 nesta página e por e-mail.',dot:'#C9C6BD'}
+];
+
+
+const FILES = {"login":"Login.dc.html","inicio":"Inicio.dc.html","inscricao":"Inscricao.dc.html","acompanhamento":"Acompanhamento.dc.html","cursos":"Cursos.dc.html","curso":"Curso.dc.html","faq":"Duvidas.dc.html"};
+const PAGE = 'login';
+const PARAMS = new URLSearchParams(location.search);
+const COURSE0 = PARAMS.get('c') || 'inf';
+const FAQ0 = PARAMS.get('q') != null ? Number(PARAMS.get('q')) : 2;
+const STEP0 = 8; // etapas 1–8 concluídas; pendente: escolha do curso
+
+class Component extends DCLogic {
+  state = {step:STEP0, faq:FAQ0, course:COURSE0, filter:'Técnico'};
+
+  get page(){ return PAGE; }
+  go(p, extra){ return (e)=>{ if(e&&e.preventDefault) e.preventDefault();
+    const q = extra && extra.course ? '?c='+extra.course : (extra && extra.faq != null ? '?q='+extra.faq : '');
+    location.href = FILES[p] + q; }; }
+
+  renderVals(){
+    const page = this.page;
+    const step = this.state.step;
+    const done = Math.max(step, STEP0);
+    const filter = this.state.filter;
+    const crumbs = {inicio:'Início', inscricao:'Minha inscrição', acompanhamento:'Acompanhamento', cursos:'Cursos', curso:'Cursos', faq:'Dúvidas frequentes'};
+    const course = COURSES.find(c=>c.id===this.state.course) || COURSES[0];
+    const base = COURSES[0];
+    const filled = COURSES.filter(c=>c.kind===filter||filter==='Todos');
+
+    return {
+      isLogin: page==='login',
+      isApp: page!=='login',
+      atInicio: page==='inicio', atInscricao: page==='inscricao', atAcomp: page==='acompanhamento',
+      atCursos: page==='cursos', atCurso: page==='curso', atFaq: page==='faq',
+      crumb: crumbs[page] || 'Início',
+      enter: this.go('inicio'), logout: this.go('login'),
+      goInicio: this.go('inicio'), goInscricao: this.go('inscricao'), goAcomp: this.go('acompanhamento'),
+      goCursos: this.go('cursos'), goFaq: this.go('faq'),
+
+      showAlert: this.props.showAlert !== false,
+      stepNum: step+1, stepTotal: STEPS.length, stepName: STEPS[step].name,
+      progressPct: Math.round((done/STEPS.length)*100)+'%',
+      progressLabel: done+'/'+STEPS.length,
+      fields: STEPS[step].fields,
+      stepsView: STEPS.map((s,i)=>({
+        name: s.name, current: i===step, mark: i<step ? '✓' : String(i+1),
+        go: (e)=>{ e.preventDefault(); this.setState({step:i}); }
+      })),
+      nextLabel: step===STEPS.length-1 ? 'Concluir inscrição' : 'Salvar e avançar',
+      next: ()=> step===STEPS.length-1 ? this.go('acompanhamento')() : this.setState({step:step+1}),
+      prev: (e)=>{ e.preventDefault(); this.setState({step:Math.max(0,step-1)}); },
+
+      timeline: TIMELINE,
+      examInfo: [
+        {k:'Data',v:'Sáb · 22/11/2025'},
+        {k:'Horário',v:'09h00 · portões 08h30'},
+        {k:'Local',v:'Unidade Itapevi — Rua Frei Damião, 145'},
+        {k:'Sala',v:'Bloco B · Sala 14'}
+      ],
+      options: [
+        {rank:'1ª opção',tone:'#C2A46A',name:'Técnico em Informática',kind:'Técnico',period:'Manhã',seats:'32',go:this.go('curso',{course:'inf'})},
+        {rank:'2ª opção',tone:'#8F8F8F',name:'Comunicação Visual',kind:'Técnico',period:'Tarde',seats:'24',go:this.go('curso',{course:'com'})}
+      ],
+
+      filters: ['Todos','Técnico','Qualificação','Inglês'].map(f=>({
+        name:f, on:f===filter, color: f===filter ? '#ffffff' : '#333333',
+        go:(e)=>{ e.preventDefault(); this.setState({filter:f}); }
+      })),
+      courses: filled.map(c=>({
+        name:c.name, kind:c.kind, hours:c.hours, price:c.price,
+        go: this.go('curso',{course:c.id})
+      })),
+      course: {
+        name: course.name, kind: course.kind,
+        about: course.about || base.about, about2: course.about2 || base.about2,
+        market: course.market || base.market, info: course.info || base.info
+      },
+
+      faqs: FAQS.map((f,i)=>({
+        n: String(i+1).padStart(2,'0'), q: f.q, a: f.a,
+        isOpen: this.state.faq===i, sign: this.state.faq===i ? '–' : '+',
+        open:(e)=>{ e.preventDefault(); this.setState({faq: this.state.faq===i ? null : i}); }
+      })),
+      faqPreview: FAQS.slice(0,3).map((f,i)=>({
+        q: f.q, open: this.go('faq',{faq:i})
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

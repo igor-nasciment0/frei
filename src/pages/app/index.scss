@@ -1,48 +1,37 @@
-.app {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+@use '../../styles/tokens' as t;
 
-    background-color: #F9F9F9;
+.shell {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+
+    background: t.$c-bg;
+    color: t.$c-text;
 
     main {
         display: flex;
         flex-direction: column;
-
+        min-width: 0;
         width: 100%;
-        height: 100vh;
-        overflow-y: auto;
+    }
 
-        >section {
-            position: relative;
-            padding: 5.5rem 4rem;
+    .pad {
+        padding: 44px 48px 72px;
+        max-width: 1120px;
+        width: 100%;
+    }
 
-            display: flex;
-            flex-direction: column;
-
-            color: #5D636B;
+    @include t.bp-1150 {
+        .pad {
+            padding: 36px 32px 64px;
         }
     }
 
-    .nav {
-        position: absolute;
-        top: 7px;
-        left: 1rem;
+    @include t.bp-960 {
+        display: block;
 
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: #A5A5A5;
-        user-select: none;
-    }
-
-    @media screen and (max-width: 768px) {
-        main>section {
-            padding: 1.5rem;
-            padding-top: 5rem;
-        }
-
-        .nav {
-            top: 10px;
+        .pad {
+            padding: 30px 22px 56px;
         }
     }
 }

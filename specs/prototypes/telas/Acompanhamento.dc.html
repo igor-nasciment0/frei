@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#F5F4F1;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#4A6B7C;text-decoration:none}
+  a:hover{color:#20304F}
+  input,select,button{font-family:inherit}
+
+  @media (max-width:1150px){
+    [data-r=cols3]{grid-template-columns:repeat(2,1fr) !important}
+    [data-r=pad]{padding:36px 32px 64px !important}
+    [data-r=head]{padding:18px 32px !important}
+  }
+  @media (max-width:960px){
+    [data-r=shell]{display:block !important}
+    [data-r=side]{position:static !important;height:auto !important;padding:16px 0 18px !important}
+    [data-r=side]{flex-direction:column !important}
+    [data-r=sidetop]{padding:14px 20px !important}
+    [data-r=burger]{display:flex !important}
+    [data-r=nav]{display:none !important}
+    [data-r=navlabel]{display:none !important}
+    [data-r=sidefoot]{display:none !important}
+    [data-open=true] [data-r=nav]{display:flex !important;flex-direction:column !important;border-top:1px solid rgba(255,255,255,.12) !important;padding:6px 0 10px !important}
+    [data-open=true] [data-r=nav] a{padding:15px 20px !important}
+    [data-open=true] [data-r=sidefoot]{display:flex !important;padding:16px 20px 4px !important}
+    [data-r=login],[data-r=cols2],[data-r=cols3],[data-r=split],[data-r=steps],[data-r=field]{grid-template-columns:1fr !important}
+    [data-r=sticky]{position:static !important}
+    [data-r=loginL]{padding:40px 28px !important;gap:36px !important}
+    [data-r=loginR]{padding:40px 28px !important}
+    [data-r=pad]{padding:30px 22px 56px !important}
+    [data-r=head]{padding:16px 22px !important}
+  }
+  @media (max-width:640px){
+    [data-r=cols3],[data-r=cards2]{grid-template-columns:1fr !important}
+    [data-r=head]{flex-wrap:wrap !important;gap:12px !important}
+  }
+
+  [data-r=root]{container-type:inline-size}
+  [data-r=burger]{display:none}
+  @container (max-width:1150px){
+    [data-r=cols3]{grid-template-columns:repeat(2,1fr) !important}
+    [data-r=pad]{padding:36px 32px 64px !important}
+    [data-r=head]{padding:18px 32px !important}
+  }
+  @container (max-width:960px){
+    [data-r=shell]{display:block !important}
+    [data-r=side]{position:static !important;height:auto !important;padding:16px 0 18px !important}
+    [data-r=side]{flex-direction:column !important}
+    [data-r=sidetop]{padding:14px 20px !important}
+    [data-r=burger]{display:flex !important}
+    [data-r=nav]{display:none !important}
+    [data-r=navlabel]{display:none !important}
+    [data-r=sidefoot]{display:none !important}
+    [data-open=true] [data-r=nav]{display:flex !important;flex-direction:column !important;border-top:1px solid rgba(255,255,255,.12) !important;padding:6px 0 10px !important}
+    [data-open=true] [data-r=nav] a{padding:15px 20px !important}
+    [data-open=true] [data-r=sidefoot]{display:flex !important;padding:16px 20px 4px !important}
+    [data-r=login],[data-r=cols2],[data-r=cols3],[data-r=split],[data-r=steps],[data-r=field]{grid-template-columns:1fr !important}
+    [data-r=sticky]{position:static !important}
+    [data-r=loginL]{padding:40px 28px !important;gap:36px !important}
+    [data-r=loginR]{padding:40px 28px !important}
+    [data-r=pad]{padding:30px 22px 56px !important}
+    [data-r=head]{padding:16px 22px !important}
+  }
+  @container (max-width:640px){
+    [data-r=cols3],[data-r=cards2]{grid-template-columns:1fr !important}
+    [data-r=head]{flex-wrap:wrap !important;gap:12px !important}
+  }
+
+</style>
+</helmet>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
+<div data-r="root">
+<div data-r="shell" style="display:grid;grid-template-columns:250px 1fr;min-height:100vh;background:#F5F4F1;color:#333">
+
+  <aside data-r="side" data-open="{{ menuOpen }}" style="background:#20304F;color:#fff;display:flex;flex-direction:column;padding:30px 0 24px;position:sticky;top:0;height:100vh;box-sizing:border-box">
+    <div data-r="sidetop" style="display:flex;align-items:center;gap:12px;padding:0 26px 30px">
+      <button data-r="burger" onClick="{{ toggleMenu }}" aria-label="Abrir menu" aria-expanded="{{ menuOpen }}" style="order:2;margin-left:auto;display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;padding:0 11px;box-sizing:border-box;background:transparent;border:1px solid rgba(255,255,255,.28);cursor:pointer" style-hover="border-color:#C2A46A"><span style="display:block;height:1.5px;background:#fff"></span><span style="display:block;height:1.5px;background:#fff"></span><span style="display:block;height:1.5px;background:#fff"></span></button>
+      <div style="width:34px;height:34px;border:1px solid rgba(194,164,106,.55);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:300;font-size:18px;color:#C2A46A">A</div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C2A46A;font-weight:600">Ação Social</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6)">N. S. de Fátima</div>
+      </div>
+    </div>
+    <div data-r="navlabel" style="padding:0 26px 14px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600">Navegação</div>
+    <nav data-r="nav" style="display:flex;flex-direction:column">
+      <a href="Inicio.dc.html" onClick="{{ goInicio }}" style="position:relative;padding:13px 26px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.72)" style-hover="color:#ffffff">
+        
+        <span style="position:relative">Início</span>
+      </a>
+      <a href="Inscricao.dc.html" onClick="{{ goInscricao }}" style="position:relative;padding:13px 26px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.72)" style-hover="color:#ffffff">
+        
+        <span style="position:relative;display:flex;align-items:center;gap:9px">Minha inscrição<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;background:rgba(194,164,106,.16);color:#C2A46A;letter-spacing:.04em">{{ progressLabel }}</span></span>
+      </a>
+      <a href="Acompanhamento.dc.html" onClick="{{ goAcomp }}" style="position:relative;padding:13px 26px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.72)" style-hover="color:#ffffff">
+        <sc-if value="{{ atAcomp }}"><span style="position:absolute;left:0;top:0;bottom:0;right:0;background:rgba(255,255,255,.07);border-left:2px solid #C2A46A"></span></sc-if>
+        <span style="position:relative">Acompanhamento</span>
+      </a>
+      <a href="Cursos.dc.html" onClick="{{ goCursos }}" style="position:relative;padding:13px 26px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.72)" style-hover="color:#ffffff">
+        
+        <span style="position:relative">Cursos</span>
+      </a>
+      <a href="Duvidas.dc.html" onClick="{{ goFaq }}" style="position:relative;padding:13px 26px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.72)" style-hover="color:#ffffff">
+        
+        <span style="position:relative">Dúvidas frequentes</span>
+      </a>
+    </nav>
+    <div data-r="sidefoot" style="margin-top:auto;padding:22px 26px 0;display:flex;flex-direction:column;gap:12px">
+      <div style="height:1px;background:rgba(255,255,255,.12)"></div>
+      <div style="font-size:12px;line-height:1.6;color:rgba(255,255,255,.55)">Atendimento<br><span style="color:#fff">Seg a sex · 8h–11h30 · 13h30–17h</span></div>
+      <a href="Login.dc.html" onClick="{{ logout }}" style="font-size:12.5px;color:#C2A46A">Sair da conta</a>
+    </div>
+  </aside>
+
+  <main style="display:flex;flex-direction:column;min-width:0">
+    <header data-r="head" style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 48px;background:#F5F4F1;border-bottom:1px solid #E2E0D9;position:sticky;top:0;z-index:5">
+      <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:#8F8F8F">
+        <span>Portal do candidato</span><span style="color:#C9C6BD">/</span><span style="color:#20304F;font-weight:600">{{ crumb }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+          <span style="font-size:13.5px;font-weight:600;color:#20304F">Bruno de Oliveira</span>
+          <span style="font-size:11px;color:#8F8F8F;font-family:'JetBrains Mono',monospace">inscrição 2026-04871</span>
+        </div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#4A6B7C;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">BO</div>
+      </div>
+    </header>
+
+    <div data-r="pad" style="padding:44px 48px 72px;max-width:1120px;width:100%;box-sizing:border-box">
+
+      <sc-if value="{{ atInicio }}">
+      <div style="display:flex;flex-direction:column;gap:40px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Olá, seja bem-vindo</span>
+          <h1 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(31px,5vw,46px);line-height:1.1;color:#20304F">Bruno de Oliveira</h1>
+        </div>
+
+        <sc-if value="{{ showAlert }}">
+        <div style="display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid #EBDAD6;padding:20px 22px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#B85C4F;margin-top:7px;flex:none"></span>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <strong style="font-size:14px;color:#B85C4F;font-weight:700">Falta escolher seu curso</strong>
+            <p style="margin:0;font-size:13.5px;line-height:1.6;color:#333;text-wrap:pretty">Falta apenas a etapa de escolha do curso. Depois de concluir, sua convocação para a prova aparece em <a href="Acompanhamento.dc.html" onClick="{{ goAcomp }}" style="color:#20304F;font-weight:600;border-bottom:1px solid #B85C4F">Acompanhamento</a> com data, local e sala.</p>
+          </div>
+        </div>
+        </sc-if>
+
+        <div data-r="cols2" style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:stretch">
+          <div style="background:#20304F;color:#fff;padding:34px 36px;display:flex;flex-direction:column;justify-content:space-between;gap:30px">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#C2A46A;font-weight:600">Vestibular 2026</span>
+              <h2 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(25px,3.2vw,32px);line-height:1.18;max-width:22ch">Sua pré-inscrição está em andamento</h2>
+              <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.7)">Etapa {{ stepNum }} de {{ stepTotal }} · {{ stepName }}</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="height:3px;background:rgba(255,255,255,.16);position:relative">
+                <div style="position:absolute;left:0;top:0;bottom:0;background:#C2A46A;width: {{ progressPct }}"></div>
+              </div>
+              <button onClick="{{ goInscricao }}" style="align-self:flex-start;border:1px solid #C2A46A;background:transparent;color:#C2A46A;padding:12px 22px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.18s" style-hover="background:#C2A46A;color:#20304F">Continuar inscrição</button>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E2E0D9;padding:30px 32px;display:flex;flex-direction:column;gap:22px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Datas</span>
+            <div style="display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#C2A46A">13 OUT</span><span style="font-size:14px;font-weight:600;color:#20304F">Abertura das inscrições</span></div>
+              <div style="height:1px;background:#EBE9E2"></div>
+              <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#C2A46A">22 NOV</span><span style="font-size:14px;font-weight:600;color:#20304F">Prova presencial · Sala 14</span></div>
+              <div style="height:1px;background:#EBE9E2"></div>
+              <div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8F8F8F">05 DEZ</span><span style="font-size:14px;font-weight:600;color:#4A6B7C">Resultado</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between">
+            <h3 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:26px;color:#20304F">Ações rápidas</h3>
+          </div>
+          <div data-r="cols3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+            <a href="Acompanhamento.dc.html" onClick="{{ goAcomp }}" style="background:#fff;border:1px solid #E2E0D9;padding:26px 26px 24px;display:flex;flex-direction:column;gap:26px;transition:.18s" style-hover="border-color:#20304F">
+              <span style="font-weight:300;font-size:26px;color:#C2A46A">01</span>
+              <span style="display:flex;flex-direction:column;gap:5px"><strong style="font-size:15px;color:#20304F">Ver convocação da prova</strong><span style="font-size:12.5px;color:#8F8F8F">Data, local e sala</span></span>
+            </a>
+            <a href="Cursos.dc.html" onClick="{{ goCursos }}" style="background:#fff;border:1px solid #E2E0D9;padding:26px 26px 24px;display:flex;flex-direction:column;gap:26px;transition:.18s" style-hover="border-color:#20304F">
+              <span style="font-weight:300;font-size:26px;color:#C2A46A">02</span>
+              <span style="display:flex;flex-direction:column;gap:5px"><strong style="font-size:15px;color:#20304F">Conhecer os cursos</strong><span style="font-size:12.5px;color:#8F8F8F">12 opções disponíveis</span></span>
+            </a>
+            <a href="Duvidas.dc.html" onClick="{{ goFaq }}" style="background:#fff;border:1px solid #E2E0D9;padding:26px 26px 24px;display:flex;flex-direction:column;gap:26px;transition:.18s" style-hover="border-color:#20304F">
+              <span style="font-weight:300;font-size:26px;color:#C2A46A">03</span>
+              <span style="display:flex;flex-direction:column;gap:5px"><strong style="font-size:15px;color:#20304F">Falar com a secretaria</strong><span style="font-size:12.5px;color:#8F8F8F">(11) 4362-1000</span></span>
+            </a>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between">
+            <h3 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:26px;color:#20304F">Dúvidas frequentes</h3>
+            <a href="Duvidas.dc.html" onClick="{{ goFaq }}" style="font-size:13px;color:#4A6B7C;border-bottom:1px solid rgba(43,86,114,.3)">Ver todas</a>
+          </div>
+          <div style="background:#fff;border:1px solid #E2E0D9">
+            <sc-for list="{{ faqPreview }}" as="q" hint-placeholder-count="3">
+              <a href="#" onClick="{{ q.open }}" style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 26px;border-bottom:1px solid #EDEBE4;font-size:14.5px;color:#20304F;font-weight:500" style-hover="background:#FAF9F6">
+                <span>{{ q.q }}</span><span style="color:#C2A46A;font-size:18px;line-height:1">+</span>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ atInscricao }}">
+      <div style="display:flex;flex-direction:column;gap:34px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Vestibular 2026 · Etapa {{ stepNum }} de {{ stepTotal }}</span>
+          <h1 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(29px,4.4vw,42px);line-height:1.1;color:#20304F">Minha pré-inscrição</h1>
+        </div>
+
+        <div data-r="steps" style="display:grid;grid-template-columns:290px 1fr;gap:44px;align-items:start">
+          <div data-r="sticky" style="display:flex;flex-direction:column;gap:16px;position:sticky;top:110px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="flex:1;height:3px;background:#E2E0D9;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;background:#C2A46A;width: {{ progressPct }}"></div></div>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8F8F8F">{{ progressLabel }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{ stepsView }}" as="s" hint-placeholder-count="9">
+                <a href="#" onClick="{{ s.go }}" style="position:relative;display:flex;align-items:center;gap:12px;padding:11px 14px;font-size:13.5px" style-hover="background:#EDEAE3">
+                  <sc-if value="{{ s.current }}"><span style="position:absolute;left:0;top:0;bottom:0;right:0;background:#fff;border-left:2px solid #20304F"></span></sc-if>
+                  <span style="position:relative;width:18px;height:18px;border-radius:50%;border:1px solid #C9C6BD;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#8F8F8F;flex:none">{{ s.mark }}</span>
+                  <span style="position:relative;color:#333">{{ s.name }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E2E0D9">
+            <div style="padding:30px 34px 22px;border-bottom:1px solid #EDEBE4;display:flex;flex-direction:column;gap:6px">
+              <h2 style="margin:0;font-size:19px;font-weight:700;color:#20304F">{{ stepName }}</h2>
+              <p style="margin:0;font-size:13px;color:#8F8F8F">Campos marcados com <span style="color:#B85C4F">*</span> são obrigatórios.</p>
+            </div>
+            <div style="padding:12px 34px 8px;display:flex;flex-direction:column">
+              <sc-for list="{{ fields }}" as="f" hint-placeholder-count="4">
+                <label data-r="field" style="display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center;padding:18px 0;border-bottom:1px solid #F1EFE9">
+                  <span style="display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;color:#4A6B7C">{{ f.label }}<sc-if value="{{ f.req }}"><span style="color:#B85C4F">*</span></sc-if></span>
+                  <span style="display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #E2E0D9;padding:12px 14px;font-size:14.5px;color:#333;background:#FCFBF8">
+                    <span>{{ f.value }}</span>
+                    <sc-if value="{{ f.select }}"><span style="color:#8F8F8F;font-size:11px">▾</span></sc-if>
+                  </span>
+                </label>
+              </sc-for>
+            </div>
+            <div style="padding:24px 34px 30px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+              <a href="#" onClick="{{ prev }}" style="font-size:13.5px;color:#8F8F8F">← Voltar</a>
+              <button onClick="{{ next }}" style="border:none;background:#20304F;color:#fff;padding:14px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:.18s" style-hover="background:#17233C">{{ nextLabel }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ atAcomp }}">
+      <div style="display:flex;flex-direction:column;gap:34px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Inscrição 2026-04871</span>
+          <h1 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(29px,4.4vw,42px);line-height:1.1;color:#20304F">Acompanhamento</h1>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Cursos escolhidos</span>
+          <div data-r="cards2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <sc-for list="{{ options }}" as="o" hint-placeholder-count="2">
+              <div style="background:#fff;border:1px solid #E2E0D9;padding:26px 28px;display:flex;flex-direction:column;gap:18px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color: {{ o.tone }}">{{ o.rank }}</span>
+                  <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#4A6B7C;border:1px solid #DCE3E7;padding:4px 8px">{{ o.kind }}</span>
+                </div>
+                <strong style="font-size:20px;font-weight:600;letter-spacing:-.015em;color:#20304F;line-height:1.25">{{ o.name }}</strong>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:16px;border-top:1px solid #EDEBE4">
+                  <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#8F8F8F">Período</span><span style="font-size:14px;font-weight:600;color:#20304F">{{ o.period }}</span></span>
+                  <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#8F8F8F">Vagas</span><span style="font-size:14px;font-weight:600;color:#20304F">{{ o.seats }}</span></span>
+                </div>
+                <a href="#" onClick="{{ o.go }}" style="font-size:13px;font-weight:600;color:#20304F;border-bottom:1px solid #C2A46A;padding-bottom:1px;align-self:flex-start">Ver o curso</a>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div data-r="split" style="display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start">
+          <div style="background:#fff;border:1px solid #E2E0D9;padding:34px 36px;display:flex;flex-direction:column;gap:0">
+            <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:20px 1fr;gap:18px">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span style="width:11px;height:11px;border-radius:50%;background: {{ t.dot }};margin-top:5px;flex:none"></span>
+                  <span style="width:1px;flex:1;background:#EBE9E2"></span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;padding-bottom:26px">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <strong style="font-size:15px;color:#20304F">{{ t.title }}</strong>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 7px;background:#F1EFE9;color:#8F8F8F;letter-spacing:.04em">{{ t.status }}</span>
+                  </div>
+                  <p style="margin:0;font-size:13.5px;line-height:1.6;color:#8F8F8F;max-width:60ch;text-wrap:pretty">{{ t.desc }}</p>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div style="background:#20304F;color:#fff;padding:28px 30px;display:flex;flex-direction:column;gap:20px">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#C2A46A;font-weight:600">Convocação para a prova</span>
+                <p style="margin:0;font-size:13px;line-height:1.6;color:rgba(255,255,255,.7)">Local, data e sala definidos pela secretaria. Chegue com 30 minutos de antecedência.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <sc-for list="{{ examInfo }}" as="e" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.13)">
+                    <span style="font-size:12px;color:rgba(255,255,255,.6)">{{ e.k }}</span>
+                    <span style="font-size:14px;font-weight:600;text-align:right;color:#fff">{{ e.v }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <a href="#" style="display:flex;align-items:center;justify-content:center;border:1px solid #C2A46A;padding:12px 18px;font-size:13.5px;font-weight:600;color:#C2A46A" style-hover="background:#C2A46A;color:#20304F">Baixar comprovante</a>
+            </div>
+            <div style="background:#fff;border:1px solid #E2E0D9;padding:26px 28px;display:flex;flex-direction:column;gap:14px">
+              <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Levar no dia</span>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:13.5px;color:#333">
+                <span>RG e CPF do candidato</span>
+                <span style="height:1px;background:#EDEBE4"></span>
+                <span>Comprovante de escolaridade</span>
+                <span style="height:1px;background:#EDEBE4"></span>
+                <span>Comprovante de residência</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ atCursos }}">
+      <div style="display:flex;flex-direction:column;gap:30px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Turmas 2026</span>
+            <h1 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(29px,4.4vw,42px);line-height:1.1;color:#20304F">Nossos cursos</h1>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+              <a href="#" onClick="{{ f.go }}" style="position:relative;padding:10px 18px;border:1px solid #DAD7CE;font-size:13px;color:#333" style-hover="border-color:#20304F">
+                <sc-if value="{{ f.on }}"><span style="position:absolute;left:0;top:0;right:0;bottom:0;background:#20304F"></span></sc-if>
+                <span style="position:relative;color: {{ f.color }}">{{ f.name }}</span>
+              </a>
+            </sc-for>
+          </div>
+        </div>
+
+        <div data-r="cols3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+          <sc-for list="{{ courses }}" as="c" hint-placeholder-count="6">
+            <a href="#" onClick="{{ c.go }}" style="background:#fff;border:1px solid #E2E0D9;display:flex;flex-direction:column;transition:.18s" style-hover="border-color:#20304F">
+              <span style="height:132px;display:flex;align-items:flex-end;padding:12px;background-image:repeating-linear-gradient(45deg,#E7E5DA 0 9px,#F2F1EA 9px 18px)">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.04em;color:#8F8F8F;background:rgba(255,255,255,.8);padding:3px 7px">foto do curso</span>
+              </span>
+              <span style="padding:22px 24px 24px;display:flex;flex-direction:column;gap:14px">
+                <strong style="font-size:18px;font-weight:600;color:#20304F;line-height:1.25">{{ c.name }}</strong>
+                <span style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#4A6B7C;border:1px solid #DCE3E7;padding:4px 8px">{{ c.kind }}</span>
+                  <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8F8F8F;border:1px solid #E2E0D9;padding:4px 8px">{{ c.hours }}</span>
+                </span>
+                <span style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;padding-top:14px;border-top:1px solid #EDEBE4">
+                  <span style="font-size:13px;color:#8F8F8F">{{ c.price }}</span>
+                  <span style="font-size:13px;font-weight:600;color:#20304F;border-bottom:1px solid #C2A46A;padding-bottom:1px">Detalhes</span>
+                </span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      
+
+      <sc-if value="{{ atFaq }}">
+      <div style="display:flex;flex-direction:column;gap:30px;max-width:840px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8F8F8F;font-weight:600">Central de ajuda</span>
+          <h1 style="margin:0;font-weight:300;letter-spacing:-.03em;font-size:clamp(29px,4.4vw,42px);line-height:1.1;color:#20304F">Perguntas frequentes</h1>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E0D9">
+          <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="8">
+            <div style="border-bottom:1px solid #EDEBE4">
+              <a href="#" onClick="{{ q.open }}" style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 28px;font-size:15px;font-weight:500;color:#20304F" style-hover="background:#FAF9F6">
+                <span style="display:flex;gap:14px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#C2A46A">{{ q.n }}</span>{{ q.q }}</span>
+                <span style="color:#C2A46A;font-size:18px;line-height:1">{{ q.sign }}</span>
+              </a>
+              <sc-if value="{{ q.isOpen }}">
+                <p style="margin:0;padding:0 28px 26px 66px;font-size:14.5px;line-height:1.75;color:#333;max-width:70ch;text-wrap:pretty">{{ q.a }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#4A6B7C;color:#fff;padding:30px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <strong style="font-size:17px;font-weight:600">Não encontrou sua dúvida?</strong>
+            <span style="font-size:13.5px;color:rgba(255,255,255,.75)">Seg a sex · 8h–11h30 e 13h30–17h · (11) 4362-1000</span>
+          </div>
+          <a href="#" style="border:1px solid rgba(255,255,255,.5);padding:12px 22px;font-size:13.5px;color:#fff;font-weight:600" style-hover="background:#ffffff;color:#4A6B7C">Falar no WhatsApp</a>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const COURSES = [
+  {id:'inf',name:'Técnico em Informática',kind:'Técnico',hours:'1.000 horas',price:'R$ 160,00 / mês',
+   about:'O curso Técnico em Informática forma profissionais qualificados para atuar em duas grandes áreas: Hardware e Software. Em Hardware, o aluno aprende montagem e manutenção de microcomputadores, além de configurar e gerenciar redes através de um servidor remoto.',
+   about2:'Em Software, o aluno é capacitado a desenvolver programas e sistemas web integrados a banco de dados, dominando JavaScript, HTML, CSS, ReactJS, NodeJS, MySQL, Figma, Trello e Github.',
+   market:'Ao final do curso o aluno está apto a atuar como Analista de Suporte e Redes ou como Desenvolvedor Frontend e Backend. A área de tecnologia está presente em todas as empresas e sofre carência de profissionais qualificados.',
+   info:[{k:'Carga horária',v:'1.000 horas',sub:'2 anos · 5 dias por semana'},{k:'Idade',v:'15 a 25 anos',sub:'até 26/01/2026'},{k:'Escolaridade mínima',v:'1º ano do Ensino Médio',sub:'cursando em 2026'},{k:'Contribuição mensal',v:'R$ 160,00',sub:'material didático à parte'},{k:'Períodos',v:'Manhã e tarde',sub:'07h05–12h00 · 13h40–18h30'}]},
+  {id:'adm',name:'Técnico em Administração',kind:'Técnico',hours:'1.000 horas',price:'R$ 160,00 / mês'},
+  {id:'ele',name:'Eletromecânica de Autos',kind:'Qualificação',hours:'880 horas',price:'R$ 120,00 / mês'},
+  {id:'com',name:'Comunicação Visual',kind:'Técnico',hours:'880 horas',price:'R$ 140,00 / mês'},
+  {id:'ing',name:'Inglês Básico e Pré-intermediário',kind:'Inglês',hours:'320 horas',price:'R$ 90,00 / mês'},
+  {id:'ing2',name:'Inglês Avançado (sábados)',kind:'Inglês',hours:'320 horas',price:'R$ 90,00 / mês'}
+];
+
+const STEPS = [
+  {name:'Informações pessoais',fields:[{label:'Nome completo',value:'Bruno de Oliveira',req:true},{label:'Telefone',value:'+55 (11) 99938-5764',req:true},{label:'Gênero',value:'Masculino',req:true,select:true}]},
+  {name:'Endereço',fields:[{label:'CEP',value:'06693-000',req:true},{label:'Logradouro',value:'Rua das Acácias, 214',req:true},{label:'Bairro',value:'Jardim Nova Itapevi',req:true},{label:'Cidade / UF',value:'Itapevi · SP',req:true,select:true}]},
+  {name:'Informações de nascimento',fields:[{label:'Data de nascimento',value:'14/03/2009',req:true},{label:'Naturalidade',value:'São Paulo · SP',req:true,select:true},{label:'Nacionalidade',value:'Brasileira',req:true,select:true}]},
+  {name:'Documento',fields:[{label:'CPF',value:'472.918.330-51',req:true},{label:'RG',value:'39.884.201-7',req:true},{label:'Órgão emissor',value:'SSP/SP',req:true,select:true}]},
+  {name:'Dados da mãe',fields:[{label:'Nome da mãe',value:'Ana Paula de Oliveira',req:true},{label:'Telefone',value:'+55 (11) 98122-4410',req:true},{label:'Profissão',value:'Auxiliar administrativa',req:false}]},
+  {name:'Responsável secundário',fields:[{label:'Nome',value:'Carlos de Oliveira',req:false},{label:'Parentesco',value:'Pai',req:false,select:true},{label:'Telefone',value:'+55 (11) 97431-2098',req:false}]},
+  {name:'Escolaridade',fields:[{label:'Série em 2026',value:'2º ano do Ensino Médio',req:true,select:true},{label:'Escola atual',value:'EE Prof. João Ribeiro',req:true},{label:'Rede de ensino',value:'Pública',req:true,select:true}]},
+  {name:'Informações gerais',fields:[{label:'Renda familiar',value:'De 1 a 2 salários mínimos',req:true,select:true},{label:'Pessoas na residência',value:'4',req:true},{label:'Como conheceu a escola',value:'Indicação de amigo',req:false,select:true}]},
+  {name:'Escolha do curso',fields:[{label:'Primeira opção',value:'Técnico em Informática',req:true,select:true},{label:'Período',value:'Manhã',req:true,select:true},{label:'Segunda opção',value:'Comunicação Visual',req:true,select:true},{label:'Período',value:'Tarde',req:true,select:true}]}
+];
+
+const FAQS = [
+  {q:'Quando começam as inscrições?',a:'As pré-inscrições para o vestibular 2026 começam em 13/10/2025 e seguem até o preenchimento das vagas. A convocação para a prova é emitida depois de concluir a pré-inscrição.'},
+  {q:'Quais cursos vocês têm?',a:'Oferecemos cursos técnicos (Informática, Administração, Comunicação Visual), qualificação profissional (Eletromecânica de Autos), cursos livres e turmas de Inglês em vários níveis.'},
+  {q:'Qual o horário de atendimento?',a:'De segunda a sexta-feira: manhã das 08h00 às 11h30 e tarde das 13h30 às 17h00.'},
+  {q:'Com que idade posso fazer o curso?',a:'Depende do curso. Os técnicos exigem de 15 a 25 anos completos até 26/01/2026, além da escolaridade mínima indicada na página do curso.'},
+  {q:'Quanto custa estudar aqui?',a:'A contribuição mensal varia de R$ 90,00 a R$ 160,00, conforme o curso. Há material didático de Moral Cristã no valor de R$ 10,00, adquirido no dia da matrícula.'},
+  {q:'Já fiz minha pré-inscrição, o que faço agora?',a:'A secretaria define data, horário, local e sala da sua prova. Essa convocação aparece na área de Acompanhamento — basta comparecer na data indicada com os documentos listados.'},
+  {q:'Quais documentos preciso levar?',a:'RG e CPF do candidato, comprovante de escolaridade e comprovante de residência atualizado. Menores de idade devem estar acompanhados do responsável.'},
+  {q:'Onde fica a escola?',a:'Rua Frei Damião, 145 — Itapevi/SP. Ficamos a 10 minutos da estação Itapevi da CPTM.'}
+];
+
+const TIMELINE = [
+  {title:'Cadastro criado',status:'concluído',desc:'Conta confirmada por e-mail em 14/10/2025.',dot:'#20304F'},
+  {title:'Pré-inscrição preenchida',status:'concluído',desc:'8 de 9 etapas concluídas. Falta apenas a escolha do curso.',dot:'#20304F'},
+  {title:'Convocação emitida',status:'confirmado',desc:'Data, local e sala definidos pela secretaria. Confira os dados ao lado e baixe o comprovante.',dot:'#20304F'},
+  {title:'Prova presencial',status:'aguardando',desc:'Português, Matemática e redação. Duração de 2 horas.',dot:'#C9C6BD'},
+  {title:'Resultado e matrícula',status:'aguardando',desc:'Divulgação em 05/12/2025 nesta página e por e-mail.',dot:'#C9C6BD'}
+];
+
+
+const FILES = {"login":"Login.dc.html","inicio":"Inicio.dc.html","inscricao":"Inscricao.dc.html","acompanhamento":"Acompanhamento.dc.html","cursos":"Cursos.dc.html","curso":"Curso.dc.html","faq":"Duvidas.dc.html"};
+const PAGE = 'acompanhamento';
+const PARAMS = new URLSearchParams(location.search);
+const COURSE0 = PARAMS.get('c') || 'inf';
+const FAQ0 = PARAMS.get('q') != null ? Number(PARAMS.get('q')) : 2;
+const STEP0 = 8; // etapas 1–8 concluídas; pendente: escolha do curso
+
+class Component extends DCLogic {
+  state = {step:STEP0, faq:FAQ0, course:COURSE0, filter:'Técnico', menuOpen:false};
+
+  get page(){ return PAGE; }
+  go(p, extra){ return (e)=>{ if(e&&e.preventDefault) e.preventDefault();
+    const q = extra && extra.course ? '?c='+extra.course : (extra && extra.faq != null ? '?q='+extra.faq : '');
+    location.href = FILES[p] + q; }; }
+
+  renderVals(){
+    const page = this.page;
+    const step = this.state.step;
+    const done = Math.max(step, STEP0);
+    const filter = this.state.filter;
+    const crumbs = {inicio:'Início', inscricao:'Minha inscrição', acompanhamento:'Acompanhamento', cursos:'Cursos', curso:'Cursos', faq:'Dúvidas frequentes'};
+    const course = COURSES.find(c=>c.id===this.state.course) || COURSES[0];
+    const base = COURSES[0];
+    const filled = COURSES.filter(c=>c.kind===filter||filter==='Todos');
+
+    return {
+      menuOpen: this.state.menuOpen,
+      toggleMenu: (e)=>{ if(e&&e.preventDefault) e.preventDefault(); this.setState(st=>({menuOpen: !st.menuOpen})); },
+      isLogin: page==='login',
+      isApp: page!=='login',
+      atInicio: page==='inicio', atInscricao: page==='inscricao', atAcomp: page==='acompanhamento',
+      atCursos: page==='cursos', atCurso: page==='curso', atFaq: page==='faq',
+      crumb: crumbs[page] || 'Início',
+      enter: this.go('inicio'), logout: this.go('login'),
+      goInicio: this.go('inicio'), goInscricao: this.go('inscricao'), goAcomp: this.go('acompanhamento'),
+      goCursos: this.go('cursos'), goFaq: this.go('faq'),
+
+      showAlert: this.props.showAlert !== false,
+      stepNum: step+1, stepTotal: STEPS.length, stepName: STEPS[step].name,
+      progressPct: Math.round((done/STEPS.length)*100)+'%',
+      progressLabel: done+'/'+STEPS.length,
+      fields: STEPS[step].fields,
+      stepsView: STEPS.map((s,i)=>({
+        name: s.name, current: i===step, mark: i<step ? '✓' : String(i+1),
+        go: (e)=>{ e.preventDefault(); this.setState({step:i}); }
+      })),
+      nextLabel: step===STEPS.length-1 ? 'Concluir inscrição' : 'Salvar e avançar',
+      next: ()=> step===STEPS.length-1 ? this.go('acompanhamento')() : this.setState({step:step+1}),
+      prev: (e)=>{ e.preventDefault(); this.setState({step:Math.max(0,step-1)}); },
+
+      timeline: TIMELINE,
+      examInfo: [
+        {k:'Data',v:'Sáb · 22/11/2025'},
+        {k:'Horário',v:'09h00 · portões 08h30'},
+        {k:'Local',v:'Unidade Itapevi — Rua Frei Damião, 145'},
+        {k:'Sala',v:'Bloco B · Sala 14'}
+      ],
+      options: [
+        {rank:'1ª opção',tone:'#C2A46A',name:'Técnico em Informática',kind:'Técnico',period:'Manhã',seats:'32',go:this.go('curso',{course:'inf'})},
+        {rank:'2ª opção',tone:'#8F8F8F',name:'Comunicação Visual',kind:'Técnico',period:'Tarde',seats:'24',go:this.go('curso',{course:'com'})}
+      ],
+
+      filters: ['Todos','Técnico','Qualificação','Inglês'].map(f=>({
+        name:f, on:f===filter, color: f===filter ? '#ffffff' : '#333333',
+        go:(e)=>{ e.preventDefault(); this.setState({filter:f}); }
+      })),
+      courses: filled.map(c=>({
+        name:c.name, kind:c.kind, hours:c.hours, price:c.price,
+        go: this.go('curso',{course:c.id})
+      })),
+      course: {
+        name: course.name, kind: course.kind,
+        about: course.about || base.about, about2: course.about2 || base.about2,
+        market: course.market || base.market, info: course.info || base.info
+      },
+
+      faqs: FAQS.map((f,i)=>({
+        n: String(i+1).padStart(2,'0'), q: f.q, a: f.a,
+        isOpen: this.state.faq===i, sign: this.state.faq===i ? '–' : '+',
+        open:(e)=>{ e.preventDefault(); this.setState({faq: this.state.faq===i ? null : i}); }
+      })),
+      faqPreview: FAQS.slice(0,3).map((f,i)=>({
+        q: f.q, open: this.go('faq',{faq:i})
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

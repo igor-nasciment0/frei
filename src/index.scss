@@ -1,22 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@use './styles/tokens' as t;
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 * {
     box-sizing: border-box;
     margin: 0;
-    font-family: 'Inter';
+    font-family: t.$font-sans;
+}
+
+body {
+    background: t.$c-bg;
+    -webkit-font-smoothing: antialiased;
 }
 
 a {
     text-decoration: none;
-    color: inherit;
+    color: t.$c-slate;
+    transition: color t.$transition;
+}
+
+a:hover {
+    color: t.$c-navy;
 }
 
 button {
     background: none;
     border: none;
+    cursor: pointer;
 }
 
-input {
+input,
+select {
     outline: none;
     border: none;
     padding: 0;
@@ -28,40 +42,9 @@ input:-webkit-autofill {
     animation-fill-mode: both;
 }
 
-
-.aviso-agendamento {
-    background-color: #ffdddd;
-    padding: 20px 15px;
-    border-radius: 5px;
-    color: #c3615f;
-    font-weight: 500;
-    margin-bottom: 50px;
-    font-size: 16px;
-}
-
-.agendamento-pendente {
-    background-color: #ffffff;
-    animation: agendamento-pisca 1s infinite alternate;
-}
-
-/* keyframes: de branco para cinza claro */
-@keyframes agendamento-pisca {
-    from { background-color: #F9F9F9; color: #F9F9F9; }
-    to   { background-color: #ffdddd; color: #c3615f } /* cinza suave */
-}
-
-
-
-
 @keyframes onAutoFillStart {
     from {
     }
     to {
-    }
-}
-
-@media screen and (max-width: 768px) {
-    html {
-        font-size: 14px;
     }
 }

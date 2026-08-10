@@ -6,6 +6,7 @@ import "./index.scss";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
+import PainelInstitucional from "../../components/painel_institucional";
 import { useLoadingBar } from "react-top-loading-bar";
 import { IMaskInput } from "react-imask";
 import { generateFormData } from "../../util/form";
@@ -31,8 +32,8 @@ export default function Cadastro() {
   const navigate = useNavigate();
 
   const { start, complete } = useLoadingBar({
-    color: "#4EA2FF",
-    height: 2,
+    color: "#C2A46A",
+    height: 3,
   });
 
   async function submit(dadosCadastro) {
@@ -64,32 +65,32 @@ export default function Cadastro() {
   }
 
   return (
-    <div className="cadastro-page">
+    <div className="auth-page">
       <ToasterContainer />
 
-      <div className="cadastro-left">
-        <div className="cadastro-card">
+      <PainelInstitucional />
+
+      <div className="painel-form">
+        <div className="card">
+          <div>
+            <p className="eyebrow">Área do candidato</p>
+            <h2>Criar cadastro</h2>
+          </div>
+
           <form onSubmit={handleSubmit(submit)}>
-            {/* Nome */}
-            <div className={"form-group " + (errors.name ? "erro" : "")}>
-              <label htmlFor="name">Nome Completo do Candidato(a)</label>
-              {errors.name && (
-                <span className="error-message">{errors.name.message}</span>
-              )}
+            <div className={"campo " + (errors.name ? "erro" : "")}>
+              <label htmlFor="name">Nome completo do candidato(a)</label>
               <input
                 {...register("name", { required: "Campo obrigatório" })}
                 type="text"
                 placeholder="João Silva"
               />
+              {errors.name && <span className="mensagem-erro">{errors.name.message}</span>}
             </div>
 
-            {/* Linha CPF e Data */}
             <div className="row">
-              <div className={"form-group " + (errors.cpf ? "erro" : "")}>
-                <label htmlFor="cpf">CPF do Candidato(a)</label>
-                {errors.cpf && (
-                  <span className="error-message">{errors.cpf.message}</span>
-                )}
+              <div className={"campo " + (errors.cpf ? "erro" : "")}>
+                <label htmlFor="cpf">CPF do candidato(a)</label>
                 <Controller
                   name="cpf"
                   control={control}
@@ -107,92 +108,54 @@ export default function Cadastro() {
                     />
                   )}
                 />
+                {errors.cpf && <span className="mensagem-erro">{errors.cpf.message}</span>}
               </div>
 
-              <div className={"form-group " + (errors.birthDate ? "erro" : "")}>
-                <label htmlFor="birthDate">Data de Nascimento do Candidato(a)</label>
-                {errors.birthDate && (
-                  <span className="error-message">
-                    {errors.birthDate.message}
-                  </span>
-                )}
+              <div className={"campo " + (errors.birthDate ? "erro" : "")}>
+                <label htmlFor="birthDate">Data de nascimento</label>
                 <input
                   {...register("birthDate", { required: "Campo obrigatório" })}
                   type="date"
                 />
+                {errors.birthDate && <span className="mensagem-erro">{errors.birthDate.message}</span>}
               </div>
             </div>
 
-            {/* Email */}
-            <div className={"form-group " + (errors.email ? "erro" : "")}>
-              <label htmlFor="email">E-mail do Candidato(a)</label>
-              {errors.email && (
-                <span className="error-message">{errors.email.message}</span>
-              )}
+            <div className={"campo " + (errors.email ? "erro" : "")}>
+              <label htmlFor="email">E-mail do candidato(a)</label>
               <input
                 {...register("email", { required: "Campo obrigatório" })}
                 type="email"
                 placeholder="usuario@email.com"
               />
+              {errors.email && <span className="mensagem-erro">{errors.email.message}</span>}
             </div>
 
-            {/* Senha */}
-            <div className={"form-group " + (errors.password ? "erro" : "")}>
+            <div className={"campo " + (errors.password ? "erro" : "")}>
               <label htmlFor="password">Senha</label>
-              {errors.password && (
-                <span className="error-message">
-                  {errors.password.message}
-                </span>
-              )}
               <input
                 {...register("password", { required: "Campo obrigatório" })}
                 type="password"
               />
+              {errors.password && <span className="mensagem-erro">{errors.password.message}</span>}
             </div>
 
-            {/* Confirmar Senha */}
-            <div
-              className={
-                "form-group " + (errors.confirmPassword ? "erro" : "")
-              }
-            >
+            <div className={"campo " + (errors.confirmPassword ? "erro" : "")}>
               <label htmlFor="confirmPassword">Confirmar senha</label>
-              {errors.confirmPassword && (
-                <span className="error-message">
-                  {errors.confirmPassword.message}
-                </span>
-              )}
               <input
-                {...register("confirmPassword", {
-                  required: "Campo obrigatório",
-                })}
+                {...register("confirmPassword", { required: "Campo obrigatório" })}
                 type="password"
               />
+              {errors.confirmPassword && <span className="mensagem-erro">{errors.confirmPassword.message}</span>}
             </div>
 
-            <input
-              disabled={isSubmitting}
-              className="btn-enter"
-              type="submit"
-              value="Entrar"
-            />
+            <button disabled={isSubmitting} className="btn-primario" type="submit">Criar cadastro</button>
 
-            <span className="link-login">
+            <p className="link-secundario">
               Já possui uma conta? <Link to="/login">Faça login</Link>
-            </span>
+            </p>
           </form>
         </div>
-      </div>
-
-      <div className="cadastro-right">
-        <div className="logo-placeholder">
-          <img
-            src="/assets/images/logo.svg"
-            alt="Logo do Instituto Social Nossa Senhora de Fátima"
-          />
-        </div>
-        <h1 className="main-title">Instituto Social Nossa Senhora de Fátima</h1>
-        <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>
   );

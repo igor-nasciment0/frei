@@ -5,6 +5,7 @@ import "./index.scss";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
+import PainelInstitucional from "../../components/painel_institucional";
 import toast from "react-hot-toast";
 import { useLoadingBar } from "react-top-loading-bar";
 
@@ -18,8 +19,8 @@ export default function RecuperarSenha() {
   const navigate = useNavigate();
 
   const { start, complete } = useLoadingBar({
-    color: "#4EA2FF",
-    height: 2,
+    color: "#C2A46A",
+    height: 3,
   });
 
   async function submit(dados) {
@@ -37,46 +38,35 @@ export default function RecuperarSenha() {
   }
 
   return (
-    <div className="recuperar-senha">
+    <div className="auth-page">
       <ToasterContainer />
 
-      <div className="recuperar-left">
-        <div className="recuperar-card">
-          <Link to="/login">Voltar</Link>
+      <PainelInstitucional />
+
+      <div className="painel-form">
+        <div className="card">
+          <Link className="voltar" to="/login">← Voltar</Link>
+
+          <div>
+            <p className="eyebrow">Área do candidato</p>
+            <h2>Recuperar senha</h2>
+            <p className="intro">Informe o e-mail da sua conta para receber um código de recuperação.</p>
+          </div>
 
           <form onSubmit={handleSubmit(submit)}>
-            {/* E-mail */}
-            <div className={"form-group " + (errors.Email ? "erro" : "")}>
+            <div className={"campo " + (errors.Email ? "erro" : "")}>
               <label htmlFor="email">E-mail</label>
-              {errors.Email && (
-                <span className="error-message">{errors.Email.message}</span>
-              )}
               <input
                 {...register("Email", { required: "Campo obrigatório" })}
                 type="email"
                 placeholder="usuario@email.com"
               />
+              {errors.Email && <span className="mensagem-erro">{errors.Email.message}</span>}
             </div>
 
-            <input
-              disabled={isSubmitting}
-              className="btn-enter"
-              type="submit"
-              value="Enviar código de recuperação"
-            />
+            <button disabled={isSubmitting} className="btn-primario" type="submit">Enviar código de recuperação</button>
           </form>
         </div>
-      </div>
-
-      <div className="recuperar-right">
-        <div className="logo-placeholder">
-          <img
-            src="/assets/images/logo.svg"
-            alt="Logo do Instituto Social Nossa Senhora de Fátima"
-          />
-        </div>
-        <h1 className="main-title">Instituto Social Nossa Senhora de Fátima</h1>
-        <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>
   );

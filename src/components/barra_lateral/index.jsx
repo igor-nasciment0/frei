@@ -1,73 +1,79 @@
-import { Link, useLocation, useMatch } from 'react-router';
+import { Link, useLocation, useMatch, useNavigate } from 'react-router';
 import './index.scss';
-import useMediaQuery from '../../util/useMediaQuery';
-import { useEffect, useRef, useState } from 'react';
-import useClickOutside from '../../util/useClickOutside';
+import { useEffect, useState } from 'react';
+import { remove } from 'local-storage';
+import { calcularProgresso } from '../../util/progresso';
 
-export default function BarraLateral() {
-  const isMobile = useMediaQuery("screen and (max-width: 768px)");
+const LINKS = [
+  { para: '/', titulo: 'Início' },
+  { para: '/inscricao', titulo: 'Minha inscrição', badge: true },
+  { para: '/acompanhamento', titulo: 'Acompanhamento' },
+  { para: '/cursos', titulo: 'Cursos' },
+  { para: '/faq', titulo: 'Dúvidas frequentes' },
+];
 
-  if(isMobile === null)
-    return null;
-
-  if (isMobile)
-    return <BarraMobile />
-  else
-    return <BarraPadrao />
-}
-
-function BarraMobile() {
+export default function BarraLateral({ user, inscricao }) {
   const [aberta, setAberta] = useState(false);
-
-  const barraRef = useRef(null);
-  useClickOutside(barraRef, () => setAberta(false));
-
   const location = useLocation();
-  useEffect(() => setAberta(false), [location.pathname])
+  const navigate = useNavigate();
+
+  useEffect(() => setAberta(false), [location.pathname]);
+
+  const progresso = calcularProgresso(user, !!inscricao?.firstChoice);
+  const badgeValue = `${progresso.concluidas}/${progresso.total}`;
+
+  function sair() {
+    remove('token');
+    remove('user');
+    navigate('/login');
+  }
 
   return (
-    <>
-      <button id='Button___openSideBar' style={{ display: 'none' }} onClick={() => setAberta(true)} />
+    <aside className="barra-lateral" data-open={aberta}>
+      <div className="topo">
+        <button
+          className="burger"
+          aria-label={aberta ? 'Fechar navegação' : 'Abrir navegação'}
+          aria-expanded={aberta}
+          onClick={() => setAberta(!aberta)}
+        >
+          <span /><span /><span />
+        </button>
 
-      <div className={"container-barra-mobile " + (aberta ? "aberta" : "")} >
-        <BarraPadrao ref={barraRef} isMobile={true} close={() => setAberta(false)} />
+        <div className="marca">
+          <span className="monograma">A</span>
+          <div>
+            <p className="eyebrow">Ação Social</p>
+            <p className="sub">Nossa Senhora de Fátima</p>
+          </div>
+        </div>
       </div>
-    </>
-  )
+
+      <p className="rotulo-nav">Navegação</p>
+
+      <nav>
+        {LINKS.map(link => (
+          <LinkLateral key={link.para} {...link} badgeValue={link.badge ? badgeValue : null} />
+        ))}
+      </nav>
+
+      <div className="rodape">
+        <div className="divisor" />
+        <p className="atendimento">Atendimento<br />Seg a sex · 8h–11h30 · 13h30–17h</p>
+        <button className="sair" onClick={sair}>Sair da conta</button>
+      </div>
+    </aside>
+  );
 }
 
-function BarraPadrao({ ref, isMobile, close }) {
-  return (
-    <div className='barra-lateral' ref={ref}>
-      <div className='logo'>
-        <img src="/assets/images/logo.svg" alt="" />
-      </div>
-
-      {isMobile && <button onClick={close}>
-        <img src="/assets/images/icons/fechar.svg" alt="" />
-      </button>}
-
-      <div className='links'>
-        <LinkLateral para={"/"} titulo={"Início"} icone={"casa"} />
-        <LinkLateral para={"/inscricao"} titulo={"Inscrição"} icone={"usuarios"} />
-        <LinkLateral para={"/acompanhamento"} titulo={"Acompanhamento"} icone={"calendario"} />
-        <LinkLateral para={"/cursos"} titulo={"Cursos"} icone={"carteira"} />
-        <LinkLateral para={"/faq"} titulo={"FAQ"} icone={"arquivos"} />
-      </div>
-    </div>
-  )
-}
-
-function LinkLateral({ para, titulo, icone }) {
-
+function LinkLateral({ para, titulo, badgeValue }) {
   const selecionado = useMatch(para);
 
   return (
-    <Link to={para} className={selecionado ? "selecionado" : ""}>
-      <img src={"/assets/images/icons/" + icone + ".svg"} alt={"Imagem de " + icone} />
-      <p>{titulo}</p>
-
-      <div className="border" />
+    <Link to={para} className={selecionado ? 'ativo' : ''}>
+      {selecionado && <span className="marcador-ativo" />}
+      <span className="titulo">{titulo}</span>
+      {badgeValue && <span className="badge">{badgeValue}</span>}
     </Link>
-  )
+  );
 }

@@ -1,0 +1,162 @@
+// Padrão visual compartilhado pelas telas públicas (Login, Cadastro, Recuperar/Trocar Senha).
+// Só o Login tem protótipo próprio — as demais estendem os mesmos tokens/mixins por decisão de produto.
+@use './tokens' as t;
+
+@mixin auth-page {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    min-height: 100vh;
+    background: t.$c-bg;
+
+    @include t.bp-960 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@mixin auth-painel-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+
+    .card {
+        width: 100%;
+        max-width: 376px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+
+        .voltar {
+            font-size: 13px;
+            color: t.$c-slate;
+        }
+
+        .eyebrow {
+            @include t.type-eyebrow;
+            color: t.$c-sand;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            @include t.type-h2-card-dark;
+            color: t.$c-navy;
+        }
+
+        .intro {
+            font-size: 14px;
+            line-height: 1.6;
+            color: t.$c-text-muted;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+
+            @include t.bp-640 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            label {
+                @include t.type-label;
+                color: t.$c-slate;
+            }
+
+            input {
+                font-size: 16px;
+                color: t.$c-text;
+                background: transparent;
+                border-bottom: 1px solid t.$c-input-border;
+                padding: 6px 2px;
+                transition: border-color t.$transition;
+
+                &:focus {
+                    border-bottom-color: t.$c-navy;
+                }
+            }
+
+            .mensagem-erro {
+                font-size: 12.5px;
+                color: t.$c-clay;
+            }
+
+            &.erro input {
+                border-bottom-color: t.$c-clay;
+            }
+        }
+
+        .esqueci-senha {
+            text-align: right;
+            margin-top: -8px;
+
+            a {
+                font-size: 13px;
+                border-bottom: 1px solid rgba(74, 107, 124, 0.3);
+                padding-bottom: 1px;
+            }
+        }
+
+        .btn-primario {
+            width: 100%;
+            background: t.$c-navy;
+            color: t.$c-white;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 16px 20px;
+            transition: background t.$transition;
+
+            &:hover:not(:disabled) {
+                background: t.$c-navy-hover;
+            }
+
+            &:disabled {
+                opacity: 0.7;
+                cursor: wait;
+            }
+        }
+
+        .link-secundario {
+            text-align: center;
+            font-size: 13.5px;
+            color: t.$c-text-muted;
+
+            a {
+                color: t.$c-navy;
+                border-bottom: 1px solid t.$c-sand;
+                padding-bottom: 1px;
+            }
+        }
+
+        .divisor {
+            height: 1px;
+            background: t.$c-divider-strong;
+        }
+
+        .nota {
+            font-size: 12px;
+            line-height: 1.6;
+            color: t.$c-text-muted;
+
+            a {
+                color: t.$c-slate;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    @include t.bp-960 {
+        padding: 40px 28px;
+    }
+}

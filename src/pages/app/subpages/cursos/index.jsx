@@ -3,31 +3,59 @@ import "./index.scss";
 import { useEffect, useState } from "react";
 import callApi from "../../../../api/callAPI";
 import { getCursoImagem, getCursos } from "../../../../api/services/cursos";
-import Carregamento from "../../../../components/carregamento";
-import Skeleton from "react-loading-skeleton";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
+async function carregarImagem(imageId) {
+  if (!imageId) return null;
+
+  try {
+    const blob = await callApi(getCursoImagem, false, imageId);
+    const url = URL.createObjectURL(blob);
+
+    // só considera a imagem "pronta" depois que ela de fato decodificou no navegador
+    return await new Promise(resolve => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => resolve(url);
+      img.onerror = () => resolve(null);
+    });
+  } catch (error) {
+    console.error("Erro ao buscar a imagem do curso:", error);
+    return null;
+  }
+}
 
 export default function Cursos() {
 
   const [cursos, setCursos] = useState([]);
+  const [imagens, setImagens] = useState({});
   const [filtro, setFiltro] = useState('');
   const [cursosFiltrados, setCursosFiltrados] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
-  const tiposCurso = [...new Set(cursos.map(c => c.type.trim())), "Inglês"];
+  const tiposCurso = ["Todos", ...new Set(cursos.map(c => c.type.trim())), "Inglês"];
 
   useEffect(() => {
-    async function getData() {
-      const r = (await callApi(getCursos));
-      setCursos(r);
-    }
+    (async () => {
+      const lista = (await callApi(getCursos)) ?? [];
+      setCursos(lista);
 
-    getData();
+      // só mostra os cartões quando todas as imagens já estiverem carregadas
+      const entradas = await Promise.all(
+        lista.map(async curso => [curso.imageId, await carregarImagem(curso.imageId)])
+      );
+
+      setImagens(Object.fromEntries(entradas.filter(([, url]) => url)));
+      setCarregando(false);
+    })();
   }, [])
 
   useEffect(() => {
-    if(filtro === "Inglês") 
+    if (filtro === "Inglês")
       return setCursosFiltrados(cursos.filter(c => c.name.toLowerCase().normalize().trim().includes('inglês')));
 
-    if (filtro) {
+    if (filtro && filtro !== "Todos") {
       setCursosFiltrados(cursos.filter(c => c.type.trim() === filtro.trim() && !c.name.toLowerCase().trim().includes('inglês')));
     } else {
       setCursosFiltrados(cursos);
@@ -39,86 +67,100 @@ export default function Cursos() {
   if (idCurso)
     return (<Outlet context={idCurso} />)
 
-  if (!cursos.length)
-    return <Carregamento />
-
   return (
     <section className="cursos">
-      <h3 className='nav'>Frei Online {'>'} Cursos</h3>
+      <div className="cabecalho">
+        <div>
+          <p className="eyebrow">Turmas 2026</p>
+          <h1>Nossos cursos</h1>
+        </div>
 
-      <h2 className="titulo-pagina">Nossos Cursos</h2>
-
-      <div className="filtro">
-        {tiposCurso.map((tipo, index) => (
-          <button
-            key={index}
-            className={filtro === tipo ? 'ativo' : ''}
-            onClick={() => setFiltro(filtro === tipo.trim() ? '' : tipo)}
-          >
-            {tipo}
-          </button>
-        ))}
+        <div className="filtro">
+          {carregando ?
+            Array.from({ length: 4 }).map((_, i) =>
+              <Skeleton key={i} width={i === 0 ? 70 : 100} height={35} />
+            )
+            :
+            tiposCurso.map((tipo, index) => (
+              <button
+                key={index}
+                className={(filtro === tipo || (tipo === "Todos" && !filtro)) ? 'ativo' : ''}
+                onClick={() => setFiltro(tipo === "Todos" ? '' : (filtro === tipo ? '' : tipo))}
+              >
+                {tipo}
+              </button>
+            ))
+          }
+        </div>
       </div>
 
       <div className="grid">
-        {cursosFiltrados.map((curso, index) => (
-          <CardCurso infoCurso={curso} key={'curso' + index} />
-        ))}
+        {carregando ?
+          Array.from({ length: 6 }).map((_, i) => <CardCursoEsqueleto key={i} />)
+          :
+          cursosFiltrados.map((curso, index) => (
+            <CardCurso infoCurso={curso} imageUrl={imagens[curso.imageId]} key={'curso' + index} />
+          ))
+        }
       </div>
     </section>
   );
 }
 
-function CardCurso({ infoCurso }) {
+function CardCurso({ infoCurso, imageUrl }) {
 
   const navigate = useNavigate();
 
-  const [imageUrl, setImageUrl] = useState('');
-
-  const fetchImage = async (imageId) => {
-    if (imageId) {
-      try {
-        const blob = await callApi(getCursoImagem, false, imageId);
-        let currentUrl = URL.createObjectURL(blob);
-        return currentUrl;
-      } catch (error) {
-        console.error("Erro ao buscar a imagem do curso:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      const url = await fetchImage(infoCurso.imageId);
-      const img = new Image();
-      img.src = url;
-      img.onload = () => {
-        setImageUrl(url)
-      };
-    })()
-  }, [infoCurso.imageId]);
-
   return (
-    <div className="card">
-      <div
-        className="card-imagem"
-        style={{ backgroundImage: `url(${imageUrl})` }}
-      >
-        {!imageUrl && <Skeleton height="100%" width="100%" />}
-      </div>
+    <div className="card" onClick={() => navigate('/cursos/' + infoCurso.id)}>
+      {imageUrl ?
+        <div className="card-imagem" style={{ backgroundImage: `url(${imageUrl})` }} />
+        :
+        <div className="card-imagem placeholder">
+          <span>foto do curso</span>
+        </div>
+      }
 
       <div className="card-conteudo">
         <h3 className="card-titulo">{infoCurso.name}</h3>
 
         <div className="tags">
-          <span className="tag">{infoCurso.type}</span>
+          <span className="tag categoria">{infoCurso.type}</span>
           <span className="tag">{infoCurso.workload}</span>
         </div>
 
-        <button className="btn-detalhes" onClick={() => navigate('/cursos/' + infoCurso.id)}>
-          Detalhes
-          <img src="/assets/images/icons/seta.svg" alt="" />
-        </button>
+        <div className="divisor" />
+
+        <div className="rodape">
+          <button className="btn-detalhes" onClick={(e) => { e.stopPropagation(); navigate('/cursos/' + infoCurso.id) }}>
+            Detalhes
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CardCursoEsqueleto() {
+  return (
+    <div className="card esqueleto">
+      <div className="card-imagem">
+        <Skeleton height="100%" style={{ display: 'block' }} />
+      </div>
+
+      <div className="card-conteudo">
+        <h3 className="card-titulo"><Skeleton width="70%" /></h3>
+
+        <div className="tags">
+          <span className="tag"><Skeleton width={60} height={20} /></span>
+          <span className="tag"><Skeleton width={50} height={20} /></span>
+        </div>
+
+        <div className="divisor" />
+
+        <div className="rodape">
+          <Skeleton width={60} />
+        </div>
       </div>
     </div>
   )

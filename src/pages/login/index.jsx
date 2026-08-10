@@ -6,6 +6,7 @@ import "./index.scss";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router";
 import ToasterContainer from "../../components/toaster_container";
+import PainelInstitucional from "../../components/painel_institucional";
 import { generateFormData } from "../../util/form";
 import { useLoadingBar } from "react-top-loading-bar";
 
@@ -19,8 +20,8 @@ export default function Login() {
   const navigate = useNavigate();
 
   const { start, complete } = useLoadingBar({
-    color: "#4EA2FF",
-    height: 2,
+    color: "#C2A46A",
+    height: 3,
   });
 
   async function submit(loginData) {
@@ -36,64 +37,55 @@ export default function Login() {
   }
 
   return (
-    <div className="login-page">
+    <div className="auth-page">
       <ToasterContainer />
 
-      <div className="login-left">
-        <div className="login-card">
+      <PainelInstitucional />
+
+      <div className="painel-form">
+        <div className="card">
+          <div>
+            <p className="eyebrow">Área do candidato</p>
+            <h2>Acessar minha conta</h2>
+          </div>
+
           <form onSubmit={handleSubmit(submit)}>
-            {/* E-mail */}
-            <div className={"form-group " + (errors.Email ? "erro" : "")}>
+            <div className={"campo " + (errors.Email ? "erro" : "")}>
               <label htmlFor="email">E-mail</label>
-              {errors.Email && (
-                <span className="error-message">{errors.Email.message}</span>
-              )}
               <input
                 {...register("Email", { required: "Campo obrigatório" })}
                 type="email"
                 placeholder="usuario@email.com"
               />
+              {errors.Email && <span className="mensagem-erro">{errors.Email.message}</span>}
             </div>
 
-            {/* Senha */}
-            <div className={"form-group " + (errors.Password ? "erro" : "")}>
+            <div className={"campo " + (errors.Password ? "erro" : "")}>
               <label htmlFor="password">Senha</label>
-              {errors.Password && (
-                <span className="error-message">{errors.Password.message}</span>
-              )}
               <input
                 {...register("Password", { required: "Campo obrigatório" })}
                 type="password"
               />
+              {errors.Password && <span className="mensagem-erro">{errors.Password.message}</span>}
             </div>
 
             <div className="esqueci-senha">
-              <Link to="/recuperar-senha">Esqueci a senha</Link>
+              <Link to="/recuperar-senha">Esqueci minha senha</Link>
             </div>
 
-            <input
-              disabled={isSubmitting}
-              className="btn-enter"
-              type="submit"
-              value="Entrar"
-            />
+            <button disabled={isSubmitting} className="btn-primario" type="submit">Entrar</button>
 
-            <span className="link-cadastro">
-              Não possui conta? <Link to="/cadastro">Cadastre-se</Link>
-            </span>
+            <p className="link-secundario">
+              Não possui conta? <Link to="/cadastro">Criar cadastro</Link>
+            </p>
+
+            <div className="divisor" />
+
+            <p className="nota">
+              Dúvidas sobre o processo? Consulte nosso <Link to="/faq">FAQ</Link> ou ligue para (11) 4362-1000.
+            </p>
           </form>
         </div>
-      </div>
-
-      <div className="login-right">
-        <div className="logo-placeholder">
-          <img
-            src="/assets/images/logo.svg"
-            alt="Logo do Instituto Social Nossa Senhora de Fátima"
-          />
-        </div>
-        <h1 className="main-title">Instituto Social Nossa Senhora de Fátima</h1>
-        <h2 className="sub-title">Pré-Inscrições</h2>
       </div>
     </div>
   );

@@ -1,0 +1,138 @@
+// Design tokens — Frei Online
+// Fonte: specs/prototypes/README.md (protótipos em specs/prototypes/telas)
+
+// ---------------------------------------------------------------------------
+// Cores
+// ---------------------------------------------------------------------------
+$c-navy: #20304f; // primária — sidebar, cards escuros, títulos, botão primário
+$c-navy-hover: #17233c; // hover do botão primário
+$c-slate: #4a6b7c; // secundária — rótulos, tags, links, faixa de contato
+$c-sand: #c2a46a; // acento — numerais, eyebrows, barra de progresso, marcador ativo
+$c-clay: #b85c4f; // alerta — pendências, asterisco obrigatório
+
+$c-bg: #f5f4f1; // fundo da página
+$c-white: #fff;
+
+$c-text: #333; // texto em fundo claro
+$c-text-muted: #8f8f8f; // legendas, rótulos, descrições
+
+$c-border: #e2e0d9; // borda de card
+$c-divider-strong: #edebe4; // divisor dentro de card
+$c-divider-soft: #f1efe9; // divisor de lista de campos
+$c-divider-timeline: #ebe9e2; // linha vertical da timeline
+
+$c-input-border: #d6d3cb; // borda inferior dos inputs (login)
+$c-input-bg: #fcfbf8; // fundo dos campos do formulário
+
+$c-inactive: #c9c6bd; // marcador de etapa futura, borda de círculo
+$c-row-hover: #faf9f6; // hover das linhas de FAQ
+
+$c-tag-border: #dce3e7; // borda das tags de categoria
+
+$c-alert-border: #ebdad6; // borda do card de alerta
+$c-alert-hover: #edeae3; // hover da lista de etapas
+
+// Sobre fundo escuro ($c-navy), usar rgba(255,255,255, α)
+$c-on-navy-title: rgba(255, 255, 255, 1);
+$c-on-navy-body: rgba(255, 255, 255, 0.72);
+$c-on-navy-secondary: rgba(255, 255, 255, 0.7);
+$c-on-navy-caption: rgba(255, 255, 255, 0.6);
+$c-on-navy-caption-soft: rgba(255, 255, 255, 0.5);
+$c-on-navy-label-faded: rgba(255, 255, 255, 0.38);
+$c-on-navy-border: rgba(255, 255, 255, 0.28);
+$c-on-navy-border-soft: rgba(255, 255, 255, 0.2);
+$c-on-navy-border-softer: rgba(255, 255, 255, 0.13);
+$c-on-navy-border-softest: rgba(255, 255, 255, 0.12);
+$c-on-navy-active-bg: rgba(255, 255, 255, 0.07);
+
+// ---------------------------------------------------------------------------
+// Tipografia
+// ---------------------------------------------------------------------------
+$font-sans: 'Manrope', system-ui, sans-serif;
+$font-mono: 'JetBrains Mono', monospace;
+
+// ---------------------------------------------------------------------------
+// Bordas, raios, sombras, transições
+// ---------------------------------------------------------------------------
+$radius: 0; // raio zero em tudo, exceto círculos (aplicar border-radius:50% direto)
+$shadow: none;
+$transition: 0.18s;
+
+// ---------------------------------------------------------------------------
+// Breakpoints
+// ---------------------------------------------------------------------------
+@mixin bp-1150 {
+    @media (max-width: 1150px) {
+        @content;
+    }
+}
+
+@mixin bp-960 {
+    @media (max-width: 960px) {
+        @content;
+    }
+}
+
+@mixin bp-640 {
+    @media (max-width: 640px) {
+        @content;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Papéis de tipografia reutilizáveis
+// ---------------------------------------------------------------------------
+@mixin type-h1-login {
+    font-size: clamp(36px, 6.4vw, 60px);
+    font-weight: 300;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+}
+
+@mixin type-h1-page {
+    font-size: clamp(29px, 4.4vw, 42px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+@mixin type-h2-card-dark {
+    font-size: clamp(25px, 3.2vw, 32px);
+    font-weight: 300;
+    line-height: 1.18;
+    letter-spacing: -0.03em;
+}
+
+@mixin type-h3-section {
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+}
+
+@mixin type-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+@mixin type-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+@mixin type-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+@mixin type-mono {
+    font-family: $font-mono;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+}

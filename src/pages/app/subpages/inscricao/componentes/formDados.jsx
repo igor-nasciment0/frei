@@ -71,7 +71,7 @@ export function FormularioDadosPessoais({ avancar }) {
       </tbody>
       <tfoot>
         <tr className="submit"><td>
-          <button type="button" onClick={() => avancar(["name", "phone", "gender"])}>Avançar</button></td></tr>
+          <button type="button" onClick={() => avancar(["name", "phone", "gender"])}>Salvar e avançar</button></td></tr>
       </tfoot>
     </table>
   );
@@ -170,7 +170,7 @@ export function FormularioEndereco({ avancar, retornar }) {
       </tbody>
       <tfoot>
         <tr className="submit"><td>
-          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button onClick={retornar} type="button" className="retornar">← Voltar</button>
           <button type="button" onClick={() => avancar([
             "address.cep",
             "address.street",
@@ -180,7 +180,7 @@ export function FormularioEndereco({ avancar, retornar }) {
             "address.number",
             "address.complement"
           ])}>
-            Avançar
+            Salvar e avançar
           </button>
         </td></tr>
       </tfoot>
@@ -234,14 +234,14 @@ export function FormularioNascimento({ avancar, retornar }) {
       </tbody>
       <tfoot>
         <tr className="submit"><td>
-          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button onClick={retornar} type="button" className="retornar">← Voltar</button>
           <button type="button" onClick={() => avancar([
             "birthInfo.date",
             "birthInfo.city",
             "birthInfo.state",
             "birthInfo.country"
           ])}>
-            Avançar
+            Salvar e avançar
           </button>
         </td></tr>
       </tfoot>
@@ -319,13 +319,13 @@ export function FormularioRG({ avancar, retornar }) {
       </tbody>
       <tfoot>
         <tr className="submit"><td>
-          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button onClick={retornar} type="button" className="retornar">← Voltar</button>
           <button type="button" onClick={() => avancar([
             "rgInfo.number",
             "rgInfo.issueDate",
             "rgInfo.issuingAuthority"
           ])}>
-            Avançar
+            Salvar e avançar
           </button>
         </td></tr>
       </tfoot>
@@ -417,7 +417,7 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
-        <button onClick={retornar} type="button" className="retornar">Retornar</button>
+        <button onClick={retornar} type="button" className="retornar">← Voltar</button>
         <button type="button" onClick={() => avancar([
           "primaryResponsible.name",
           "primaryResponsible.email",
@@ -425,7 +425,7 @@ export function FormularioResponsavelPrimario({ avancar, retornar }) {
           "primaryResponsible.phoneSecondary",
           "primaryResponsible.relationship"
         ])}>
-          Avançar
+          Salvar e avançar
         </button>
       </td></tr></tfoot>
     </table>
@@ -513,7 +513,7 @@ export function FormularioResponsavelSecundario({ avancar, retornar }) {
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
-        <button onClick={retornar} type="button" className="retornar">Retornar</button>
+        <button onClick={retornar} type="button" className="retornar">← Voltar</button>
         <button type="button" onClick={() => avancar([
           "secondaryResponsible.name",
           "secondaryResponsible.email",
@@ -521,7 +521,7 @@ export function FormularioResponsavelSecundario({ avancar, retornar }) {
           "secondaryResponsible.phoneSecondary",
           "secondaryResponsible.relationship"
         ])}>
-          Avançar
+          Salvar e avançar
         </button>
       </td></tr></tfoot>
     </table>
@@ -599,13 +599,13 @@ export function FormularioEscolar({ avancar, retornar }) {
         </tr>
       </tbody>
       <tfoot><tr className="submit"><td>
-        <button onClick={retornar} type="button" className="retornar">Retornar</button>
+        <button onClick={retornar} type="button" className="retornar">← Voltar</button>
         <button type="button" onClick={() => avancar([
           "schoolInfo.currentSchool",
           "schoolInfo.currentGrade",
           "schoolInfo.schoolType"
         ])}>
-          Avançar
+          Salvar e avançar
         </button>
       </td></tr></tfoot>
     </table>
@@ -688,14 +688,14 @@ export function FormularioInformacoesGerais({ avancar, retornar }) {
       </tbody>
       <tfoot>
         <tr className="submit"><td>
-          <button onClick={retornar} type="button" className="retornar">Retornar</button>
+          <button onClick={retornar} type="button" className="retornar">← Voltar</button>
           <button type="button" onClick={() => avancar([
             "generalInfo.howDidYouKnow",
             "generalInfo.income",
             "generalInfo.peopleAtHome",
             "generalInfo.peopleWorking"
           ])}>
-            Avançar
+            Salvar e avançar
           </button>
         </td></tr>
       </tfoot>

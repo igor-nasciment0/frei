@@ -1,61 +1,60 @@
 import './linhaTempo.scss';
-import { useEffect, useState } from 'react';
-import { Agendamento, ConcluirInscricao, PreInscricao, ProvaVestibular, Resultado } from './dadosLinha';
-import callApi from '../../../../../../api/callAPI';
-import { getAgendamento } from '../../../../../../api/services/agendamento';
+import { CadastroCriado, ConvocacaoEmitida, PreInscricaoPreenchida, ProvaPresencial, ResultadoMatricula } from './dadosLinha';
 import { useOutletContext } from 'react-router';
 
 export default function Timeline({ dadosInscricao }) {
-  
+
   const statusVestibular = useOutletContext();
-  
-  const [agendamento, setAgendamento] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const r = await callApi(getAgendamento);
+  const provaRealizada = !!dadosInscricao?.testDate && new Date(dadosInscricao.testDate) <= new Date();
+  const resultadoDisponivel = !!statusVestibular?.resultPublicationDate && new Date(statusVestibular.resultPublicationDate) <= new Date();
 
-      if (r)
-        setAgendamento(r);
-    })();
-  }, []);
-
-  return (
-    <div className="timeline-container">
-      <TimelineItem titulo="Pré-inscrição">
-        <PreInscricao />
-      </TimelineItem>
-
-      <TimelineItem titulo="Agendamento" agendamento={agendamento}>
-        <Agendamento dataAgendada={agendamento} alteravel={dadosInscricao?.status != 2} />
-      </TimelineItem>
-
-      <TimelineItem titulo="Concluir Inscrição">
-        <ConcluirInscricao dataAgendada={agendamento} realizado={dadosInscricao?.status == 2} />
-      </TimelineItem>
-
-      <TimelineItem titulo="Vestibular">
-        <ProvaVestibular realizado={new Date(dadosInscricao?.testDate) <= new Date()} dadosInscricao={dadosInscricao} />
-      </TimelineItem>
-
-      <TimelineItem titulo="Resultado">
-        <Resultado
-          realizado={new Date(statusVestibular?.resultPublicationDate) <= new Date()}
+  const etapas = [
+    { titulo: "Cadastro criado", status: "concluído", conteudo: <CadastroCriado /> },
+    { titulo: "Pré-inscrição preenchida", status: "concluído", conteudo: <PreInscricaoPreenchida /> },
+    {
+      titulo: "Convocação emitida",
+      status: dadosInscricao?.testDate ? "confirmado" : "aguardando",
+      conteudo: <ConvocacaoEmitida dadosInscricao={dadosInscricao} />,
+    },
+    {
+      titulo: "Prova presencial",
+      status: provaRealizada ? "concluído" : "aguardando",
+      conteudo: <ProvaPresencial realizado={provaRealizada} dadosInscricao={dadosInscricao} />,
+    },
+    {
+      titulo: "Resultado e matrícula",
+      status: resultadoDisponivel ? "concluído" : "aguardando",
+      conteudo: (
+        <ResultadoMatricula
+          realizado={resultadoDisponivel}
           dataPublicacao={statusVestibular?.resultPublicationDate}
           mostrarUrl={statusVestibular?.canShowResultUrl}
           urlResultado={statusVestibular?.resultUrl}
         />
-      </TimelineItem>
+      ),
+    },
+  ];
+
+  return (
+    <div className="timeline-container">
+      {etapas.map((etapa, i) =>
+        <TimelineItem key={i} {...etapa} />
+      )}
     </div>
   );
 };
 
-function TimelineItem({ titulo, children, agendamento }) {
+function TimelineItem({ titulo, status, conteudo }) {
   return (
-    <div className="timeline-item">
-      <div className={"timeline-item-content " + ((titulo === 'Agendamento' && agendamento == null) ? 'agendamento-pendente' : '')}>
-        <h3>{titulo}</h3>
-        {children}
+    <div className={"timeline-item status-" + status.normalize("NFD").replace(/[̀-ͯ]/g, "")}>
+      <span className="marcador" />
+      <div className="timeline-item-content">
+        <div className="cabecalho">
+          <h3>{titulo}</h3>
+          <span className="selo">{status}</span>
+        </div>
+        {conteudo}
       </div>
     </div>
   )

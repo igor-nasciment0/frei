@@ -1,0 +1,1333 @@
+openapi: 3.0.3
+info:
+  title: NSF API v3
+  description: >
+    API REST do Instituto Social N.S.Fátima para gestão de usuários, cursos,
+    inscrições (matrículas) e agendamentos do vestibular.
+    Gerado a partir do código-fonte real (`src/NsfApi/Controllers`) em 2026-08-10.
+    Ver também `specs/architecture.md`, `specs/features-usecases.md` e `specs/modeling.md`
+    para detalhes de arquitetura, regras de negócio e modelagem de dados.
+  version: "3.0.0"
+  contact:
+    name: NSF Vestibular
+servers:
+  - url: https://api.vestibular-insf.com.br
+    description: Produção
+  - url: http://localhost:5000
+    description: Desenvolvimento local
+
+tags:
+  - name: Users
+    description: Cadastro, autenticação e perfil de usuários
+  - name: Courses
+    description: Consulta de cursos disponíveis
+  - name: Enrollments
+    description: Inscrições/matrículas no vestibular
+  - name: Appointments
+    description: Agendamento de prova/entrevista
+  - name: FAQs
+    description: Perguntas frequentes
+  - name: Parameters
+    description: Status/parâmetros do vestibular vigente
+  - name: Admin
+    description: >
+      Endpoints administrativos/legado, autenticados por senha fixa em
+      querystring (`?password=`) — NÃO usam JWT. Não devem ser chamados a
+      partir do app do usuário final; documentados aqui apenas por
+      completude e para uso por sistemas administrativos internos.
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ===================== USERS =====================
+  /api/users:
+    post:
+      tags: [Users]
+      summary: Cria um novo usuário
+      description: >
+        Cadastra um novo usuário. Se já existir um usuário inativo com o
+        mesmo CPF, a conta é reativada (nome/email/senha/idade são
+        atualizados) em vez de criar um novo registro.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserCommand'
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email ou CPF já existente
+        '500':
+          description: Erro interno do servidor
+
+  /api/users/login:
+    post:
+      tags: [Users]
+      summary: Autentica um usuário e retorna token JWT
+      description: >
+        Recebe as credenciais como `multipart/form-data` (ou
+        `application/x-www-form-urlencoded`), **não** como JSON.
+        Mensagem de erro genérica para email inexistente/inativo ou senha
+        incorreta, evitando enumeração de contas.
+      security: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginCommand'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginCommand'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponseDto'
+        '400':
+          description: Credenciais inválidas
+        '401':
+          description: Usuário inativo
+
+  /api/users/profile:
+    get:
+      tags: [Users]
+      summary: Obtém o perfil do usuário autenticado
+      responses:
+        '200':
+          description: Dados do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '401':
+          description: Token inválido ou ausente
+    put:
+      tags: [Users]
+      summary: Atualiza o perfil do usuário autenticado
+      description: Atualização parcial — apenas campos não nulos de `UpdateUserDto` são alterados.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '200':
+          description: Perfil atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Dados inválidos
+        '401':
+          description: Token inválido ou ausente
+        '404':
+          description: Usuário não encontrado
+
+  /api/users/device-info:
+    put:
+      tags: [Users]
+      summary: Atualiza as informações do aparelho do usuário autenticado
+      description: >
+        Substitui todo o objeto `DeviceInfo` (usado para registrar o token
+        de push do Firebase Cloud Messaging — obs.: envio de notificações
+        ainda não está conectado a nenhum fluxo de negócio).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeviceInfoDto'
+      responses:
+        '200':
+          description: Informações do aparelho atualizadas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Dados inválidos
+        '401':
+          description: Token inválido ou ausente
+        '404':
+          description: Usuário não encontrado
+
+  /api/users/forgot-password:
+    post:
+      tags: [Users]
+      summary: Solicita recuperação de senha
+      description: >
+        Gera um código numérico de 6 dígitos válido por 15 minutos e envia
+        por e-mail. Não revela se o e-mail existe (resposta sempre genérica).
+        Se já existir uma solicitação pendente e válida, não gera outra.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPasswordRecoveryDto'
+      responses:
+        '200':
+          description: Solicitação processada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordRecoveryResponseDto'
+        '400':
+          description: Dados inválidos
+
+  /api/users/reset-password:
+    post:
+      tags: [Users]
+      summary: Redefine a senha usando código de recuperação
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordDto'
+      responses:
+        '200':
+          description: Senha redefinida com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordRecoveryResponseDto'
+        '400':
+          description: Dados inválidos, código inválido ou expirado
+
+  /api/users/{id}:
+    delete:
+      tags: [Users]
+      summary: Desativa um usuário (soft-delete)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuário desativado com sucesso
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: Usuário não encontrado
+
+  # ===================== COURSES =====================
+  /api/courses:
+    get:
+      tags: [Courses]
+      summary: Lista todos os cursos ativos (resumo)
+      responses:
+        '200':
+          description: Cursos retornados com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseSummaryDto'
+        '500':
+          description: Erro interno do servidor
+
+  /api/courses/{id}:
+    get:
+      tags: [Courses]
+      summary: Obtém um curso específico por ID (dados completos)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Curso retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDto'
+        '404':
+          description: Curso não encontrado
+        '500':
+          description: Erro interno do servidor
+
+  /api/courses/{id}/image:
+    get:
+      tags: [Courses]
+      summary: Obtém a imagem do curso
+      description: Imagem servida a partir de arquivo em disco (`templates/images/{id}`), não do banco de dados.
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Imagem JPEG do curso
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Imagem não encontrada
+
+  /api/courses/{id}/periods:
+    get:
+      tags: [Courses]
+      summary: Lista os períodos/turnos disponíveis de um curso
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de períodos do curso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoursePeriodDto'
+        '404':
+          description: Curso não encontrado
+
+  # ===================== ENROLLMENTS =====================
+  /api/enrollments:
+    post:
+      tags: [Enrollments]
+      summary: Cria ou atualiza a inscrição do usuário no vestibular ativo
+      description: >
+        Se o usuário já possui inscrição no vestibular ativo e o status é
+        `Open`, atualiza as escolhas; caso contrário retorna erro (inscrição
+        já validada/cancelada não pode ser editada). Na primeira inscrição,
+        gera um protocolo único no formato `{ano}{numeroSequencial:D4}`.
+        Cursos de código 1016/1018 (Inglês Teens I/II) dispensam segunda opção.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnrollmentDto'
+      responses:
+        '200':
+          description: Inscrição processada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentDto'
+        '400':
+          description: Dados inválidos
+        '500':
+          description: Erro interno do servidor
+
+  /api/enrollments/protocol/{protocol}:
+    get:
+      tags: [Enrollments]
+      summary: Obtém uma inscrição pelo protocolo
+      parameters:
+        - name: protocol
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inscrição retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentDto'
+        '404':
+          description: Inscrição não encontrada
+        '500':
+          description: Erro interno do servidor
+
+  /api/enrollments/my-enrollment:
+    get:
+      tags: [Enrollments]
+      summary: Obtém a inscrição do usuário autenticado no vestibular ativo
+      description: >
+        Retorna também `TestRoom`, `TestTime` e `TestDate`, preenchidos
+        administrativamente após a fase de agendamento/validação.
+      responses:
+        '200':
+          description: Inscrição retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentDto'
+        '404':
+          description: Inscrição não encontrada
+        '500':
+          description: Erro interno do servidor
+
+  /api/enrollments/validate/{protocol}:
+    post:
+      tags: [Enrollments]
+      summary: Valida uma inscrição por protocolo
+      description: >
+        ⚠️ **Endpoint inacessível na prática**: exige `[Authorize(Roles="Admin")]`,
+        mas nenhum token emitido pelo sistema possui a role "Admin"
+        (`JwtService` sempre atribui `Role="User"`). Não integrar no
+        frontend enquanto essa limitação não for corrigida no backend.
+      responses:
+        '200':
+          description: Inscrição validada com sucesso
+        '400':
+          description: Dados inválidos / falha ao validar
+        '403':
+          description: Acesso negado
+        '500':
+          description: Erro interno do servidor
+
+  /api/enrollments/getCompleteEnrollment/{year}/{cpf}/{motherName}/{studentName}:
+    get:
+      tags: [Admin]
+      summary: Obtém dados completos de uma inscrição (uso administrativo/legado)
+      security: []
+      parameters:
+        - name: year
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: cpf
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Use "-1" para buscar por nome do aluno + ano, ou por nome da mãe + ano.
+        - name: motherName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: studentName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Senha administrativa fixa.
+      responses:
+        '200':
+          description: Inscrição encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompleteEnrollmentDto'
+        '401':
+          description: Senha inválida
+        '404':
+          description: Inscrição não encontrada
+        '500':
+          description: Erro interno do servidor
+
+  /api/enrollments/change-status/{protocol}/{newStatus}:
+    post:
+      tags: [Admin]
+      summary: Altera o status de uma inscrição (uso administrativo/legado)
+      description: >
+        Usado por integração externa/sistema legado. Aceita qualquer valor
+        inteiro para `newStatus` sem validação de faixa do enum `EnrollmentStatus`
+        (1=Open, 2=Validated, 3=Canceled).
+      security: []
+      parameters:
+        - name: protocol
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: newStatus
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: idCurso1
+          in: query
+          schema:
+            type: integer
+        - name: dsTurno1
+          in: query
+          schema:
+            type: string
+        - name: idCurso2
+          in: query
+          schema:
+            type: integer
+        - name: dsTurno2
+          in: query
+          schema:
+            type: string
+        - name: sala
+          in: query
+          schema:
+            type: string
+        - name: horario
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Status alterado com sucesso
+        '400':
+          description: Protocolo não encontrado / falha ao alterar
+        '401':
+          description: Senha inválida
+
+  /api/enrollments/count-by-course-period:
+    get:
+      tags: [Admin]
+      summary: Contagem de inscrições agrupadas por curso e período (relatório)
+      security: []
+      parameters:
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Senha de relatório fixa.
+      responses:
+        '200':
+          description: Lista de contagens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnrollmentCountByCoursePeriodDto'
+        '401':
+          description: Senha inválida
+
+  # ===================== APPOINTMENTS =====================
+  /api/appointments:
+    post:
+      tags: [Appointments]
+      summary: Cria ou atualiza o agendamento de prova/entrevista do usuário logado
+      description: >
+        Exige vestibular ativo e inscrição `Open` do usuário nesse vestibular.
+        Duração fixa de 60 minutos, limite de 40 pessoas por slot de
+        data/hora, apenas dias úteis em horário comercial (08:00–17:30),
+        respeitando feriados fixos cadastrados (⚠️ atualmente hard-coded
+        somente para 2025). Um usuário só pode ter um agendamento — se já
+        existir, a data é atualizada em vez de criar um novo registro.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateAppointmentCommand'
+      responses:
+        '200':
+          description: Agendamento criado/atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentResponseDto'
+
+  /api/appointments/my:
+    get:
+      tags: [Appointments]
+      summary: Consulta o agendamento do usuário logado
+      responses:
+        '200':
+          description: Agendamento do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentResponseDto'
+        '404':
+          description: Nenhum agendamento encontrado para este usuário
+
+  /api/appointments/available-dates:
+    get:
+      tags: [Appointments]
+      summary: Consulta datas disponíveis para agendamento
+      description: >
+        Lista dias úteis não feriados entre hoje (ou o início do vestibular,
+        o que for maior) e o fim do período de inscrição
+        (`ExtensionDate ?? EndDate`).
+      responses:
+        '200':
+          description: Datas disponíveis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableAppointmentDatesDto'
+
+  /api/appointments/count-by-date:
+    get:
+      tags: [Admin]
+      summary: Contagem de agendamentos agrupados por data (relatório)
+      security: []
+      parameters:
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Senha de relatório fixa.
+      responses:
+        '200':
+          description: Lista de contagens por data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentCountByDateDto'
+        '401':
+          description: Senha inválida
+
+  # ===================== FAQS =====================
+  /api/faqs:
+    get:
+      tags: [FAQs]
+      summary: Lista todas as FAQs ativas, ordenadas
+      responses:
+        '200':
+          description: FAQs retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FAQDto'
+        '500':
+          description: Erro interno do servidor
+
+  # ===================== PARAMETERS =====================
+  /api/parameters:
+    get:
+      tags: [Parameters]
+      summary: Obtém o status atual do vestibular
+      description: >
+        Retorna a fase corrente (`NotStarted`/`RegistrationOpen`/`Finished`),
+        mensagens contextuais e se as inscrições/resultado estão liberados.
+      responses:
+        '200':
+          description: Status do vestibular
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VestibularStatusDto'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        Token JWT obtido em `POST /api/users/login`. Enviar como
+        `Authorization: Bearer <token>`. Validade de 4 meses. A claim
+        `Role` é sempre "User" — não existe emissão de tokens com role
+        "Admin" no sistema atual.
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+
+    # -------- Users --------
+    CreateUserCommand:
+      type: object
+      required: [name, cpf, birthDate, password, email]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        cpf:
+          type: string
+          description: Formato "000.000.000-00" (ou apenas dígitos), 11–14 caracteres.
+          minLength: 11
+          maxLength: 14
+        birthDate:
+          type: string
+          format: date-time
+          description: Deve estar no passado e não mais que 120 anos atrás.
+        password:
+          type: string
+          minLength: 6
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 150
+
+    LoginCommand:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponseDto:
+      type: object
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+          description: Gerado mas ainda sem endpoint/persistência para uso (funcionalidade incompleta).
+        expiresAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/UserDto'
+
+    UpdateUserDto:
+      type: object
+      description: Todos os campos são opcionais — apenas os enviados (não nulos) são atualizados.
+      properties:
+        name:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        cpf:
+          type: string
+          nullable: true
+        address:
+          $ref: '#/components/schemas/AddressDto'
+        birthInfo:
+          $ref: '#/components/schemas/BirthInfoDto'
+        generalInfo:
+          $ref: '#/components/schemas/GeneralInfoDto'
+        rgInfo:
+          $ref: '#/components/schemas/RgInfoDto'
+        primaryResponsible:
+          $ref: '#/components/schemas/ResponsibleDto'
+        secondaryResponsible:
+          $ref: '#/components/schemas/ResponsibleDto'
+        schoolInfo:
+          $ref: '#/components/schemas/SchoolInfoDto'
+        deviceInfo:
+          $ref: '#/components/schemas/DeviceInfoDto'
+
+    UpdateDeviceInfoDto:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        deviceModel:
+          type: string
+        operatingSystem:
+          type: string
+        osVersion:
+          type: string
+        appVersion:
+          type: string
+        firebaseToken:
+          type: string
+
+    RequestPasswordRecoveryDto:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+
+    ResetPasswordDto:
+      type: object
+      required: [email, code, newPassword]
+      properties:
+        email:
+          type: string
+          format: email
+        code:
+          type: string
+          description: Código numérico de 6 dígitos, válido por 15 minutos.
+        newPassword:
+          type: string
+
+    PasswordRecoveryResponseDto:
+      type: object
+      properties:
+        message:
+          type: string
+        success:
+          type: boolean
+
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        cpf:
+          type: string
+        gender:
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressDto'
+        birthInfo:
+          $ref: '#/components/schemas/BirthInfoDto'
+        generalInfo:
+          $ref: '#/components/schemas/GeneralInfoDto'
+        rgInfo:
+          $ref: '#/components/schemas/RgInfoDto'
+        primaryResponsible:
+          $ref: '#/components/schemas/ResponsibleDto'
+        secondaryResponsible:
+          $ref: '#/components/schemas/ResponsibleDto'
+        schoolInfo:
+          $ref: '#/components/schemas/SchoolInfoDto'
+        deviceInfo:
+          $ref: '#/components/schemas/DeviceInfoDto'
+        age:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+
+    AddressDto:
+      type: object
+      properties:
+        cep:
+          type: string
+        street:
+          type: string
+        neighborhood:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+
+    BirthInfoDto:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+
+    GeneralInfoDto:
+      type: object
+      properties:
+        howDidYouKnow:
+          type: string
+        income:
+          type: number
+          format: decimal
+        peopleAtHome:
+          type: integer
+        peopleWorking:
+          type: integer
+
+    RgInfoDto:
+      type: object
+      properties:
+        number:
+          type: string
+        issueDate:
+          type: string
+          format: date-time
+        issuingAuthority:
+          type: string
+
+    ResponsibleDto:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        phoneSecondary:
+          type: string
+        relationship:
+          type: string
+
+    SchoolInfoDto:
+      type: object
+      properties:
+        currentSchool:
+          type: string
+        currentGrade:
+          type: string
+        schoolType:
+          type: string
+
+    DeviceInfoDto:
+      type: object
+      properties:
+        deviceId:
+          type: string
+        deviceModel:
+          type: string
+        operatingSystem:
+          type: string
+        osVersion:
+          type: string
+        appVersion:
+          type: string
+        firebaseToken:
+          type: string
+        lastSeen:
+          type: string
+          format: date-time
+
+    # -------- Courses --------
+    CourseSummaryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        workload:
+          type: string
+        imageId:
+          type: string
+          description: Identificador usado em `GET /api/courses/{id}/image`.
+        type:
+          type: string
+          description: Default "Livre" quando nulo na base.
+        code:
+          type: integer
+
+    CourseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        code:
+          type: integer
+        availablePeriods:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoursePeriodDto'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectDto'
+        minAge:
+          type: string
+          description: Texto livre (não numérico).
+        maxAge:
+          type: string
+          description: Texto livre (não numérico).
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        workload:
+          type: string
+        jobMarket:
+          type: string
+        contribution:
+          type: string
+        minSchoolLevel:
+          type: string
+        apresentationVideoUrl:
+          type: string
+        image:
+          type: string
+
+    CoursePeriodDto:
+      type: object
+      properties:
+        code:
+          type: integer
+        name:
+          type: string
+        entryTime:
+          type: string
+          example: "08:00"
+        exitTime:
+          type: string
+          example: "17:30"
+        isActive:
+          type: boolean
+
+    SubjectDto:
+      type: object
+      properties:
+        code:
+          type: integer
+        name:
+          type: string
+
+    # -------- Enrollments --------
+    CreateEnrollmentDto:
+      type: object
+      required: [firstChoiceCourseCode, firstChoicePeriodCode]
+      properties:
+        firstChoiceCourseCode:
+          type: integer
+        firstChoicePeriodCode:
+          type: integer
+        secondChoiceCourseCode:
+          type: string
+          description: >
+            Enviado como string; vazio/omitido quando o curso da primeira
+            opção dispensa segunda opção (ex.: códigos 1004, 1016, 1018).
+        secondChoicePeriodCode:
+          type: string
+
+    EnrollmentDto:
+      type: object
+      properties:
+        id:
+          type: string
+        protocol:
+          type: string
+          example: "20260001"
+        userId:
+          type: string
+        vestibularParametersId:
+          type: string
+        firstChoice:
+          $ref: '#/components/schemas/CourseChoiceDto'
+        secondChoice:
+          $ref: '#/components/schemas/CourseChoiceDto'
+        testDate:
+          type: string
+          format: date-time
+        testRoom:
+          type: string
+          nullable: true
+        testTime:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+
+    CourseChoiceDto:
+      type: object
+      properties:
+        courseCode:
+          type: integer
+        courseName:
+          type: string
+        periodCode:
+          type: integer
+        periodName:
+          type: string
+
+    EnrollmentStatus:
+      type: integer
+      enum: [1, 2, 3]
+      description: "1=Open (editável), 2=Validated (imutável), 3=Canceled (imutável)"
+
+    EnrollmentCountByCoursePeriodDto:
+      type: object
+      properties:
+        courseName:
+          type: string
+        periodName:
+          type: string
+        totalInscritos:
+          type: integer
+
+    CompleteEnrollmentDto:
+      type: object
+      description: DTO de interoperabilidade com sistema legado (nomenclatura em português).
+      properties:
+        nmUsuario:
+          type: string
+        dsEmailCandidato:
+          type: string
+        dsTelefoneCandidato:
+          type: string
+        dsResponsavelParentesco:
+          type: string
+        dsResponsavelSecundarioParentesco:
+          type: string
+        dtNascimento:
+          type: string
+          format: date-time
+        nrRg:
+          type: string
+        dsCpf:
+          type: string
+        dtEmissaoRg:
+          type: string
+          format: date-time
+          nullable: true
+        dsOrgaoRg:
+          type: string
+        dsSexo:
+          type: string
+        dsCodigoInscricao:
+          type: integer
+        dsEscolaridade:
+          type: string
+        tpEscola:
+          type: string
+        dsEscola:
+          type: string
+        dsComoConheceu:
+          type: string
+        dsRenda:
+          type: number
+          nullable: true
+        qtdPessoasResidentesCasa:
+          type: integer
+        qtdPessoasTrabalhando:
+          type: integer
+        dsCidadeNascimento:
+          type: string
+        dsUfNascimento:
+          type: string
+        dsNascionalidade:
+          type: string
+        idPrimeiroCurso:
+          type: integer
+        dsPrimeiroCurso:
+          type: string
+        dsTurnoPrimeiroCurso:
+          type: string
+        idSegundoCurso:
+          type: integer
+          nullable: true
+        dsSegundoCurso:
+          type: string
+        dsTurnoSegundoCurso:
+          type: string
+        nrCep:
+          type: string
+        dsEndereco:
+          type: string
+        nrResidencia:
+          type: string
+        dsComplemento:
+          type: string
+        dsBairro:
+          type: string
+        dsUfResidencia:
+          type: string
+        dsCidadeResidencia:
+          type: string
+        nmResponsavel:
+          type: string
+        nrTelefoneResp:
+          type: string
+        nrTelefoneRespSec:
+          type: string
+        dsEmailResp:
+          type: string
+        nmResponsavelSecundario:
+          type: string
+        nrTelefoneRespSecundario:
+          type: string
+        nrTelefoneRespSecSecundario:
+          type: string
+        dsEmailRespSecundario:
+          type: string
+        dsAnoInscricao:
+          type: integer
+
+    # -------- Appointments --------
+    CreateOrUpdateAppointmentCommand:
+      type: object
+      required: [appointmentDateTime]
+      properties:
+        appointmentDateTime:
+          type: string
+          format: date-time
+          description: Deve ser futura, em dia útil e horário comercial (08:00–17:30).
+
+    AppointmentResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        appointmentDate:
+          type: string
+          format: date-time
+        startTime:
+          type: string
+          example: "09:00"
+        endTime:
+          type: string
+          example: "10:00"
+        notes:
+          type: string
+        status:
+          $ref: '#/components/schemas/AppointmentStatus'
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+
+    AppointmentStatus:
+      type: integer
+      enum: [1, 2, 3, 4]
+      description: >
+        1=Scheduled (único valor efetivamente usado hoje), 2=Confirmed,
+        3=Cancelled, 4=Completed (sem transição implementada em código).
+
+    AvailableAppointmentDatesDto:
+      type: object
+      properties:
+        availableDates:
+          type: array
+          items:
+            type: string
+            format: date-time
+        totalDays:
+          type: integer
+        enrollmentEndDate:
+          type: string
+          format: date-time
+          nullable: true
+
+    AppointmentCountByDateDto:
+      type: object
+      properties:
+        date:
+          type: string
+          example: "10/08/2026"
+        totalAgendamentos:
+          type: integer
+
+    # -------- FAQs --------
+    FAQDto:
+      type: object
+      properties:
+        id:
+          type: string
+        question:
+          type: string
+        answer:
+          type: string
+        order:
+          type: integer
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+
+    # -------- Parameters --------
+    VestibularStatusDto:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        extensionDate:
+          type: string
+          format: date-time
+          nullable: true
+        resultPublicationDate:
+          type: string
+          format: date-time
+        resultUrl:
+          type: string
+        message:
+          type: string
+        description:
+          type: string
+        presentationVideoUrl:
+          type: string
+        isRegistrationOpen:
+          type: boolean
+        canShowResultUrl:
+          type: boolean
+        daysUntilStart:
+          type: integer
+        daysUntilEnd:
+          type: integer
+        currentPhase:
+          $ref: '#/components/schemas/VestibularPhase'
+
+    VestibularPhase:
+      type: string
+      enum: [NotStarted, RegistrationOpen, RegistrationClosed, Finished]

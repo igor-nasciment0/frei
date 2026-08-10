@@ -9,23 +9,29 @@ import { useEffect, useState } from 'react';
 import { getInfoUsuario } from '../../api/services/user';
 import { set } from 'local-storage';
 import Carregamento from '../../components/carregamento';
+import useMinhaInscricao from '../../util/useMinhaInscricao';
 
 export default function App() {
 
   const [mostraAPP, setMostraAPP] = useState(false);
   const [statusVestibular, setStatusVestibular] = useState(null);
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
+  const { inscricao } = useMinhaInscricao();
 
   useEffect(() => {
     (async () => {
-      const user = await callApi(getInfoUsuario, false);
+      const usuario = await callApi(getInfoUsuario, false);
 
-      if (!user)
+      if (!usuario) {
         navigate("/login");
+        return;
+      }
 
-      set("user", user);
-      setStatusVestibular(await callApi(getStatusVestibular))
+      set("user", usuario);
+      setUser(usuario);
+      setStatusVestibular(await callApi(getStatusVestibular));
       setMostraAPP(true);
     })()
   }, [])
@@ -34,15 +40,18 @@ export default function App() {
     return <Carregamento style={{ height: "100dvh" }} />
 
   return (
-    <div className="app">
-      <BarraLateral />
-      <main>
-        <Cabecalho />
+    <div className="shell">
+      <BarraLateral user={user} inscricao={inscricao} />
 
-        {/* "Outlet" é o conteúdo das subpáginas do App */}
-        {statusVestibular &&
-          <Outlet context={statusVestibular} />
-        }
+      <main>
+        <Cabecalho user={user} inscricao={inscricao} />
+
+        <div className="pad">
+          {/* "Outlet" é o conteúdo das subpáginas do App */}
+          {statusVestibular &&
+            <Outlet context={statusVestibular} />
+          }
+        </div>
       </main>
     </div>
   )

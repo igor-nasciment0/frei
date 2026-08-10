@@ -4,11 +4,19 @@ import './index.scss';
 import { Link, useNavigate, useOutletContext } from 'react-router';
 import { useEffect, useState } from 'react';
 import callApi from '../../../../api/callAPI';
-import { formatarData } from '../../../../util/string';
-import { getInscricao } from '../../../../api/services/inscricao';
+import { getCursos } from '../../../../api/services/cursos';
 import Skeleton from 'react-loading-skeleton';
-import { getAgendamento } from '../../../../api/services/agendamento';
-import { converterDataUTCParaLocalSemMudarDia } from '../../../../util/date';
+import { format, addMinutes, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import useMinhaInscricao from '../../../../util/useMinhaInscricao';
+import { calcularProgresso } from '../../../../util/progresso';
+
+function formatarDataCurta(dataStringUTC) {
+  if (!dataStringUTC) return null;
+  const dataObj = parseISO(dataStringUTC);
+  const dataAjustada = addMinutes(dataObj, dataObj.getTimezoneOffset());
+  return format(dataAjustada, 'dd MMM', { locale: ptBR }).toUpperCase().replace('.', '');
+}
 
 export default function Inicio() {
 
@@ -17,109 +25,108 @@ export default function Inicio() {
   const user = get("user");
   const navigate = useNavigate();
 
-  const [usuarioInscrito, setUsuarioInscrito] = useState(false);
-  const [agendamento, setAgendamento] = useState();
+  const { inscricao } = useMinhaInscricao();
+  const [totalCursos, setTotalCursos] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const r = await callApi(getInscricao);
-      if (r?.data?.firstChoice) {
-
-        const r2 = await callApi(getAgendamento);
-
-        if (r2)
-          setAgendamento(r2);
-
-        setUsuarioInscrito(true);
-      }
+      const cursos = await callApi(getCursos);
+      setTotalCursos(cursos?.length ?? null);
     })()
   }, [])
 
+  const inscricaoConcluida = !!inscricao?.firstChoice;
+  const progresso = calcularProgresso(user, inscricaoConcluida);
+
   return (
     <section className='inicio'>
-      <h3 className='nav'>Frei Online {'>'} Início</h3>
+      <p className="eyebrow">Olá, seja bem-vindo</p>
+      <h1>{user?.name}</h1>
 
-      <h1>Olá! Seja bem-vindo,</h1>
-      <h2>{user?.name}!</h2>
-
-      {agendamento == null && usuarioInscrito &&
-        <div className='agendamento-pendente aviso-agendamento'>
-          Para concluir sua inscrição, realize o agendamento da sua prova clicando <Link style={{ textDecoration: 'underline' }} to="/acompanhamento">aqui</Link>.
-          Depois, dirija-se presencialmente à nossa instituição no dia agendado.
+      {!inscricaoConcluida &&
+        <div className="alerta">
+          <span className="ponto" />
+          <div>
+            <p className="titulo">Falta escolher seu curso</p>
+            <p className="texto">Depois de concluir sua pré-inscrição e escolher o curso, a convocação para a prova aparece em Acompanhamento.</p>
+          </div>
         </div>
       }
 
-      <Anuncio statusVestibular={statusVestibular} usuarioInscrito={usuarioInscrito} />
+      <div className="destaques">
+        <div className="card-vestibular">
+          <p className="eyebrow">Vestibular 2026</p>
+
+          {inscricaoConcluida ?
+            <>
+              <h2>Sua pré-inscrição está concluída</h2>
+              <p className="etapa">Etapa {progresso.total} de {progresso.total} · Pré-inscrição concluída</p>
+            </>
+            :
+            <>
+              <h2>Sua pré-inscrição está em andamento</h2>
+              <p className="etapa">Etapa {progresso.concluidas} de {progresso.total} · {progresso.concluidas === 0 ? "Informações pessoais" : "Escolha do curso"}</p>
+            </>
+          }
+
+          <div className="barra-progresso">
+            <div style={{ width: `${(progresso.concluidas / progresso.total) * 100}%` }} />
+          </div>
+
+          <button onClick={() => navigate(inscricaoConcluida ? "/acompanhamento" : "/inscricao")}>
+            {inscricaoConcluida ? "Ver acompanhamento" : "Continuar inscrição"}
+          </button>
+        </div>
+
+        <div className="card-datas">
+          <p className="titulo-card">Datas</p>
+
+          <div className="marco">
+            <span className="data">{formatarDataCurta(statusVestibular?.startDate) ?? <Skeleton width={40} />}</span>
+            <span className="rotulo">Abertura das inscrições</span>
+          </div>
+          <div className="marco">
+            <span className="data">{formatarDataCurta(inscricao?.testDate) ?? "A definir"}</span>
+            <span className="rotulo">Prova presencial</span>
+          </div>
+          <div className="marco fraco">
+            <span className="data">{formatarDataCurta(statusVestibular?.resultPublicationDate) ?? <Skeleton width={40} />}</span>
+            <span className="rotulo">Resultado</span>
+          </div>
+        </div>
+      </div>
 
       <div className='acoes'>
         <h3>Ações rápidas</h3>
 
         <div className='container'>
-          <div onClick={() => navigate("/inscricao")}>
-            <img src="/assets/images/icons/doc.svg" alt="" />
-            <p>Acompanhar inscrição</p>
+          <div onClick={() => navigate("/acompanhamento")}>
+            <span className="numeral">01</span>
+            <p className="titulo">Ver convocação da prova</p>
+            <p className="legenda">Data, local e sala</p>
           </div>
           <div onClick={() => navigate("/cursos")}>
-            <img src="/assets/images/icons/doc.svg" alt="" />
-            <p>Conhecer cursos</p>
+            <span className="numeral">02</span>
+            <p className="titulo">Conhecer os cursos</p>
+            <p className="legenda">{totalCursos != null ? `${totalCursos} opções disponíveis` : <Skeleton width={100} />}</p>
           </div>
           <div onClick={() => window.open("mailto:secretaria@acaonsfatima.org.br")}>
-            <img src="/assets/images/icons/doc.svg" alt="" />
-            <p>Contato</p>
+            <span className="numeral">03</span>
+            <p className="titulo">Falar com a secretaria</p>
+            <p className="legenda">(11) 4362-1000</p>
           </div>
         </div>
       </div>
 
       <div className='perguntas'>
         <div className='titulo'>
-          <h3>Perguntas Frequentes</h3>
+          <h3>Dúvidas frequentes</h3>
 
-          <button onClick={() => navigate("/faq")}>
-            Ver todas
-            <img src="/assets/images/icons/seta.svg" alt="" />
-          </button>
+          <Link to="/faq">Ver todas</Link>
         </div>
 
-        <AcordeaoPerguntas max={5} />
+        <AcordeaoPerguntas max={3} numbered={false} onSelecionar={(_, index) => navigate(`/faq?q=${index}`)} />
       </div>
     </section>
-  )
-}
-
-function Anuncio({ statusVestibular, usuarioInscrito }) {
-
-  if (!statusVestibular)
-    return <Skeleton height={100} />
-
-  if (!statusVestibular?.isRegistrationOpen)
-    return (
-      <div className='anuncio'>
-        <h3>As inscrições para o vestibular <br /> irão começar em {converterDataUTCParaLocalSemMudarDia(statusVestibular?.startDate)}</h3>
-        <BotaoAnuncio usuarioInscrito={usuarioInscrito} />
-      </div>
-    )
-  else return (
-    <div className='anuncio'>
-      <h3>As inscrições para o vestibular <br /> estarão abertas até {converterDataUTCParaLocalSemMudarDia(statusVestibular?.endDate)}</h3>
-      <BotaoAnuncio usuarioInscrito={usuarioInscrito} />
-    </div>
-  )
-}
-
-function BotaoAnuncio({ usuarioInscrito }) {
-  const navigate = useNavigate();
-
-  if (!usuarioInscrito)
-    return (
-      <button onClick={() => navigate("/inscricao")}>
-        Realizar a pré-inscrição
-        <img src="/assets/images/icons/seta.svg" alt="" />
-      </button>
-    )
-  else return (
-    <button onClick={() => navigate("/acompanhamento")}>
-      Acompanhar minha inscrição
-      <img src="/assets/images/icons/seta.svg" alt="" />
-    </button>
   )
 }
