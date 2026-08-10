@@ -53,7 +53,6 @@ export default function Inscricao() {
 
   useEffect(() => {
     const values = mergeObjects({ ...padroes }, getInfoAtual())
-    console.log(values);
     
     methods.reset(values)
   }, [window.location.pathname])
