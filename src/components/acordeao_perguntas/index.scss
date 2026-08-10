@@ -85,14 +85,9 @@
         }
     }
 
-    // variante sem numeração (preview de FAQ na Início)
-    &.sem-numero {
-        .cabecalho-pergunta {
-            padding: 16px 4px;
-        }
-
-        .resposta {
-            padding-left: 4px;
-        }
+    // variante sem numeração (preview de FAQ na Início) — mesmo espaçamento da linha padrão,
+    // só sem a coluna do número; a resposta (quando existir) recua alinhada com o texto da pergunta
+    &.sem-numero .resposta {
+        padding-left: 28px;
     }
 }
