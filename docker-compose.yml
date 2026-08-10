@@ -6,10 +6,10 @@ services:
    build: 
      context: ./
    networks:
-      - vestibular-net
+      - public
 
 
 
 networks:
-  vestibular-net:
+  public:
     external: true
