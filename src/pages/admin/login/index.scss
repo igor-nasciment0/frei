@@ -1,0 +1,10 @@
+@use '../../../styles/tokens' as t;
+@use '../../../styles/auth' as auth;
+
+.admin-auth-page {
+    @include auth.auth-page;
+
+    .painel-form {
+        @include auth.auth-painel-form;
+    }
+}

@@ -1,0 +1,386 @@
+// Padrão visual compartilhado pelas telas do painel administrativo
+// (Cursos, FAQ, Vestibular, Administradores). Reaproveita os tokens/mixins
+// já usados na área do candidato (src/styles/_tokens.scss), sem paleta nova.
+@use './tokens' as t;
+
+@mixin admin-shell {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+
+    background: t.$c-bg;
+    color: t.$c-text;
+
+    main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .pad {
+        padding: 44px 48px 72px;
+        max-width: 1120px;
+        width: 100%;
+    }
+
+    @include t.bp-1150 {
+        .pad {
+            padding: 36px 32px 64px;
+        }
+    }
+
+    @include t.bp-960 {
+        display: block;
+
+        .pad {
+            padding: 30px 22px 56px;
+        }
+    }
+}
+
+@mixin admin-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+
+    .eyebrow {
+        @include t.type-eyebrow;
+        color: t.$c-sand;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        @include t.type-h1-page;
+        color: t.$c-navy;
+    }
+}
+
+@mixin admin-btn-primario {
+    background: t.$c-navy;
+    color: t.$c-white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 22px;
+    transition: background t.$transition;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) {
+        background: t.$c-navy-hover;
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: wait;
+    }
+}
+
+@mixin admin-btn-fantasma {
+    border: 1px solid t.$c-input-border;
+    color: t.$c-text;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 11px 18px;
+    transition: t.$transition;
+    white-space: nowrap;
+
+    &:hover {
+        border-color: t.$c-navy;
+        color: t.$c-navy;
+    }
+}
+
+@mixin admin-btn-perigo {
+    color: t.$c-clay;
+    font-size: 13px;
+    font-weight: 600;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+@mixin admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: t.$c-white;
+    border: 1px solid t.$c-border;
+
+    th,
+    td {
+        text-align: left;
+        padding: 14px 18px;
+        font-size: 13.5px;
+        border-bottom: 1px solid t.$c-divider-soft;
+    }
+
+    th {
+        @include t.type-label;
+        font-size: 11px;
+        color: t.$c-text-muted;
+        background: t.$c-row-hover;
+    }
+
+    tbody tr {
+        transition: background t.$transition;
+
+        &:hover {
+            background: t.$c-row-hover;
+        }
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .acoes {
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+    }
+
+    .vazio td {
+        text-align: center;
+        color: t.$c-text-muted;
+        padding: 40px 18px;
+    }
+}
+
+@mixin admin-badge {
+    display: inline-block;
+    @include t.type-tag;
+    padding: 4px 10px;
+    border: 1px solid t.$c-tag-border;
+    color: t.$c-slate;
+
+    &.ativo {
+        color: t.$c-navy;
+        border-color: t.$c-sand;
+    }
+
+    &.inativo {
+        color: t.$c-text-muted;
+        border-color: t.$c-inactive;
+    }
+}
+
+// Composição pronta para as telas de listagem (Cursos, FAQ, Vestibular,
+// Administradores) — evita repetir os mesmos @include em cada index.scss.
+@mixin admin-lista-page {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+
+    .cabecalho-pagina {
+        @include admin-page-header;
+
+        h1 {
+            flex: 1;
+        }
+
+        .btn-primario {
+            @include admin-btn-primario;
+        }
+    }
+
+    .admin-table {
+        @include admin-table;
+
+        .acoes a,
+        .acoes button {
+            font-size: 13px;
+            font-weight: 600;
+            color: t.$c-slate;
+
+            &:hover {
+                color: t.$c-navy;
+            }
+        }
+
+        .acoes button {
+            color: t.$c-clay;
+
+            &:hover {
+                color: t.$c-clay;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .admin-badge {
+        @include admin-badge;
+    }
+}
+
+@mixin admin-form-card {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: t.$c-white;
+    border: 1px solid t.$c-border;
+    padding: 32px;
+
+    h2 {
+        @include t.type-h3-section;
+        color: t.$c-navy;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .grade {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+
+        @include t.bp-640 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .campo {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        &.largo {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            @include t.type-label;
+            font-size: 12px;
+            color: t.$c-slate;
+        }
+
+        input,
+        select,
+        textarea {
+            font-size: 15px;
+            color: t.$c-text;
+            background: t.$c-input-bg;
+            border: 1px solid t.$c-input-border;
+            padding: 10px 12px;
+            transition: border-color t.$transition;
+            font-family: t.$font-sans;
+
+            &:focus {
+                border-color: t.$c-navy;
+            }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .mensagem-erro {
+            font-size: 12.5px;
+            color: t.$c-clay;
+        }
+
+        &.erro input,
+        &.erro select,
+        &.erro textarea {
+            border-color: t.$c-clay;
+        }
+
+        &.checkbox {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+
+            label {
+                margin: 0;
+            }
+
+            input {
+                width: auto;
+                background: none;
+                border: none;
+            }
+        }
+    }
+
+    .divisor {
+        height: 1px;
+        background: t.$c-divider-strong;
+    }
+
+    .subsecao {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        > .titulo-subsecao {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            h3 {
+                font-size: 15px;
+                font-weight: 600;
+                color: t.$c-navy;
+            }
+        }
+
+        .linha-repetivel {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr 1fr 1fr auto auto;
+            gap: 10px;
+            align-items: end;
+
+            @include t.bp-960 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    }
+
+    .rodape-form {
+        display: flex;
+        justify-content: flex-end;
+        gap: 14px;
+    }
+
+    .aviso {
+        font-size: 13px;
+        color: t.$c-text-muted;
+        line-height: 1.6;
+    }
+}
+
+// Composição pronta para as telas de formulário (criar/editar) — mesmo
+// espírito de admin-lista-page, evita repetir os mesmos @include.
+@mixin admin-form-page {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+
+    .cabecalho-pagina {
+        @include admin-page-header;
+    }
+
+    .admin-form-card {
+        @include admin-form-card;
+        max-width: 900px;
+    }
+
+    .btn-primario {
+        @include admin-btn-primario;
+    }
+
+    .btn-fantasma {
+        @include admin-btn-fantasma;
+    }
+
+    .admin-btn-perigo {
+        @include admin-btn-perigo;
+    }
+}

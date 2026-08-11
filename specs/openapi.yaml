@@ -35,6 +35,14 @@ tags:
       querystring (`?password=`) — NÃO usam JWT. Não devem ser chamados a
       partir do app do usuário final; documentados aqui apenas por
       completude e para uso por sistemas administrativos internos.
+  - name: AdminPanel
+    description: >
+      Painel administrativo (`/api/admin`): autenticação de administradores
+      via coleção própria (`admins`, separada de `users`) e CRUD de Cursos,
+      FAQs e Parâmetros do vestibular. Autenticado por JWT com claim
+      `Role="Admin"` (distinto do token de usuário final, que sempre recebe
+      `Role="User"`). Ver `POST /api/admin/auth/login` e
+      `POST /api/admin/auth/bootstrap`.
 
 security:
   - bearerAuth: []
@@ -649,6 +657,521 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/VestibularStatusDto'
+
+  # ===================== ADMIN PANEL =====================
+  /api/admin/auth/login:
+    post:
+      tags: [AdminPanel]
+      summary: Autentica um administrador e retorna token JWT (Role="Admin")
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginCommand'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAuthResponseDto'
+        '400':
+          description: Credenciais inválidas
+
+  /api/admin/auth/bootstrap:
+    post:
+      tags: [AdminPanel]
+      summary: Cria o primeiro administrador do sistema
+      description: >
+        Só funciona enquanto a coleção `admins` estiver vazia (verifica via
+        `IAdminUserRepository.AnyAsync`); exige a senha administrativa fixa
+        (`AccessPassword.Admin`, a mesma usada pelos demais endpoints
+        administrativos/legado) como segredo de bootstrap. Após o primeiro
+        administrador existir, use `POST /api/admin/users` (autenticado)
+        para criar os demais.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BootstrapAdminCommand'
+      responses:
+        '201':
+          description: Administrador criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDto'
+        '400':
+          description: Dados inválidos ou senha administrativa incorreta
+        '409':
+          description: Já existe um administrador cadastrado
+
+  /api/admin/users:
+    post:
+      tags: [AdminPanel]
+      summary: Cria um novo administrador (requer administrador autenticado)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdminUserCommand'
+      responses:
+        '201':
+          description: Administrador criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDto'
+        '400':
+          description: Dados inválidos
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
+
+  /api/admin/courses:
+    get:
+      tags: [AdminPanel]
+      summary: Lista todos os cursos, incluindo inativos
+      responses:
+        '200':
+          description: Cursos retornados com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminCourseDto'
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
+    post:
+      tags: [AdminPanel]
+      summary: Cria um novo curso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateOrUpdateCourseDto'
+      responses:
+        '201':
+          description: Curso criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCourseDto'
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
+
+  /api/admin/courses/{id}:
+    get:
+      tags: [AdminPanel]
+      summary: Obtém um curso por ID, incluindo inativos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Curso retornado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCourseDto'
+        '404':
+          description: Curso não encontrado
+    put:
+      tags: [AdminPanel]
+      summary: Atualiza um curso existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateOrUpdateCourseDto'
+      responses:
+        '200':
+          description: Curso atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCourseDto'
+        '404':
+          description: Curso não encontrado
+    delete:
+      tags: [AdminPanel]
+      summary: Desativa um curso (soft-delete)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Curso desativado com sucesso
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: Curso não encontrado
+
+  /api/admin/faqs:
+    get:
+      tags: [AdminPanel]
+      summary: Lista todas as FAQs, incluindo inativas
+      responses:
+        '200':
+          description: FAQs retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FAQDto'
+    post:
+      tags: [AdminPanel]
+      summary: Cria uma nova FAQ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateOrUpdateFAQDto'
+      responses:
+        '201':
+          description: FAQ criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQDto'
+
+  /api/admin/faqs/{id}:
+    get:
+      tags: [AdminPanel]
+      summary: Obtém uma FAQ por ID, incluindo inativas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FAQ retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQDto'
+        '404':
+          description: FAQ não encontrada
+    put:
+      tags: [AdminPanel]
+      summary: Atualiza uma FAQ existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateOrUpdateFAQDto'
+      responses:
+        '200':
+          description: FAQ atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FAQDto'
+        '404':
+          description: FAQ não encontrada
+    delete:
+      tags: [AdminPanel]
+      summary: Desativa uma FAQ (soft-delete)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FAQ desativada com sucesso
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: FAQ não encontrada
+
+  /api/admin/parameters:
+    get:
+      tags: [AdminPanel]
+      summary: Lista todas as edições do vestibular cadastradas
+      responses:
+        '200':
+          description: Edições retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VestibularParametersDto'
+    post:
+      tags: [AdminPanel]
+      summary: Cria uma nova edição do vestibular (datas, textos, etc.)
+      description: >
+        A edição nasce inativa (`isActive=false`); use
+        `POST /api/admin/parameters/{id}/activate` para torná-la a edição
+        corrente consultada por `GET /api/parameters` e pelos fluxos de
+        inscrição/agendamento.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateVestibularParametersDto'
+      responses:
+        '201':
+          description: Edição criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VestibularParametersDto'
+
+  /api/admin/parameters/{id}:
+    get:
+      tags: [AdminPanel]
+      summary: Obtém uma edição do vestibular por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Edição retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VestibularParametersDto'
+        '404':
+          description: Edição não encontrada
+    put:
+      tags: [AdminPanel]
+      summary: Atualiza datas, textos e demais parâmetros de uma edição
+      description: >
+        `isActive` e `nextEnrollmentNumber` não são editáveis por este
+        endpoint — a ativação é feita via
+        `POST /api/admin/parameters/{id}/activate` e o contador de protocolo
+        é incrementado atomicamente apenas pelo fluxo de inscrição.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUpdateVestibularParametersDto'
+      responses:
+        '200':
+          description: Edição atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VestibularParametersDto'
+        '404':
+          description: Edição não encontrada
+
+  /api/admin/parameters/{id}/activate:
+    post:
+      tags: [AdminPanel]
+      summary: Marca a edição informada como ativa, desativando as demais
+      description: >
+        Garante que apenas uma edição do vestibular esteja ativa por vez
+        (regra implícita documentada em `specs/modeling.md`).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Edição ativada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VestibularParametersDto'
+        '404':
+          description: Edição não encontrada
+
+  /api/admin/enrollments/dashboard:
+    get:
+      tags: [AdminPanel]
+      summary: Estatísticas do dashboard de inscrições
+      description: >
+        Total de inscritos, contagem por status, série diária de inscritos e
+        contagem por curso/período (considerando apenas a primeira opção,
+        mesmo critério de `GET /api/enrollments/count-by-course-period`).
+        Sem `vestibularParametersId`, usa a edição ativa do vestibular.
+      parameters:
+        - name: vestibularParametersId
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Estatísticas retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminEnrollmentDashboardDto'
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
+
+  /api/admin/enrollments:
+    get:
+      tags: [AdminPanel]
+      summary: Busca/lista inscrições com paginação
+      description: >
+        O termo em `search` casa com protocolo, nome, CPF ou e-mail do
+        candidato. Sem `vestibularParametersId`, busca em todas as edições
+        do vestibular (permite achar protocolos de anos anteriores).
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          description: 'Nome do enum: Open, Validated ou Canceled'
+          schema:
+            type: string
+            enum: [Open, Validated, Canceled]
+        - name: vestibularParametersId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 200
+      responses:
+        '200':
+          description: Lista retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminEnrollmentListResultDto'
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
+
+  /api/admin/enrollments/{id}:
+    get:
+      tags: [AdminPanel]
+      summary: Obtém os detalhes completos de uma inscrição
+      description: >
+        Inclui escolhas de curso, status, sala/horário de prova e os dados
+        cadastrais completos do candidato dono da inscrição.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inscrição retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminEnrollmentDetailDto'
+        '404':
+          description: Inscrição não encontrada
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
+
+  /api/admin/enrollments/{id}/reset-password:
+    post:
+      tags: [AdminPanel]
+      summary: Reseta a senha do candidato dono da inscrição
+      description: >
+        Se `newPassword` vier vazio/ausente, uma senha aleatória de 10
+        caracteres é gerada e devolvida em `newPassword` na resposta, para o
+        admin repassar ao candidato.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id da inscrição (não o id do usuário)
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminResetUserPasswordDto'
+      responses:
+        '200':
+          description: Senha resetada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminResetUserPasswordResultDto'
+        '404':
+          description: Inscrição ou usuário não encontrado
+        '401':
+          description: Token inválido ou ausente
+        '403':
+          description: Token sem Role="Admin"
 
 components:
   securitySchemes:
@@ -1331,3 +1854,437 @@ components:
     VestibularPhase:
       type: string
       enum: [NotStarted, RegistrationOpen, RegistrationClosed, Finished]
+
+    # -------- Admin Panel --------
+    AdminLoginCommand:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    BootstrapAdminCommand:
+      type: object
+      required: [username, email, name, password, accessPassword]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 8
+        accessPassword:
+          type: string
+          description: Senha administrativa fixa (mesma usada nos demais endpoints com tag Admin).
+
+    CreateAdminUserCommand:
+      type: object
+      required: [username, email, name, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 100
+        password:
+          type: string
+          minLength: 8
+
+    AdminUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    AdminAuthResponseDto:
+      type: object
+      properties:
+        token:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        admin:
+          $ref: '#/components/schemas/AdminUserDto'
+
+    AdminCourseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        code:
+          type: integer
+        availablePeriods:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoursePeriodDto'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectDto'
+        minAge:
+          type: string
+        maxAge:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        workload:
+          type: string
+        jobMarket:
+          type: string
+        contribution:
+          type: string
+        minSchoolLevel:
+          type: string
+        apresentationVideoUrl:
+          type: string
+        image:
+          type: string
+        type:
+          type: string
+          nullable: true
+        maxBirtDate:
+          type: string
+          format: date-time
+          description: Data de nascimento mínima permitida (sic — ver nota em specs/modeling.md).
+        minBirthDate:
+          type: string
+          format: date-time
+          description: Data de nascimento máxima permitida (semântica invertida do nome — ver specs/modeling.md).
+
+    AdminCreateOrUpdateCourseDto:
+      type: object
+      required: [name, code]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        code:
+          type: integer
+        availablePeriods:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoursePeriodDto'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectDto'
+        minAge:
+          type: string
+        maxAge:
+          type: string
+        isActive:
+          type: boolean
+          default: true
+        workload:
+          type: string
+        jobMarket:
+          type: string
+        contribution:
+          type: string
+        minSchoolLevel:
+          type: string
+        apresentationVideoUrl:
+          type: string
+        image:
+          type: string
+          description: Identificador usado em `GET /api/courses/{id}/image` (arquivo em `templates/images/{id}`, fora deste payload).
+        type:
+          type: string
+          nullable: true
+        maxBirtDate:
+          type: string
+          format: date-time
+        minBirthDate:
+          type: string
+          format: date-time
+
+    AdminCreateOrUpdateFAQDto:
+      type: object
+      required: [question, answer]
+      properties:
+        question:
+          type: string
+        answer:
+          type: string
+        order:
+          type: integer
+        isActive:
+          type: boolean
+          default: true
+
+    VestibularParametersDto:
+      type: object
+      properties:
+        id:
+          type: string
+        presentationVideoUrl:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        extensionDate:
+          type: string
+          format: date-time
+          nullable: true
+        isActive:
+          type: boolean
+        allowRegistration:
+          type: boolean
+        resultPublicationDate:
+          type: string
+          format: date-time
+        resultUrl:
+          type: string
+        nextEnrollmentNumber:
+          type: integer
+          description: Contador atômico usado para gerar o protocolo de inscrição; não editável via PUT.
+        description:
+          type: string
+        testDate:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+
+    AdminCreateVestibularParametersDto:
+      type: object
+      required: [startDate, endDate]
+      properties:
+        presentationVideoUrl:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        extensionDate:
+          type: string
+          format: date-time
+          nullable: true
+        allowRegistration:
+          type: boolean
+          default: true
+        resultPublicationDate:
+          type: string
+          format: date-time
+        resultUrl:
+          type: string
+        description:
+          type: string
+        testDate:
+          type: string
+          format: date-time
+        nextEnrollmentNumber:
+          type: integer
+          default: 1
+          description: Ponto de partida do contador de protocolo (útil para alinhar com sistema legado).
+
+    AdminUpdateVestibularParametersDto:
+      type: object
+      required: [startDate, endDate]
+      properties:
+        presentationVideoUrl:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        extensionDate:
+          type: string
+          format: date-time
+          nullable: true
+        allowRegistration:
+          type: boolean
+        resultPublicationDate:
+          type: string
+          format: date-time
+        resultUrl:
+          type: string
+        description:
+          type: string
+        testDate:
+          type: string
+          format: date-time
+
+    AdminEnrollmentDashboardDto:
+      type: object
+      properties:
+        total:
+          type: integer
+        byStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminEnrollmentStatusCountDto'
+        byDay:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminEnrollmentDayCountDto'
+        byCoursePeriod:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminEnrollmentCoursePeriodCountDto'
+
+    AdminEnrollmentStatusCountDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [Open, Validated, Canceled]
+        count:
+          type: integer
+
+    AdminEnrollmentDayCountDto:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        count:
+          type: integer
+
+    AdminEnrollmentCoursePeriodCountDto:
+      type: object
+      description: >
+        Uma linha por combinação (curso, período); o front-end agrupa por
+        curso e empilha as séries por período para o gráfico.
+      properties:
+        courseName:
+          type: string
+        periodName:
+          type: string
+        count:
+          type: integer
+
+    AdminEnrollmentListItemDto:
+      type: object
+      properties:
+        id:
+          type: string
+        protocol:
+          type: string
+        studentName:
+          type: string
+        studentCpf:
+          type: string
+        studentEmail:
+          type: string
+        firstChoiceCourseName:
+          type: string
+        firstChoicePeriodName:
+          type: string
+        status:
+          type: string
+          enum: [Open, Validated, Canceled]
+        createdAt:
+          type: string
+          format: date-time
+
+    AdminEnrollmentListResultDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminEnrollmentListItemDto'
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+
+    AdminEnrollmentDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+        protocol:
+          type: string
+        status:
+          type: string
+          enum: [Open, Validated, Canceled]
+        testRoom:
+          type: string
+        testTime:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        firstChoice:
+          $ref: '#/components/schemas/CourseChoiceDto'
+        secondChoice:
+          $ref: '#/components/schemas/CourseChoiceDto'
+          nullable: true
+        student:
+          $ref: '#/components/schemas/UserDto'
+
+    AdminResetUserPasswordDto:
+      type: object
+      properties:
+        newPassword:
+          type: string
+          nullable: true
+          description: Se vazio/ausente, o backend gera uma senha aleatória.
+
+    AdminResetUserPasswordResultDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+        newPassword:
+          type: string
+          description: Senha em texto plano (gerada ou informada) — exibir uma única vez ao admin.

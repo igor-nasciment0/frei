@@ -1,0 +1,326 @@
+@use '../../../styles/tokens' as t;
+@use '../../../styles/admin' as admin;
+
+.admin-dashboard {
+    max-width: 1120px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+
+    .cabecalho-pagina {
+        @include admin.admin-page-header;
+        display: block;
+
+        .subtitulo {
+            font-size: 14px;
+            color: t.$c-text-muted;
+            margin-top: 6px;
+        }
+    }
+
+    .grade-atalhos {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+
+        @include t.bp-960 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include t.bp-640 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .card-atalho {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: t.$c-white;
+        border: 1px solid t.$c-border;
+        padding: 26px;
+        color: t.$c-text;
+        transition: border-color t.$transition;
+
+        h2 {
+            font-size: 17px;
+            font-weight: 600;
+            color: t.$c-navy;
+        }
+
+        p {
+            font-size: 13.5px;
+            color: t.$c-text-muted;
+            line-height: 1.6;
+        }
+
+        .seta {
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: t.$c-sand;
+        }
+
+        &:hover {
+            border-color: t.$c-sand;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Estatísticas / gráficos
+// ---------------------------------------------------------------------------
+
+// Cores fixas por posição da série (curso x período) — mesma paleta de marca
+// usada em todo o painel; nunca reatribuída por valor/rank.
+$cor-serie-0: t.$c-navy;
+$cor-serie-1: t.$c-slate;
+$cor-serie-2: t.$c-sand;
+$cor-serie-3: t.$c-clay;
+$cor-serie-outros: t.$c-inactive;
+
+.stats-inscricoes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tile-total,
+.tile-status {
+    .rotulo {
+        @include t.type-label;
+        font-size: 11.5px;
+        color: t.$c-text-muted;
+    }
+
+    .valor {
+        font-size: 30px;
+        font-weight: 700;
+        color: t.$c-navy;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.tile-total {
+    background: t.$c-navy;
+    padding: 24px 28px;
+
+    .rotulo {
+        color: t.$c-on-navy-caption;
+    }
+
+    .valor {
+        color: t.$c-on-navy-title;
+    }
+}
+
+.tiles-status {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    @include t.bp-640 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tile-status {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 10px;
+    background: t.$c-white;
+    border: 1px solid t.$c-border;
+    padding: 16px 20px;
+
+    .ponto {
+        grid-row: 1 / 3;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: t.$c-navy;
+    }
+
+    .rotulo,
+    .valor {
+        grid-column: 2;
+    }
+
+    .valor {
+        grid-row: 1;
+        justify-self: end;
+        font-size: 22px;
+    }
+
+    &.open .ponto {
+        background: $cor-serie-0;
+    }
+
+    &.validated .ponto {
+        background: $cor-serie-2;
+    }
+
+    &.canceled .ponto {
+        background: t.$c-clay;
+    }
+}
+
+.card-grafico {
+    background: t.$c-white;
+    border: 1px solid t.$c-border;
+    padding: 24px 26px 26px;
+
+    h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: t.$c-navy;
+        margin-bottom: 18px;
+    }
+
+    .vazio {
+        font-size: 13px;
+        color: t.$c-text-muted;
+        padding: 20px 0;
+    }
+
+    .legenda {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 18px;
+
+        .item-legenda {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: t.$c-text-muted;
+        }
+
+        .chip {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+    }
+}
+
+// Gráfico de barras verticais (inscrições por dia) — série única, tom sólido
+// da cor primária, extremidade superior arredondada, ancorada na base.
+.grafico-barras {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 160px;
+    border-bottom: 1px solid t.$c-divider-strong;
+    padding-bottom: 2px;
+    overflow-x: auto;
+
+    .coluna {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        min-width: 22px;
+        flex: 1;
+        height: 100%;
+    }
+
+    .barra {
+        width: 100%;
+        max-width: 26px;
+        background: t.$c-navy;
+        border-radius: 3px 3px 0 0;
+        transition: opacity t.$transition;
+        min-height: 2px;
+    }
+
+    .coluna:hover .barra {
+        opacity: 0.75;
+    }
+
+    .rotulo-x {
+        font-size: 10.5px;
+        color: t.$c-text-muted;
+        white-space: nowrap;
+    }
+}
+
+// Gráfico de barras horizontais empilhadas (curso x período).
+.grafico-barras-h {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.linha-barra-h {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: 14px;
+
+    @include t.bp-640 {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .rotulo-y {
+        font-size: 13px;
+        color: t.$c-text;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trilha {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .barra-empilhada {
+        display: flex;
+        height: 16px;
+        min-width: 4px;
+        background: t.$c-row-hover;
+    }
+
+    .segmento {
+        // Frestas de 2px entre segmentos empilhados para separar as séries.
+        border-right: 2px solid t.$c-white;
+
+        &:last-child {
+            border-right: none;
+        }
+    }
+
+    .total-linha {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: t.$c-text-muted;
+        min-width: 22px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.serie-0 {
+    background: $cor-serie-0;
+}
+
+.serie-1 {
+    background: $cor-serie-1;
+}
+
+.serie-2 {
+    background: $cor-serie-2;
+}
+
+.serie-3 {
+    background: $cor-serie-3;
+}
+
+.serie-outros {
+    background: $cor-serie-outros;
+}

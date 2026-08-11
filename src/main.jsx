@@ -17,6 +17,19 @@ import { LoadingBarContainer } from 'react-top-loading-bar';
 import TrocarSenha from './pages/trocar-senha';
 import Cadastro from './pages/cadastro';
 import ModalProvider from './components/modal';
+import AdminApp from './pages/admin';
+import AdminLogin from './pages/admin/login';
+import AdminBootstrap from './pages/admin/bootstrap';
+import AdminDashboard from './pages/admin/dashboard';
+import AdminInscricoes from './pages/admin/inscricoes';
+import AdminInscricaoDetalhes from './pages/admin/inscricoes/detalhes';
+import AdminCursos from './pages/admin/cursos';
+import AdminCursoForm from './pages/admin/cursos/form';
+import AdminFAQs from './pages/admin/faq';
+import AdminFAQForm from './pages/admin/faq/form';
+import AdminVestibular from './pages/admin/vestibular';
+import AdminVestibularForm from './pages/admin/vestibular/form';
+import AdminUsuarios from './pages/admin/administradores';
 
 createRoot(document.getElementById('root')).render(
   <LoadingBarContainer>
@@ -37,6 +50,24 @@ createRoot(document.getElementById('root')).render(
             <Route path='/login' element={<Login />} />
             <Route path='/recuperar-senha' element={<RecuperarSenha />} />
             <Route path='/trocar-senha' element={<TrocarSenha />} />
+
+            <Route path='/admin' element={<AdminApp />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path='inscricoes' element={<AdminInscricoes />} />
+              <Route path='inscricoes/:id' element={<AdminInscricaoDetalhes />} />
+              <Route path='cursos' element={<AdminCursos />} />
+              <Route path='cursos/novo' element={<AdminCursoForm />} />
+              <Route path='cursos/:id' element={<AdminCursoForm />} />
+              <Route path='faq' element={<AdminFAQs />} />
+              <Route path='faq/novo' element={<AdminFAQForm />} />
+              <Route path='faq/:id' element={<AdminFAQForm />} />
+              <Route path='vestibular' element={<AdminVestibular />} />
+              <Route path='vestibular/novo' element={<AdminVestibularForm />} />
+              <Route path='vestibular/:id' element={<AdminVestibularForm />} />
+              <Route path='administradores' element={<AdminUsuarios />} />
+            </Route>
+            <Route path='/admin/login' element={<AdminLogin />} />
+            <Route path='/admin/bootstrap' element={<AdminBootstrap />} />
           </Routes>
         </StrictMode>
       </BrowserRouter>

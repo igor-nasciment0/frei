@@ -1,0 +1,26 @@
+@use '../../../styles/tokens' as t;
+@use '../../../styles/admin' as admin;
+
+.admin-lista {
+    @include admin.admin-lista-page;
+
+    > .aviso {
+        font-size: 13px;
+        color: t.$c-text-muted;
+        line-height: 1.6;
+        margin-top: -14px;
+
+        code {
+            font-family: t.$font-mono;
+            font-size: 11.5px;
+        }
+    }
+
+    .admin-table .acoes .acao-ativar {
+        color: t.$c-sand;
+
+        &:hover {
+            color: t.$c-sand;
+        }
+    }
+}
